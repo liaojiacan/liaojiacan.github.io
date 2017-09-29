@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Jiacan‘s Blog</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://liaojiacan.me/"/>
+  <updated>2017-09-29T09:29:04.000Z</updated>
+  <id>https://liaojiacan.me/</id>
+  
+  <author>
+    <name>Jiacan Liao</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="https://liaojiacan.me/2017/09/27/hello-world/"/>
+    <id>https://liaojiacan.me/2017/09/27/hello-world/</id>
+    <published>2017-09-27T13:51:32.000Z</published>
+    <updated>2017-09-29T09:29:04.000Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+      
+    
+    </summary>
+    
+      <category term="hexo" scheme="https://liaojiacan.me/categories/hexo/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Linux shell命令:cut命令</title>
+    <link href="https://liaojiacan.me/2017/02/23/Linux%20Shell--cut%E5%91%BD%E4%BB%A4/"/>
+    <id>https://liaojiacan.me/2017/02/23/Linux Shell--cut命令/</id>
+    <published>2017-02-23T08:45:44.000Z</published>
+    <updated>2017-09-29T09:28:28.000Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h4 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h4&gt;&lt;p&gt;将一段数据经过分析，取出我们想要的&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td c
+      
+    
+    </summary>
+    
+      <category term="linux" scheme="https://liaojiacan.me/categories/linux/"/>
+    
+    
+      <category term="linux" scheme="https://liaojiacan.me/tags/linux/"/>
+    
+      <category term="shell" scheme="https://liaojiacan.me/tags/shell/"/>
+    
+  </entry>
+  
+</feed>
