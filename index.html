@@ -222,7 +222,7 @@
   <div class="widget">
     <h3 class="widget-title">分类</h3>
     <div class="widget-body">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -251,7 +251,7 @@
   <div class="widget">
     <h3 class="widget-title">归档</h3>
     <div class="widget-body">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">九月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -263,21 +263,6 @@
     <div class="widget-body">
       <ul class="recent-post-list list-unstyled no-thumbnail">
         
-          <li>
-            
-            <div class="item-inner">
-              <p class="item-category">
-                <a class="category-link" href="/categories/hexo/">hexo</a>
-              </p>
-              <p class="item-title">
-                <a href="/2017/09/27/hello-world/" class="title">Hello World</a>
-              </p>
-              <p class="item-date">
-                <time datetime="2017-09-27T13:51:32.000Z" itemprop="datePublished">2017-09-27</time>
-              </p>
-            </div>
-          </li>
-          
           <li>
             
             <div class="item-inner">
@@ -305,78 +290,109 @@
   
   <main class="main" role="main">
   
-  <div class="content article-list">
-    
-      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="article-header">
-    
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/09/27/hello-world/">Hello World</a>
-    </h1>
-  
-
-  </div>
-  
-  <p class="article-meta">
-    <span class="article-date">
-    <i class="fa fa-calendar-check-o"></i>
-	<a href="/2017/09/27/hello-world/" class="article-date">
-	  <time datetime="2017-09-27T13:51:32.000Z" itemprop="datePublished">9月 27</time>
-	</a>
-</span>
+    <div class="content">
+  <article id="post-Linux Shell--cut命令" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
-  <span class="article-category">
-    <i class="fa fa-folder"></i>
-    <a class="article-category-link" href="/categories/hexo/">hexo</a>
-  </span>
-
-    
-
-    <span class="post-comment"><i class="fa fa-commenting-o"></i> <a href="/2017/09/27/hello-world/#comments" class="article-comment-link">评论</a></span>
-    
-  </p>
-</article>
-
-    
-      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="article-header">
-    
+    <div class="article-header">
+      
+        
   
     <h1 itemprop="name">
       <a class="article-title" href="/2017/02/23/Linux Shell--cut命令/">Linux shell命令:cut命令</a>
     </h1>
   
 
-  </div>
-  
-  <p class="article-meta">
-    <span class="article-date">
+      
+      <div class="article-meta">
+        <span class="article-date">
     <i class="fa fa-calendar-check-o"></i>
 	<a href="/2017/02/23/Linux Shell--cut命令/" class="article-date">
-	  <time datetime="2017-02-23T08:45:44.000Z" itemprop="datePublished">2月 23</time>
+	  <time datetime="2017-02-23T08:45:44.000Z" itemprop="datePublished">2017-02-23</time>
 	</a>
 </span>
-    
+        
   <span class="article-category">
     <i class="fa fa-folder"></i>
     <a class="article-category-link" href="/categories/linux/">linux</a>
   </span>
 
-    
+        
   <span class="article-tag">
     <i class="fa fa-tag"></i>
 	<a class="article-tag-link" href="/tags/linux/">linux</a>, <a class="article-tag-link" href="/tags/shell/">shell</a>
   </span>
 
 
-    <span class="post-comment"><i class="fa fa-commenting-o"></i> <a href="/2017/02/23/Linux Shell--cut命令/#comments" class="article-comment-link">评论</a></span>
-    
-  </p>
-</article>
+        
+	<span class="article-read hidden-xs">
+	    <i class="fa fa-eye" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			阅读<span id="busuanzi_value_page_pv">0</span>次
+		</span>
+	</span>
 
+
+        <span class="post-comment"><i class="fa fa-commenting-o"></i> <a href="/2017/02/23/Linux Shell--cut命令/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+      
+    </div>
+    <div class="article-entry markdown-body" itemprop="articleBody">
+      
+        <h4 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h4><p>将一段数据经过分析，取出我们想要的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">cut -- cut out selected portions of each line of a file SYNOPSIS</div><div class="line">cut -b list [-n] [file ...]</div><div class="line">cut -c list [file ...]</div><div class="line">cut -f list [-d delim] [-s] [file ...]</div></pre></td></tr></table></figure>
+<ul>
+<li>-b ：以字节为单位进行分割。这些字节位置将忽略多字节字符边界，除非也指定了 -n 标志。</li>
+<li>-c ：以字符为单位进行分割。</li>
+<li>-d ：自定义分隔符，默认为制表符。</li>
+<li>-f ：与-d一起使用，指定显示哪个区域。</li>
+<li>-n ：取消分割多字节字符。仅和 -b 标志一起使用。如果字符的最后一个字节落在由 -b 标志的 List 参数指示的范围之内，该字符将被写出；否则，该字符将被排除。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">who | cut -d 3-5 #截取 3-5列的内容</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">who | cut -c 3-5 #截取 3-5列的内容 中文字符</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cat /etc/passwd|head -n 5|cut -d : -f -2 # 设置分隔符为：</div></pre></td></tr></table></figure>
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
     
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://liaojiacan.me/2017/02/23/Linux Shell--cut命令/" title="Linux shell命令:cut命令" target="_blank" rel="external">https://liaojiacan.me/2017/02/23/Linux Shell--cut命令/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/liaojiacan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/liaojiacan" target="_blank"><span class="text-dark">Jiacan Liao</span><small class="ml-1x">Java Developer &amp; Geeker</small></a></h3>
+        <div>主要从事Java后端开发，并擅长Web相关技术，对网络安全和应用逆向也很感兴趣。</div>
+      </div>
+    </figure>
   </div>
+</div>
+
+
+    </div>
+  </article>
+  
+</div>
+
+  
 
    
 </main>

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://liaojiacan.me/"/>
-  <updated>2017-09-29T09:29:04.000Z</updated>
+  <updated>2017-09-29T09:50:37.000Z</updated>
   <id>https://liaojiacan.me/</id>
   
   <author>
@@ -17,32 +17,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Hello World</title>
-    <link href="https://liaojiacan.me/2017/09/27/hello-world/"/>
-    <id>https://liaojiacan.me/2017/09/27/hello-world/</id>
-    <published>2017-09-27T13:51:32.000Z</published>
-    <updated>2017-09-29T09:29:04.000Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
-      
-    
-    </summary>
-    
-      <category term="hexo" scheme="https://liaojiacan.me/categories/hexo/"/>
-    
-    
-  </entry>
-  
-  <entry>
     <title>Linux shell命令:cut命令</title>
     <link href="https://liaojiacan.me/2017/02/23/Linux%20Shell--cut%E5%91%BD%E4%BB%A4/"/>
     <id>https://liaojiacan.me/2017/02/23/Linux Shell--cut命令/</id>
     <published>2017-02-23T08:45:44.000Z</published>
-    <updated>2017-09-29T09:28:28.000Z</updated>
+    <updated>2017-09-29T09:50:37.000Z</updated>
     
     <summary type="html">
     
