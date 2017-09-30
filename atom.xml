@@ -5,9 +5,9 @@
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="https://liaojiacan.me/"/>
+  <link href="http://liaojiacan.me/"/>
   <updated>2017-09-29T09:50:37.000Z</updated>
-  <id>https://liaojiacan.me/</id>
+  <id>http://liaojiacan.me/</id>
   
   <author>
     <name>Jiacan Liao</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Linux shell命令:cut命令</title>
-    <link href="https://liaojiacan.me/2017/02/23/Linux%20Shell--cut%E5%91%BD%E4%BB%A4/"/>
-    <id>https://liaojiacan.me/2017/02/23/Linux Shell--cut命令/</id>
+    <link href="http://liaojiacan.me/2017/02/23/Linux%20Shell--cut%E5%91%BD%E4%BB%A4/"/>
+    <id>http://liaojiacan.me/2017/02/23/Linux Shell--cut命令/</id>
     <published>2017-02-23T08:45:44.000Z</published>
     <updated>2017-09-29T09:50:37.000Z</updated>
     
@@ -33,12 +33,12 @@
     
     </summary>
     
-      <category term="linux" scheme="https://liaojiacan.me/categories/linux/"/>
+      <category term="linux" scheme="http://liaojiacan.me/categories/linux/"/>
     
     
-      <category term="linux" scheme="https://liaojiacan.me/tags/linux/"/>
+      <category term="linux" scheme="http://liaojiacan.me/tags/linux/"/>
     
-      <category term="shell" scheme="https://liaojiacan.me/tags/shell/"/>
+      <category term="shell" scheme="http://liaojiacan.me/tags/shell/"/>
     
   </entry>
   
