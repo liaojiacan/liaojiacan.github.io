@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Jiacan‘s Blog</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://liaojiacan.me/"/>
+  <updated>2018-02-07T07:41:35.209Z</updated>
+  <id>http://liaojiacan.me/</id>
+  
+  <author>
+    <name>Jiacan Liao</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Source Tree 配置支持gerrit review</title>
+    <link href="http://liaojiacan.me/2018/02/07/Source-Tree-%E9%85%8D%E7%BD%AE%E6%94%AF%E6%8C%81gerrit-review/"/>
+    <id>http://liaojiacan.me/2018/02/07/Source-Tree-配置支持gerrit-review/</id>
+    <published>2018-02-07T07:34:45.000Z</published>
+    <updated>2018-02-07T07:41:35.209Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;source tree 可以支持自定义菜单，我们自定义一个菜单，来实现gerrit push review操作&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;1.先创建一个脚本，这里我叫 git_push_gerrit.sh&lt;br&gt;&lt;figure cl
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>抽奖业务设计</title>
+    <link href="http://liaojiacan.me/2017/12/16/%E6%8A%BD%E5%A5%96%E4%B8%9A%E5%8A%A1%E8%AE%BE%E8%AE%A1/"/>
+    <id>http://liaojiacan.me/2017/12/16/抽奖业务设计/</id>
+    <published>2017-12-16T08:12:00.000Z</published>
+    <updated>2017-12-16T08:22:20.264Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;抽奖是一个比较常见的业务，关于抽奖的算法也有很多种实现，下面介绍一种比较容易实现的方式。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;1.根据中奖概率的精确度，取一个权重的基线作为（概率-&amp;gt;概率区间）的放大因子。比如，概率的精确度是到万分位，则
+      
+    
+    </summary>
+    
+      <category term="java" scheme="http://liaojiacan.me/categories/java/"/>
+    
+    
+      <category term="业务开发" scheme="http://liaojiacan.me/tags/%E4%B8%9A%E5%8A%A1%E5%BC%80%E5%8F%91/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java根据指定的country和lang格式化时间</title>
+    <link href="http://liaojiacan.me/2017/10/16/Java%E6%A0%B9%E6%8D%AE%E6%8C%87%E5%AE%9A%E7%9A%84country%E5%92%8Clang%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%97%B6%E9%97%B4/"/>
+    <id>http://liaojiacan.me/2017/10/16/Java根据指定的country和lang格式化时间/</id>
+    <published>2017-10-16T13:18:00.000Z</published>
+    <updated>2017-10-16T13:22:40.000Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;服务端或者客户端在做一些多语言的时候可能会涉及到时间戳的格式化，不同的语言或者不同的国家的时间的表达格式可能不同。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td c
+      
+    
+    </summary>
+    
+    
+      <category term="java" scheme="http://liaojiacan.me/tags/java/"/>
+    
+      <category term="业务开发" scheme="http://liaojiacan.me/tags/%E4%B8%9A%E5%8A%A1%E5%BC%80%E5%8F%91/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Iedis破解思路</title>
+    <link href="http://liaojiacan.me/2017/10/12/Iedis%E7%A0%B4%E8%A7%A3%E6%80%9D%E8%B7%AF/"/>
+    <id>http://liaojiacan.me/2017/10/12/Iedis破解思路/</id>
+    <published>2017-10-12T07:01:00.000Z</published>
+    <updated>2017-10-12T07:04:05.000Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;Iedis是IDEA上的一个收费redis插件，java编写的，既然是java写的，收费这些自然是很容易绕过的。由于Java太容易被反编译，作者还是做了些代码混淆和字符串加密。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;利用JD-GUI反
+      
+    
+    </summary>
+    
+      <category term="逆向" scheme="http://liaojiacan.me/categories/%E9%80%86%E5%90%91/"/>
+    
+    
+      <category term="java逆向" scheme="http://liaojiacan.me/tags/java%E9%80%86%E5%90%91/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>proto变量类型与java类型对照表</title>
+    <link href="http://liaojiacan.me/2017/10/11/proto%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B%E4%B8%8Ejava%E7%B1%BB%E5%9E%8B%E5%AF%B9%E7%85%A7%E8%A1%A8/"/>
+    <id>http://liaojiacan.me/2017/10/11/proto变量类型与java类型对照表/</id>
+    <published>2017-10-11T02:53:00.000Z</published>
+    <updated>2017-10-11T02:54:57.000Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;proto type&lt;/th&gt;
+&lt;th&gt;java type&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;double&lt;/td&gt;
+&lt;td&gt;double&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;float
+      
+    
+    </summary>
+    
+    
+      <category term="Protobuf" scheme="http://liaojiacan.me/tags/Protobuf/"/>
+    
+      <category term="rpc" scheme="http://liaojiacan.me/tags/rpc/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>proto文件</title>
+    <link href="http://liaojiacan.me/2017/10/10/proto%E6%96%87%E4%BB%B6/"/>
+    <id>http://liaojiacan.me/2017/10/10/proto文件/</id>
+    <published>2017-10-10T11:52:00.000Z</published>
+    <updated>2017-10-10T11:57:15.000Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;proto文件是Proto buffers的描述文件&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;syntax 指定pd编译器的版本，可以设置proto2或者proto3&lt;/li&gt;
+&lt;li&gt;message 类似java中的class关键字
+      
+    
+    </summary>
+    
+    
+      <category term="Protobuf" scheme="http://liaojiacan.me/tags/Protobuf/"/>
+    
+      <category term="rpc" scheme="http://liaojiacan.me/tags/rpc/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>javaagent 的使用</title>
+    <link href="http://liaojiacan.me/2017/10/10/javaagent-%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
+    <id>http://liaojiacan.me/2017/10/10/javaagent-的使用/</id>
+    <published>2017-10-10T03:40:00.000Z</published>
+    <updated>2017-10-10T03:43:58.000Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt; javaagent 是类似一个JVM的插件，利用JVM提供的Instrumentation API实现获取或者修改加载到JVM中的类字节码。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;编写一个javagent的jar的方式如下：&lt;/p&gt;
+&lt;p&gt;1
+      
+    
+    </summary>
+    
+      <category term="逆向" scheme="http://liaojiacan.me/categories/%E9%80%86%E5%90%91/"/>
+    
+    
+      <category term="java逆向" scheme="http://liaojiacan.me/tags/java%E9%80%86%E5%90%91/"/>
+    
+      <category term="java" scheme="http://liaojiacan.me/tags/java/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux shell命令:cut命令</title>
+    <link href="http://liaojiacan.me/2017/02/23/Linux%20Shell--cut%E5%91%BD%E4%BB%A4/"/>
+    <id>http://liaojiacan.me/2017/02/23/Linux Shell--cut命令/</id>
+    <published>2017-02-23T08:45:44.000Z</published>
+    <updated>2017-09-29T09:50:37.000Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h4 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h4&gt;&lt;p&gt;将一段数据经过分析，取出我们想要的&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td c
+      
+    
+    </summary>
+    
+      <category term="linux" scheme="http://liaojiacan.me/categories/linux/"/>
+    
+    
+      <category term="linux" scheme="http://liaojiacan.me/tags/linux/"/>
+    
+      <category term="shell" scheme="http://liaojiacan.me/tags/shell/"/>
+    
+  </entry>
+  
+</feed>
