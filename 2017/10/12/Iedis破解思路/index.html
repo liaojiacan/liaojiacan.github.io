@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000">
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top">
+  
+  
+  <title>Iedis破解思路 | Hexo</title>
+  <meta name="description" content="Iedis是IDEA上的一个收费redis插件，java编写的，既然是java写的，收费这些自然是很容易绕过的。由于Java太容易被反编译，作者还是做了些代码混淆和字符串加密。   利用JD-GUI反编译出来的代码片段 可以看出类名和字符串都被混淆和加密了，从代码上很难去定位和分析他的注册流程。 12345678910111213141516171819202122232425262728293">
+<meta name="keywords" content="java逆向">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Iedis破解思路">
+<meta property="og:url" content="http://liaojiacan.me/2017/10/12/Iedis破解思路/index.html">
+<meta property="og:site_name" content="Jiacan‘s Blog">
+<meta property="og:description" content="Iedis是IDEA上的一个收费redis插件，java编写的，既然是java写的，收费这些自然是很容易绕过的。由于Java太容易被反编译，作者还是做了些代码混淆和字符串加密。   利用JD-GUI反编译出来的代码片段 可以看出类名和字符串都被混淆和加密了，从代码上很难去定位和分析他的注册流程。 12345678910111213141516171819202122232425262728293">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-02-08T06:58:50.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Iedis破解思路">
+<meta name="twitter:description" content="Iedis是IDEA上的一个收费redis插件，java编写的，既然是java写的，收费这些自然是很容易绕过的。由于Java太容易被反编译，作者还是做了些代码混淆和字符串加密。   利用JD-GUI反编译出来的代码片段 可以看出类名和字符串都被混淆和加密了，从代码上很难去定位和分析他的注册流程。 12345678910111213141516171819202122232425262728293">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://liaojiacan.me/2017/10/12/Iedis破解思路/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Jiacan‘s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+  
+  
+</head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/liaojiacan" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Jiacan Liao</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Java Developer &amp; Geeker</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> GuangZhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索">
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech>
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/liaojiacan" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/liaojican" target="_blank" title="Weibo" data-toggle="tooltip" data-placement="top"><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/liaojiacan" target="_blank" title="Twitter" data-toggle="tooltip" data-placement="top"><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle="tooltip" data-placement="top"><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/架构总结/">架构总结</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/源码解读/">源码解读</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/源码解读/JDK/">JDK</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/逆向/">逆向</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ConcurrentHashMap/">ConcurrentHashMap</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Idea/">Idea</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/J-U-C/">J.U.C</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/">Protobuf</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/archetypeCatalog/">archetypeCatalog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/i18n/">i18n</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java逆向/">java逆向</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rpc/">rpc</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/业务开发/">业务开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多语言/">多语言</a><span class="tag-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/ConcurrentHashMap/" style="font-size: 13px;">ConcurrentHashMap</a> <a href="/tags/Idea/" style="font-size: 13px;">Idea</a> <a href="/tags/J-U-C/" style="font-size: 13px;">J.U.C</a> <a href="/tags/Protobuf/" style="font-size: 13.5px;">Protobuf</a> <a href="/tags/archetypeCatalog/" style="font-size: 13px;">archetypeCatalog</a> <a href="/tags/i18n/" style="font-size: 14px;">i18n</a> <a href="/tags/java/" style="font-size: 13.5px;">java</a> <a href="/tags/java逆向/" style="font-size: 13.5px;">java逆向</a> <a href="/tags/linux/" style="font-size: 13px;">linux</a> <a href="/tags/rpc/" style="font-size: 13.5px;">rpc</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/业务开发/" style="font-size: 13.5px;">业务开发</a> <a href="/tags/多语言/" style="font-size: 14px;">多语言</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/源码解读/">源码解读</a><i class="icon icon-angle-right"></i><a class="category-link" href="/categories/源码解读/JDK/">JDK</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/02/26/JDK1-7-ConcurrentHashMap的源码解读/" class="title">JDK1.7 ConcurrentHashMap的源码解读</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-02-26T03:18:00.000Z" itemprop="datePublished">2019-02-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/架构总结/">架构总结</a>
+              </p>
+              <p class="item-title">
+                <a href="/2018/04/13/谈谈多语言设计（三）Spring-i18n-拓展之自定义MessageSource/" class="title">谈谈多语言设计（三）Spring-i18n 拓展之自定义MessageSource</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2018-04-13T08:08:00.000Z" itemprop="datePublished">2018-04-13</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/工具使用/">工具使用</a>
+              </p>
+              <p class="item-title">
+                <a href="/2018/03/09/Idea使用骨架生成项目卡住的解决办法/" class="title">Idea使用骨架生成项目卡住的解决办法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2018-03-09T11:01:00.000Z" itemprop="datePublished">2018-03-09</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/架构总结/">架构总结</a>
+              </p>
+              <p class="item-title">
+                <a href="/2018/03/08/谈谈多语言设计（二）之Spring多语言/" class="title">谈谈多语言设计（二）之Spring多语言</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2018-03-08T11:07:00.000Z" itemprop="datePublished">2018-03-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/架构总结/">架构总结</a>
+              </p>
+              <p class="item-title">
+                <a href="/2018/03/07/谈谈多语言设计（一）之-客户端多语言与服务端多语言/" class="title">谈谈多语言设计（一）之客户端多语言与服务端多语言</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2018-03-07T03:56:00.000Z" itemprop="datePublished">2018-03-07</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-Iedis破解思路" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Iedis破解思路
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2017/10/12/Iedis破解思路/" class="article-date">
+	  <time datetime="2017-10-12T07:01:00.000Z" itemprop="datePublished">2017-10-12</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/逆向/">逆向</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/java逆向/">java逆向</a>
+  </span>
+
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2017/10/12/Iedis破解思路/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <blockquote>
+<p>Iedis是IDEA上的一个收费redis插件，java编写的，既然是java写的，收费这些自然是很容易绕过的。由于Java太容易被反编译，作者还是做了些代码混淆和字符串加密。</p>
+</blockquote>
+<h3 id="利用jd-gui反编译出来的代码片段"><a class="markdownIt-Anchor" href="#利用jd-gui反编译出来的代码片段"></a> 利用JD-GUI反编译出来的代码片段</h3>
+<p>可以看出类名和字符串都被混淆和加密了，从代码上很难去定位和分析他的注册流程。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">package com.seventh7.widget.iedis.config;</span><br><span class="line"></span><br><span class="line">import com.intellij.icons.AllIcons.General;</span><br><span class="line">import com.intellij.openapi.actionSystem.AnActionEvent;</span><br><span class="line">import com.intellij.openapi.ui.Messages;</span><br><span class="line"></span><br><span class="line">class i</span><br><span class="line">  extends e</span><br><span class="line">&#123;</span><br><span class="line">  private static final String[] ib;</span><br><span class="line">  private static final String[] jb;</span><br><span class="line">  </span><br><span class="line">  i(n paramn)</span><br><span class="line">  &#123;</span><br><span class="line">    super(a(20539, 52876), a(20539, 52876), AllIcons.General.Remove, a(20537, 55341), paramn);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  void a(AnActionEvent paramAnActionEvent, P paramP)</span><br><span class="line">  &#123;</span><br><span class="line">    String str1 = String.format(a(20538, 25199), new Object[] &#123; paramP.f() &#125;);</span><br><span class="line">    String str2 = a(20536, 20012);</span><br><span class="line">    try</span><br><span class="line">    &#123;</span><br><span class="line">      if (Messages.showOkCancelDialog(a(), str1, str2, Messages.getQuestionIcon()) == 0) &#123;</span><br><span class="line">        com.seventh7.widget.iedis.d.e.a().a(a(), paramP.b());</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    catch (RuntimeException localRuntimeException)</span><br><span class="line">    &#123;</span><br><span class="line">      throw d(localRuntimeException);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="破解的2个思路"><a class="markdownIt-Anchor" href="#破解的2个思路"></a> 破解的2个思路</h3>
+<ul>
+<li>还原代码中的所有加密字符串，根据字符串的内定位到相关的代码，利用javassist修改class文件，将文件替换掉原来的文件</li>
+<li>逆向出他的认证算法，然后做个注册机之类的。iedis是采用服务器认证的，每次启动都要去服务器查询激活，所以注册机不适合。但是我们可以本地架设一个认证服务。</li>
+</ul>
+<blockquote>
+<p>架设认证服务器还是比较简单的，下面还是主要研究一下第一种思路。</p>
+</blockquote>
+<h3 id="还原字符串"><a class="markdownIt-Anchor" href="#还原字符串"></a> 还原字符串</h3>
+<p>从那些混淆的代码去定位软件的运行逻辑很难下手，但是我们可以换个思路，将软件运行过程中字符串都打印出来，这样我们基本上就可以得到一份软件的运行日志，对java程序进行运行时插入语句看似很麻烦，其实JVM默认就支持javaagent，写个javaagent即可达到效果，javaagent的使用可以参考<a href="http://liaojiacan.me/2017/10/10/javaagent-%E7%9A%84%E4%BD%BF%E7%94%A8/">《javaagent-的使用》</a></p>
+<ol>
+<li>编写javaagent程序</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 给iedis的加密字符串函数 插入打印代码</span><br><span class="line"> */</span><br><span class="line">public class IedisTransformer implements ClassFileTransformer &#123;</span><br><span class="line"></span><br><span class="line">	private final static String IDEA_LIB=&quot;/Applications/IntelliJ IDEA.app/Contents/lib/*&quot;;</span><br><span class="line">	private final static String IDEIS_LIB=&quot;/Users/liaojiacan/Library/Application Support/IntelliJIdea2017.2/Iedis/lib/*&quot;;</span><br><span class="line"></span><br><span class="line">	public IedisTransformer() &#123;</span><br><span class="line">		try &#123;</span><br><span class="line">			ClassPool.getDefault().appendClassPath(IDEA_LIB);</span><br><span class="line">			ClassPool.getDefault().appendClassPath(IDEIS_LIB);</span><br><span class="line">		&#125; catch (NotFoundException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public byte[] transform(ClassLoader loader, String className, Class&lt;?&gt; classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException &#123;</span><br><span class="line"></span><br><span class="line">		if(className.startsWith(&quot;com/seventh7/widget/iedis&quot;))&#123;</span><br><span class="line">			try &#123;</span><br><span class="line">				CtClass clazz = ClassPool.getDefault().makeClass(new ByteArrayInputStream(classfileBuffer));</span><br><span class="line">				CtMethod[] methods = clazz.getDeclaredMethods();</span><br><span class="line">				CtClass string = ClassPool.getDefault().getCtClass(String.class.getName());</span><br><span class="line">				for(CtMethod method :methods)&#123;</span><br><span class="line"></span><br><span class="line">					if(method.getLongName().startsWith(&quot;com.seventh7.widget.iedis.a.p.f&quot;))&#123;</span><br><span class="line">						System.out.println(&quot;Inject :: SUCCESS!&quot;);</span><br><span class="line">						method.insertBefore(&quot;if(true)&#123;return true;&#125; &quot;);</span><br><span class="line">						continue;</span><br><span class="line">					&#125;</span><br><span class="line"></span><br><span class="line">					if(method.getReturnType().equals(string))&#123;</span><br><span class="line">						String name = method.getLongName();</span><br><span class="line">						System.out.println(&quot;transform the iedis method:&quot;+name);</span><br><span class="line">						method.insertAfter(&quot;System.out.println(\&quot;--------------------\&quot;);&quot; +</span><br><span class="line">									&quot; System.out.println(\&quot;&quot;+name+&quot;\&quot;); &quot; +</span><br><span class="line">									&quot; System.out.println(java.util.Arrays.toString($args)); &quot; +</span><br><span class="line">									&quot; System.out.println(\&quot;return:\&quot;+$_);&quot;);</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				return clazz.toBytecode();</span><br><span class="line">			&#125; catch (IOException e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125; catch (NotFoundException e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125; catch (CannotCompileException e) &#123;</span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		return null;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>修改System.out，把所有的print打印到我们指定的文件中 /tmp/system.out</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public class Main &#123;</span><br><span class="line">	public static void premain(String agentOps, Instrumentation inst) &#123;</span><br><span class="line">		PrintStream out = null;</span><br><span class="line">		try &#123;</span><br><span class="line">			out = new PrintStream(&quot;/tmp/system.out&quot;);</span><br><span class="line">		&#125; catch (FileNotFoundException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		System.setOut(out);</span><br><span class="line">		System.setErr(out);</span><br><span class="line"></span><br><span class="line">		if (&quot;iedis&quot;.equals(agentOps))&#123;</span><br><span class="line">			inst.addTransformer(new IedisTransformer());</span><br><span class="line">		&#125;else if(&quot;injectPrint&quot;.equals(agentOps)) &#123;</span><br><span class="line">			inst.addTransformer(new InjectPrintTransformer());</span><br><span class="line">		&#125;else &#123;</span><br><span class="line">			inst.addTransformer(new SimpleTransformer());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		System.out.println(helloWorld());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public static String helloWorld()&#123;</span><br><span class="line">		return &quot;This is a javaagent!&quot;;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>配置idea启动配置，加入我们的javaagent</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">#修改idea.vmoptions文件加入下面一行配置</span><br><span class="line">-javaagent:/Users/liaojiacan/Workspace/tools/decomplie/javaagent/javaagent-1.0-SNAPSHOT.jar=iedis</span><br><span class="line">-Xms128m</span><br><span class="line">-Xmx750m</span><br><span class="line">-XX:ReservedCodeCacheSize=240m</span><br><span class="line">-XX:+UseCompressedOops</span><br><span class="line">-Dfile.encoding=UTF-8</span><br><span class="line">-XX:+UseConcMarkSweepGC</span><br><span class="line">-XX:SoftRefLRUPolicyMSPerMB=50</span><br><span class="line">-ea</span><br><span class="line">-Dsun.io.useCanonCaches=false</span><br><span class="line">-Djava.net.preferIPv4Stack=true</span><br><span class="line">-XX:+HeapDumpOnOutOfMemoryError</span><br><span class="line">-XX:-OmitStackTraceInFastThrow</span><br><span class="line">-Xverify:none</span><br><span class="line"></span><br><span class="line">-XX:ErrorFile=$USER_HOME/java_error_in_idea_%p.log</span><br><span class="line">-XX:HeapDumpPath=$USER_HOME/java_error_in_idea.hprof</span><br><span class="line">-Xbootclasspath/a:../lib/boot.jar</span><br></pre></td></tr></table></figure>
+<p>启动Idea 后我们可以在/tmp/system.out中可以看到这些关键的日志</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">--------------------</span><br><span class="line">com.seventh7.widget.iedis.L.a(java.lang.String)</span><br><span class="line">return:&#123;&quot;trailing&quot;:true,&quot;daysLeft&quot;:9,&quot;popup&quot;:true,&quot;activated&quot;:false&#125;</span><br><span class="line">--------------------</span><br><span class="line">com.seventh7.widget.iedis.B.a()</span><br><span class="line">return:186b474e0ffffffb70ffffff96680ffffffc0240ffffff89456b0fffffffa320ffffffa70ffffff92</span><br><span class="line">--------------------</span><br><span class="line">com.seventh7.widget.iedis.x.a(byte[])</span><br><span class="line">return:MTg2YjQ3NGUwZmZmZmZmYjcwZmZmZmZmOTY2ODBmZmZmZmZjMDI0MGZmZmZmZjg5NDU2YjBmZmZm</span><br><span class="line">ZmZmYTMyMGZmZmZmZmE3MGZmZmZmZjkyOjI=</span><br><span class="line">--------------------</span><br><span class="line">com.seventh7.widget.iedis.L.a(java.lang.String)</span><br><span class="line">return:&#123;&quot;trailing&quot;:true,&quot;daysLeft&quot;:9,&quot;popup&quot;:true,&quot;activated&quot;:false&#125;</span><br><span class="line">--------------------</span><br><span class="line"></span><br><span class="line">com.seventh7.widget.iedis.L.a(java.lang.String)</span><br><span class="line">[https://www.codesmagic.com/q2?t=MTg2YjQ3NGUwZmZmZmZmYjcwZmZmZmZmOTY2ODBmZmZmZmZjMDI0MGZmZmZmZjg5NDU2YjBmZmZmZmZmYTMyMGZmZmZmZmE3MGZmZmZmZjkyOjI=]</span><br><span class="line">return:&#123;&quot;trailing&quot;:true,&quot;daysLeft&quot;:9,&quot;popup&quot;:true,&quot;activated&quot;:false&#125;</span><br><span class="line">--------------------</span><br><span class="line">com.seventh7.widget.iedis.a.p.b(int,int)</span><br><span class="line">[-13938, -6118]</span><br><span class="line">return:trailing</span><br><span class="line">--------------------</span><br><span class="line">com.seventh7.widget.iedis.a.p.b(int,int)</span><br><span class="line">[-13937, -25088]</span><br><span class="line">return:daysLeft</span><br><span class="line">--------------------</span><br><span class="line">com.seventh7.widget.iedis.a.p.b(int,int)</span><br><span class="line">[-13939, 7216]</span><br><span class="line">return:popup</span><br></pre></td></tr></table></figure>
+<p>从上面的日志可以看出一些关键点：</p>
+<ul>
+<li>
+<p><a href="https://www.codesmagic.com/q2?t=" target="_blank" rel="noopener">https://www.codesmagic.com/q2?t=</a> 是注册的服务器</p>
+</li>
+<li>
+<p>com.seventh7.widget.iedis.a.o 这个类是很关键的类</p>
+</li>
+<li>
+<p>认证服务器返回的认证结果为<br>
+{“trailing”:true,“daysLeft”:9,“popup”:true,“activated”:false}</p>
+</li>
+</ul>
+<blockquote>
+<p>查看反编译的代码，可以看出这个类是一个抽象类，他的唯一子类是com.seventh7.widget.iedis.a.p，根据外面获取到的运行日志，大概可以推断出 f这个方法是认证的方法。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line">package com.seventh7.widget.iedis.a;</span><br><span class="line"></span><br><span class="line">import com.seventh7.widget.iedis.b.d.a;</span><br><span class="line">import java.util.Map;</span><br><span class="line">import java.io.IOException;</span><br><span class="line">import com.seventh7.widget.iedis.L;</span><br><span class="line"></span><br><span class="line">class p extends o</span><br><span class="line">&#123;</span><br><span class="line">    private static final String[] kb;</span><br><span class="line">    private static final String[] lb;</span><br><span class="line">    </span><br><span class="line">    //基本上可以推断出 这个就是认证的方法，最直接的方法就是直接return true</span><br><span class="line">    @Override</span><br><span class="line">    protected boolean f() throws IOException &#123;</span><br><span class="line">        //this.d() 是调用https://www.codesmagic.com/q2去注册的</span><br><span class="line">        //Map的返回值&#123;&quot;trailing&quot;:true,&quot;daysLeft&quot;:9,&quot;popup&quot;:true,&quot;activated&quot;:false&#125;</span><br><span class="line">        final Map d = this.d();</span><br><span class="line">        //trailing</span><br><span class="line">        final boolean booleanValue = L.a(d, b(-13938, -6118));</span><br><span class="line">        //this.d()执行后的异常信息。</span><br><span class="line">        final a[] b = av.b();</span><br><span class="line">        //daysLeft</span><br><span class="line">        final int b2 = L.b(d, b(-13937, -25088));</span><br><span class="line">        //popup</span><br><span class="line">        final boolean booleanValue2 = L.a(d, b(-13939, 7216));</span><br><span class="line">        boolean booleanValue3 = false;</span><br><span class="line">        Label_0104: &#123;</span><br><span class="line">            Label_0074: &#123;</span><br><span class="line">                boolean b3;</span><br><span class="line">                try &#123;</span><br><span class="line">                    b3 = (booleanValue3 = booleanValue);</span><br><span class="line">                    if (b != null) &#123;</span><br><span class="line">                        break Label_0104;</span><br><span class="line">                    &#125;</span><br><span class="line">                    if (b3) &#123;</span><br><span class="line">                        break Label_0074;</span><br><span class="line">                    &#125;</span><br><span class="line">                    break Label_0074;</span><br><span class="line">                &#125;</span><br><span class="line">                catch (IOException ex) &#123;</span><br><span class="line">                    throw b(ex);</span><br><span class="line">                &#125;</span><br><span class="line">                try &#123;</span><br><span class="line">                    if (b3) &#123;</span><br><span class="line">                        this.a(b2, booleanValue2);</span><br><span class="line">                        return false;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                catch (IOException ex2) &#123;</span><br><span class="line">                    throw b(ex2);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            //actived</span><br><span class="line">            booleanValue3 = L.a(d, b(-13940, 8507));</span><br><span class="line">        &#125;</span><br><span class="line">        final boolean b4 = booleanValue3;</span><br><span class="line">        </span><br><span class="line">        //如果已经过了试用，就检测激活</span><br><span class="line">        Label_0122: &#123;</span><br><span class="line">            boolean b5;</span><br><span class="line">            try &#123;</span><br><span class="line">                final boolean b6;</span><br><span class="line">                b5 = (b6 = b4);</span><br><span class="line">                // b = av.b()</span><br><span class="line">                if (b != null) &#123;</span><br><span class="line">                    return b6;</span><br><span class="line">                &#125;</span><br><span class="line">                if (!b5) &#123;</span><br><span class="line">                    break Label_0122;</span><br><span class="line">                &#125;</span><br><span class="line">                return true;</span><br><span class="line">            &#125;</span><br><span class="line">            catch (IOException ex3) &#123;</span><br><span class="line">                throw b(ex3);</span><br><span class="line">            &#125;</span><br><span class="line">            try &#123;</span><br><span class="line">                if (!b5) &#123;</span><br><span class="line">                    this.c();</span><br><span class="line">                    return false;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            catch (IOException ex4) &#123;</span><br><span class="line">                throw b(ex4);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    private static IOException b(final IOException ex) &#123;</span><br><span class="line">        return ex;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上面的分享结果可以看出，有两种破解思路</p>
+<ul>
+<li>
+<p>方法一 修改 com.seventh7.widget.iedis.a.p.f 永远return true</p>
+</li>
+<li>
+<p>方法二 搭建一个认证服务器，本地替换host，认证服务器返回的结果为</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; &quot;trailing&quot;: false, &quot;popup&quot;: true, &quot;activated&quot;: true, &quot;daysLeft&quot;: 0 &#125;</span><br></pre></td></tr></table></figure>
+<p>方法一的实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">public class IedisCracker &#123;</span><br><span class="line"></span><br><span class="line">	private final static String IDEA_LIB=&quot;/Applications/IntelliJ IDEA.app/Contents/lib/*&quot;;</span><br><span class="line">	private final static String IDEIS_LIB=&quot;/Users/liaojiacan/Library/Application Support/IntelliJIdea2017.2/Iedis/lib/*&quot;;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		try &#123;</span><br><span class="line">			ClassPool.getDefault().appendClassPath(IDEA_LIB);</span><br><span class="line">			ClassPool.getDefault().appendClassPath(IDEIS_LIB);</span><br><span class="line"></span><br><span class="line">			CtClass clazz = ClassPool.getDefault().getCtClass(&quot;com.seventh7.widget.iedis.a.p&quot;);</span><br><span class="line"></span><br><span class="line">			CtMethod[] mds = clazz.getDeclaredMethods();</span><br><span class="line">			for(CtMethod method : mds)&#123;</span><br><span class="line">				if(method.getLongName().startsWith(&quot;com.seventh7.widget.iedis.a.p.f&quot;))&#123;</span><br><span class="line">					System.out.println(&quot;Inject :: SUCCESS!&quot;);</span><br><span class="line">					try &#123;</span><br><span class="line">						method.insertBefore(&quot;if(true)&#123;return true;&#125; &quot;);</span><br><span class="line">					&#125; catch (CannotCompileException e) &#123;</span><br><span class="line">						e.printStackTrace();</span><br><span class="line">					&#125;</span><br><span class="line">					continue;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			clazz.writeFile(&quot;/tmp/p.class&quot;);</span><br><span class="line"></span><br><span class="line">		&#125; catch (NotFoundException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; catch (CannotCompileException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125; catch (IOException e) &#123;</span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://liaojiacan.me/2017/10/12/Iedis破解思路/" title="Iedis破解思路" target="_blank" rel="external">http://liaojiacan.me/2017/10/12/Iedis破解思路/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/liaojiacan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt>
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/liaojiacan" target="_blank"><span class="text-dark">Jiacan Liao</span><small class="ml-1x">Java Developer &amp; Geeker</small></a></h3>
+        <div>主要从事Java后端开发，并擅长Web相关技术，对网络安全和应用逆向也很感兴趣。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTExMi83NjYx">
+        <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>    
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2017/10/16/Java根据指定的country和lang格式化时间/" title="Java根据指定的country和lang格式化时间"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2017/10/11/proto变量类型与java类型对照表/" title="proto变量类型与java类型对照表"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫">
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/weipayimg.png" alt="扫码支持" title="扫一扫">
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class>
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/liaojiacan" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/liaojican" target="_blank" title="Weibo" data-toggle="tooltip" data-placement="top"><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/liaojiacan" target="_blank" title="Twitter" data-toggle="tooltip" data-placement="top"><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle="tooltip" data-placement="top"><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+<script defer type="text/javascript">
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+
+    if (typeof LivereTower === 'function') { return; }
+
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+
+
+
+
+
+
+</body>
+</html>

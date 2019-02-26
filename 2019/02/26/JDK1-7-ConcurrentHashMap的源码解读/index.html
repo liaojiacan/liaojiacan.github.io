@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000">
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top">
+  
+  
+  <title>JDK1.7 ConcurrentHashMap的源码解读 | Hexo</title>
+  <meta name="description" content="一、 ConcurrentHashMap的数据结构(JDK7)。  segments[] : Segment&amp;lt;K,V&amp;gt; extends ReentrantLock   分段锁，HashMap 用一个Entry[] table 去存数据，ConcurrentHashMap 则是将 这个table 拆分出 n 个段（一个最接近concurrencyLevel的2的幂）分别存储，Segme">
+<meta name="keywords" content="J.U.C,ConcurrentHashMap">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JDK1.7 ConcurrentHashMap的源码解读">
+<meta property="og:url" content="http://liaojiacan.me/2019/02/26/JDK1-7-ConcurrentHashMap的源码解读/index.html">
+<meta property="og:site_name" content="Jiacan‘s Blog">
+<meta property="og:description" content="一、 ConcurrentHashMap的数据结构(JDK7)。  segments[] : Segment&amp;lt;K,V&amp;gt; extends ReentrantLock   分段锁，HashMap 用一个Entry[] table 去存数据，ConcurrentHashMap 则是将 这个table 拆分出 n 个段（一个最接近concurrencyLevel的2的幂）分别存储，Segme">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://github.com/liaojiacan/assets/blob/master/issue/ConcurrentHashMap_jdk1.7.png?raw=true">
+<meta property="og:updated_time" content="2019-02-26T03:20:32.824Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JDK1.7 ConcurrentHashMap的源码解读">
+<meta name="twitter:description" content="一、 ConcurrentHashMap的数据结构(JDK7)。  segments[] : Segment&amp;lt;K,V&amp;gt; extends ReentrantLock   分段锁，HashMap 用一个Entry[] table 去存数据，ConcurrentHashMap 则是将 这个table 拆分出 n 个段（一个最接近concurrencyLevel的2的幂）分别存储，Segme">
+<meta name="twitter:image" content="https://github.com/liaojiacan/assets/blob/master/issue/ConcurrentHashMap_jdk1.7.png?raw=true">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://liaojiacan.me/2019/02/26/JDK1-7-ConcurrentHashMap的源码解读/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Jiacan‘s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+  
+  
+</head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/liaojiacan" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Jiacan Liao</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Java Developer &amp; Geeker</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> GuangZhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索">
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech>
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-books">
+          <a href="/books">
+            
+            <i class="icon icon-book-fill"></i>
+            
+            <span class="menu-title">书单</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/liaojiacan" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/liaojican" target="_blank" title="Weibo" data-toggle="tooltip" data-placement="top"><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/liaojiacan" target="_blank" title="Twitter" data-toggle="tooltip" data-placement="top"><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle="tooltip" data-placement="top"><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/架构总结/">架构总结</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/源码解读/">源码解读</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/源码解读/JDK/">JDK</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/逆向/">逆向</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ConcurrentHashMap/">ConcurrentHashMap</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Idea/">Idea</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/J-U-C/">J.U.C</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/">Protobuf</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/archetypeCatalog/">archetypeCatalog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/i18n/">i18n</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java逆向/">java逆向</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rpc/">rpc</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/业务开发/">业务开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多语言/">多语言</a><span class="tag-list-count">3</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/ConcurrentHashMap/" style="font-size: 13px;">ConcurrentHashMap</a> <a href="/tags/Idea/" style="font-size: 13px;">Idea</a> <a href="/tags/J-U-C/" style="font-size: 13px;">J.U.C</a> <a href="/tags/Protobuf/" style="font-size: 13.5px;">Protobuf</a> <a href="/tags/archetypeCatalog/" style="font-size: 13px;">archetypeCatalog</a> <a href="/tags/i18n/" style="font-size: 14px;">i18n</a> <a href="/tags/java/" style="font-size: 13.5px;">java</a> <a href="/tags/java逆向/" style="font-size: 13.5px;">java逆向</a> <a href="/tags/linux/" style="font-size: 13px;">linux</a> <a href="/tags/rpc/" style="font-size: 13.5px;">rpc</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/业务开发/" style="font-size: 13.5px;">业务开发</a> <a href="/tags/多语言/" style="font-size: 14px;">多语言</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/源码解读/">源码解读</a><i class="icon icon-angle-right"></i><a class="category-link" href="/categories/源码解读/JDK/">JDK</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/02/26/JDK1-7-ConcurrentHashMap的源码解读/" class="title">JDK1.7 ConcurrentHashMap的源码解读</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-02-26T03:18:00.000Z" itemprop="datePublished">2019-02-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/架构总结/">架构总结</a>
+              </p>
+              <p class="item-title">
+                <a href="/2018/04/13/谈谈多语言设计（三）Spring-i18n-拓展之自定义MessageSource/" class="title">谈谈多语言设计（三）Spring-i18n 拓展之自定义MessageSource</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2018-04-13T08:08:00.000Z" itemprop="datePublished">2018-04-13</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/工具使用/">工具使用</a>
+              </p>
+              <p class="item-title">
+                <a href="/2018/03/09/Idea使用骨架生成项目卡住的解决办法/" class="title">Idea使用骨架生成项目卡住的解决办法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2018-03-09T11:01:00.000Z" itemprop="datePublished">2018-03-09</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/架构总结/">架构总结</a>
+              </p>
+              <p class="item-title">
+                <a href="/2018/03/08/谈谈多语言设计（二）之Spring多语言/" class="title">谈谈多语言设计（二）之Spring多语言</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2018-03-08T11:07:00.000Z" itemprop="datePublished">2018-03-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/架构总结/">架构总结</a>
+              </p>
+              <p class="item-title">
+                <a href="/2018/03/07/谈谈多语言设计（一）之-客户端多语言与服务端多语言/" class="title">谈谈多语言设计（一）之客户端多语言与服务端多语言</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2018-03-07T03:56:00.000Z" itemprop="datePublished">2018-03-07</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-JDK1-7-ConcurrentHashMap的源码解读" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      JDK1.7 ConcurrentHashMap的源码解读
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/02/26/JDK1-7-ConcurrentHashMap的源码解读/" class="article-date">
+	  <time datetime="2019-02-26T03:18:00.000Z" itemprop="datePublished">2019-02-26</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/源码解读/">源码解读</a>►<a class="article-category-link" href="/categories/源码解读/JDK/">JDK</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/ConcurrentHashMap/">ConcurrentHashMap</a>, <a class="article-tag-link" href="/tags/J-U-C/">J.U.C</a>
+  </span>
+
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/02/26/JDK1-7-ConcurrentHashMap的源码解读/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h3 id="一-concurrenthashmap的数据结构jdk7"><a class="markdownIt-Anchor" href="#一-concurrenthashmap的数据结构jdk7"></a> 一、 ConcurrentHashMap的数据结构(JDK7)。</h3>
+<ol>
+<li>segments[] : Segment&lt;K,V&gt; extends ReentrantLock</li>
+</ol>
+<blockquote>
+<p><strong>分段锁</strong>，HashMap 用一个Entry[] table 去存数据，ConcurrentHashMap 则是将 这个table 拆分出 n 个段（一个最接近concurrencyLevel的2的幂）分别存储，Segment 中的 用一个HashEntry table[] 来存数据，table中hash冲突的解决算法基本与HashMap一致。同一个段的put和get操作是需要加锁的，Segment继承了ReentrantLock 故有了锁的功能。</p>
+</blockquote>
+<ol start="2">
+<li>concurrencyLevel : int</li>
+</ol>
+<blockquote>
+<p><strong>并发等级</strong>，默认是16，可以在构造函数指定该值，这个值直接影响segment数组的大小。如果这个值不是2的幂，则会计算出一个最接近（向上取）的2的幂来初始化segments数组。</p>
+</blockquote>
+<ol start="3">
+<li>segmentMask : int</li>
+</ol>
+<blockquote>
+<p><strong>掩码</strong>，是一个bit位都是1的数，跟segments的长度有关，比如默认segments的长度是16=2的4次方（二进制为10000）。假如我们需要获取到一个数落在[0,16) 这个区间，则只需要用这个数跟1111做与运算, 得到的结果肯定是落在0到16之间，这个比取模运算更加高效。</p>
+</blockquote>
+<ol start="4">
+<li>segmentShift : int</li>
+</ol>
+<blockquote>
+<p><strong>位移数</strong>，获取高ssize(segments size)位需要的左移的位数（32-ssize），hash函数算出来的是一个32 位int的整型，ConcurrentHashMap	对segments的hash算法采用的是一个取高位进行hash的做法。比如一个key算出来的值为1024，如果我想取高ssize位 ，假如ssize为4，那么就要将1024&gt;&gt;&gt;(32-4)，取得高4位。获取到高4位后会与segmentMask进行与运算获取到一个[0,ssize)的数。这就是ConcurrentHashMap中对segment采用的hash算法。</p>
+</blockquote>
+<ul>
+<li>为什么要采用高位运算？</li>
+</ul>
+<blockquote>
+<p>源码中似乎没有说明，我猜是为了跟segment中的HashEntry[] table 的hash算法区分开来，降低冲突的概率。假如采用同样的hash算法，有2个key Hash到同一个segment中那么再进行 段中的二次hash的时候可能还是命中到同一个节点导致链越来越长。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// segment[] 的hash算法 （hash的高位参与运算）</span><br><span class="line"> int j = (hash &gt;&gt;&gt; segmentShift) &amp; segmentMask;</span><br><span class="line">// table[] 的hash算法 （hash的低位参与运算）</span><br><span class="line"> int index = (tab.length - 1) &amp; hash;</span><br></pre></td></tr></table></figure>
+<p><img src="https://github.com/liaojiacan/assets/blob/master/issue/ConcurrentHashMap_jdk1.7.png?raw=true" alt="image"></p>
+<h3 id="二-segment中独占锁的加锁逻辑"><a class="markdownIt-Anchor" href="#二-segment中独占锁的加锁逻辑"></a> 二、segment中独占锁的加锁逻辑</h3>
+<blockquote>
+<p>分段锁的目的就是将锁冲突分离开，只有hash到同一个segment中的操作才会存在锁竞争，CurrentHashMap 中put和remove以及size是有加锁操作的。</p>
+</blockquote>
+<p>put操作加锁</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HashEntry&lt;K,V&gt; node = tryLock() ? null :scanAndLockForPut(key, hash, value);</span><br></pre></td></tr></table></figure>
+<p>reomve操作加锁</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">if (!tryLock())</span><br><span class="line">   scanAndLock(key, hash);</span><br></pre></td></tr></table></figure>
+<p>如果 tryLock() 不能能加锁成功则进行自旋，scanAndLockForPut和scanAndLock有点区别但是逻辑差不多。</p>
+<p>1.有限重试次数，多核心CPU的话是64次，单核1次，超过次数则阻塞等待获取锁。</p>
+<p>2.获取锁之前和获取到锁期间头节点不能发生改变，否则需要从头开始重试。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">private void scanAndLock(Object key, int hash) &#123;</span><br><span class="line">    // similar to but simpler than scanAndLockForPut</span><br><span class="line">    HashEntry&lt;K,V&gt; first = entryForHash(this, hash);</span><br><span class="line">    HashEntry&lt;K,V&gt; e = first;</span><br><span class="line">    int retries = -1;</span><br><span class="line">    while (!tryLock()) &#123;</span><br><span class="line">        HashEntry&lt;K,V&gt; f;</span><br><span class="line">        if (retries &lt; 0) &#123;</span><br><span class="line">            if (e == null || key.equals(e.key))</span><br><span class="line">                retries = 0;</span><br><span class="line">            else</span><br><span class="line">                e = e.next;</span><br><span class="line">        &#125;</span><br><span class="line">        else if (++retries &gt; MAX_SCAN_RETRIES) &#123;</span><br><span class="line">            lock();</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">        // 如果头节点发生改变，从头开始扫描</span><br><span class="line">        else if ((retries &amp; 1) == 0 &amp;&amp;</span><br><span class="line">                 (f = entryForHash(this, hash)) != first) &#123;</span><br><span class="line">            e = first = f;</span><br><span class="line">            retries = -1;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>get没有加排他锁，是否有线程安全问题？</li>
+</ul>
+<p>先说下结论，ConcurrentHashMap get方法不存在线程安全问题，他的线程安全是由CAS 和 &quot;volatile&quot;保证的:</p>
+<pre><code>1. UNSAFE.putOrderedObject/UNSAFE.getObjectVolatile
+2. volatile HashEntry&lt;K,V&gt; next;
+3. volatile V value;
+</code></pre>
+<p>我们整理下，要保证get不发生线程安全问题需要保证什么？</p>
+<pre><code>1. get操作和put或remove操作并行的时候，get能操作能够获取到正确的segment和头节点table[i]。
+2. 在entries的遍历中能顺利走到未节点。
+3. 在1和2的前提下get操作时能够保证value值的可见性。
+</code></pre>
+<p>我们先看第1点时怎么保证的，我们都知道java中有个volatile用了保证变量在多线程下的可见性，volatile可以保证可见性，但是不能保证线程安全，如果当前赋值语句依赖当前值时是线程不安全的，比如a +=1 这种操作就是不安全的，显然在ConcurrentHashMap的并不需要这种操作，只存在简单的引用赋值操作。</p>
+<p>但是需要注意的是一点，volatile修饰引用型变量时，只能保证当前引用的可见性，对于引用对象的内部变量仍然是无法保证可见性的，这就是为什么在对segments[] 数组和table[] 数组的的操作需要借助Unsafe类，而不是直接segments[i] = new Segment(…);</p>
+<p>由前面的分析看，volatile/Unsafe.getObjectVolatile/Unsafe.putOrderedOject保证链当get操作晚与put操作时是可以获取到刚插入的节点(作为一个新头节点连接到旧节点并更新table)，对与一个早于put操作的get操作一个情况就是新插入的元素表头，但是get操作已经获取到了旧表头，所以并不影响get操作进行链表的遍历查找。</p>
+<p>我们在看进行remove时是否会影响entries的遍历，从源码中看，HashEntry中的next成员是被volatile修饰的，这就保证了get可以安全得遍历到未节点。</p>
+<h3 id="三-size的实现逻辑"><a class="markdownIt-Anchor" href="#三-size的实现逻辑"></a> 三、size的实现逻辑</h3>
+<p>  假如ConcurrentHashMap采用HashMap维护一个全局的size来变量统计大小，那么为了线程安全，也必定得改用原子类AtomicLong或者全局加锁。这显然与分段锁的设计背离。那么有没有一种比较折衷的办法呢？</p>
+<p>  ConcurrentHashMap中将size的统计拆分到各个segment取去护，每次执行size的时候将每个segment的count加起来，最终得到的结果就是map的大小。这个看似乎很合理，但是如果在进行统计的过程中有一个segment发生put或者remove操作呢，这样得到的结果就是错误的，显然我们可以在统计前先将每个segment给锁起来，再sum，得到的结果肯定是正确的。</p>
+<p>  <strong>存在一种情况就是你的程序中并发很少，出现并发更新的情况很少，这个时候你执行size的时候将所有的segment加锁和不加锁的情况可能得到的结果是一样的，因为这个时候没有其他线程进行修改。似乎我们可以乐观地考虑一下大部分情况下是不需要进行锁操作的。</strong></p>
+<p>  Doug Lea采用类一种跟JDK集合类中大多数存在的fail-safe错误检查机制，对在每个segment中于更新操作维护一个modCount来记录更新的次数，统计前和统计后的modCount是一样的说明没有发生变化，当前的统计结果有效。ConcurrentHashMap的size方法的实现逻辑如下：</p>
+<ul>
+<li>先采用无锁的方式统计2次，如果前后的modCount总和是一样的，此次统计结果有效，返回结果。</li>
+<li>假如前后的modCount总和不一样，第三次进行有锁的统计。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">public int size() &#123;</span><br><span class="line">        // Try a few times to get accurate count. On failure due to</span><br><span class="line">        // continuous async changes in table, resort to locking.</span><br><span class="line">        final Segment&lt;K,V&gt;[] segments = this.segments;</span><br><span class="line">        int size;</span><br><span class="line">        boolean overflow; // true if size overflows 32 bits</span><br><span class="line">        long sum;         // sum of modCounts</span><br><span class="line">        long last = 0L;   // previous sum</span><br><span class="line">        int retries = -1; // first iteration isn&apos;t retry</span><br><span class="line">        try &#123;</span><br><span class="line">            for (;;) &#123;</span><br><span class="line">                //第三次进行上锁</span><br><span class="line">                if (retries++ == RETRIES_BEFORE_LOCK) &#123;</span><br><span class="line">                    for (int j = 0; j &lt; segments.length; ++j)</span><br><span class="line">                        ensureSegment(j).lock(); // force creation</span><br><span class="line">                &#125;</span><br><span class="line">                sum = 0L;</span><br><span class="line">                size = 0;</span><br><span class="line">                overflow = false;</span><br><span class="line">                for (int j = 0; j &lt; segments.length; ++j) &#123;</span><br><span class="line">                    Segment&lt;K,V&gt; seg = segmentAt(segments, j);</span><br><span class="line">                    if (seg != null) &#123;</span><br><span class="line">                        sum += seg.modCount;</span><br><span class="line">                        int c = seg.count;</span><br><span class="line">                        if (c &lt; 0 || (size += c) &lt; 0)</span><br><span class="line">                            overflow = true;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                // 前后2次的统计结果一致，可以返回</span><br><span class="line">                if (sum == last)</span><br><span class="line">                    break;</span><br><span class="line">                last = sum;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            if (retries &gt; RETRIES_BEFORE_LOCK) &#123;</span><br><span class="line">                for (int j = 0; j &lt; segments.length; ++j)</span><br><span class="line">                    segmentAt(segments, j).unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return overflow ? Integer.MAX_VALUE : size;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="四-unsafegetobjectvolatileunsafeputorderedoject对偏移量的计算问题"><a class="markdownIt-Anchor" href="#四-unsafegetobjectvolatileunsafeputorderedoject对偏移量的计算问题"></a> 四、Unsafe.getObjectVolatile/Unsafe.putOrderedOject对偏移量的计算问题</h3>
+<p>  ConcurrentHashMap中使用量Unsafe类来对segment数组和table数组进行数组填充和取值操作，其中对位置i的内存偏移计算用了位运算来代替乘法运算</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// segment[0] 的偏移地址</span><br><span class="line">int baseOffset = UNSAFE.arrayBaseOffset(Segment[].class);</span><br><span class="line">// 每个位置的大小</span><br><span class="line">int indexScale = UNSAFE.arrayIndexScale(Segment[].class);</span><br><span class="line">//那么第i个元素的内存偏移就是</span><br><span class="line">long offset = baseOffset+i*indexScale ;</span><br></pre></td></tr></table></figure>
+<p>上面的计算方法是利用乘法来计算的，但是乘法的计算还是比较慢的，如果能用位运算更佳。由于jvm给对象分配内存的时候会进行内存对对齐，也就是说indexScale其实会是一个2的n次方的数。一个整数i乘以一个2的n次方可以转化成 i&lt;&lt;n;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">3 * 2 = 3 &lt;&lt; 1</span><br><span class="line">3 * 4 = 3 &lt;&lt; 2</span><br><span class="line">3 * 8 = 3 &lt;&lt; 3</span><br><span class="line">3 * 16 = 3 &lt;&lt; 4</span><br><span class="line">3 * 32 = 3 &lt;&lt; 5</span><br><span class="line">3 * 64 = 3 &lt;&lt; 6</span><br><span class="line">3 * 128 = 3 &lt;&lt; 7</span><br><span class="line">3 * 256 = 3 &lt;&lt; 8</span><br></pre></td></tr></table></figure>
+<p>所以你会看到ConcurrentHashMap中有这样的代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 31 - Integer.numberOfLeadingZeros(ssize) 这个是求一个数x的2对数 </span><br><span class="line"> SSHIFT = 31 - Integer.numberOfLeadingZeros(ssize);</span><br><span class="line"> ...</span><br><span class="line"> // 所以元素i在内存中的偏移就是</span><br><span class="line"> long offset = SBASE +(i&lt;&lt;SSHIFT)</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/liaojiacan/code-snippets/blob/master/java-language/src/main/java/com/github/liaojiacan/unsafe/UnsafeArrayOperationTests.java" target="_blank" rel="noopener">测试用例-ConcurrentHashMap中利用Unsafe进行数组操作的测试用例</a>;</p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://liaojiacan.me/2019/02/26/JDK1-7-ConcurrentHashMap的源码解读/" title="JDK1.7 ConcurrentHashMap的源码解读" target="_blank" rel="external">http://liaojiacan.me/2019/02/26/JDK1-7-ConcurrentHashMap的源码解读/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/liaojiacan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt>
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/liaojiacan" target="_blank"><span class="text-dark">Jiacan Liao</span><small class="ml-1x">Java Developer &amp; Geeker</small></a></h3>
+        <div>主要从事Java后端开发，并擅长Web相关技术，对网络安全和应用逆向也很感兴趣。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTExMi83NjYx">
+        <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>    
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2018/04/13/谈谈多语言设计（三）Spring-i18n-拓展之自定义MessageSource/" title="谈谈多语言设计（三）Spring-i18n 拓展之自定义MessageSource"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫">
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/weipayimg.png" alt="扫码支持" title="扫一扫">
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class>
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/liaojiacan" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/liaojican" target="_blank" title="Weibo" data-toggle="tooltip" data-placement="top"><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/liaojiacan" target="_blank" title="Twitter" data-toggle="tooltip" data-placement="top"><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle="tooltip" data-placement="top"><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+<script defer type="text/javascript">
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+
+    if (typeof LivereTower === 'function') { return; }
+
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+
+
+
+
+
+
+</body>
+</html>
