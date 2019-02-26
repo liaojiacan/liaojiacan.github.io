@@ -357,9 +357,9 @@
       <category term="逆向" scheme="http://liaojiacan.me/categories/%E9%80%86%E5%90%91/"/>
     
     
-      <category term="java" scheme="http://liaojiacan.me/tags/java/"/>
-    
       <category term="java逆向" scheme="http://liaojiacan.me/tags/java%E9%80%86%E5%90%91/"/>
+    
+      <category term="java" scheme="http://liaojiacan.me/tags/java/"/>
     
   </entry>
   
