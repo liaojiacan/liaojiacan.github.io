@@ -17,21 +17,21 @@
   <meta http-equiv="window-target" content="_top">
   
   
-  <title>proto文件 | Hexo</title>
-  <meta name="description" content="proto文件是Proto buffers的描述文件   syntax 指定pd编译器的版本，可以设置proto2或者proto3 message 类似java中的class关键字，在PB这里叫消息体 service 服务声明 修饰符  required 非空，必须存在 optional 可选 repeated 可重复出现，类似集合的概念吧   更多介绍参考官方文档，Protocal Buffe">
-<meta name="keywords" content="Protobuf,rpc">
+  <title>Insert ignore 和update 导致的死锁问题分析 | Hexo</title>
+  <meta name="description" content="业务逻辑以及死锁现象 业务逻辑大概如下：  在粉丝表新增一条关系记录。 假如关注者也是当前用户的粉丝，则更新2者的标记为相互关注。  业务代码如下, 最初是考虑用insert ignore 来解决幂等的问题，所以允许重复调用。 123456789101112131415161718192021//是否 关注的用户是操作者的粉丝（互粉）boolean isHisFans = fansDao.isF">
+<meta name="keywords" content="MySQL,innodb">
 <meta property="og:type" content="article">
-<meta property="og:title" content="proto文件">
-<meta property="og:url" content="http://liaojiacan.me/2017/10/10/proto文件/index.html">
+<meta property="og:title" content="Insert ignore 和update 导致的死锁问题分析">
+<meta property="og:url" content="http://liaojiacan.me/2019/02/27/Insert-ignore-和update-导致的死锁问题分析/index.html">
 <meta property="og:site_name" content="Jiacan‘s Blog">
-<meta property="og:description" content="proto文件是Proto buffers的描述文件   syntax 指定pd编译器的版本，可以设置proto2或者proto3 message 类似java中的class关键字，在PB这里叫消息体 service 服务声明 修饰符  required 非空，必须存在 optional 可选 repeated 可重复出现，类似集合的概念吧   更多介绍参考官方文档，Protocal Buffe">
+<meta property="og:description" content="业务逻辑以及死锁现象 业务逻辑大概如下：  在粉丝表新增一条关系记录。 假如关注者也是当前用户的粉丝，则更新2者的标记为相互关注。  业务代码如下, 最初是考虑用insert ignore 来解决幂等的问题，所以允许重复调用。 123456789101112131415161718192021//是否 关注的用户是操作者的粉丝（互粉）boolean isHisFans = fansDao.isF">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-02-08T06:58:50.000Z">
+<meta property="og:updated_time" content="2019-02-27T12:13:59.560Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="proto文件">
-<meta name="twitter:description" content="proto文件是Proto buffers的描述文件   syntax 指定pd编译器的版本，可以设置proto2或者proto3 message 类似java中的class关键字，在PB这里叫消息体 service 服务声明 修饰符  required 非空，必须存在 optional 可选 repeated 可重复出现，类似集合的概念吧   更多介绍参考官方文档，Protocal Buffe">
+<meta name="twitter:title" content="Insert ignore 和update 导致的死锁问题分析">
+<meta name="twitter:description" content="业务逻辑以及死锁现象 业务逻辑大概如下：  在粉丝表新增一条关系记录。 假如关注者也是当前用户的粉丝，则更新2者的标记为相互关注。  业务代码如下, 最初是考虑用insert ignore 来解决幂等的问题，所以允许重复调用。 123456789101112131415161718192021//是否 关注的用户是操作者的粉丝（互粉）boolean isHisFans = fansDao.isF">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://liaojiacan.me/2017/10/10/proto文件/index.html">
+  <link rel="canonical" href="http://liaojiacan.me/2019/02/27/Insert-ignore-和update-导致的死锁问题分析/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Jiacan‘s Blog" type="application/atom+xml">
   
@@ -316,14 +316,14 @@
   
 <main class="main" role="main">
   <div class="content">
-  <article id="post-proto文件" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <article id="post-Insert-ignore-和update-导致的死锁问题分析" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
       
         
   
     <h1 class="article-title" itemprop="name">
-      proto文件
+      Insert ignore 和update 导致的死锁问题分析
     </h1>
   
 
@@ -331,15 +331,20 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/2017/10/10/proto文件/" class="article-date">
-	  <time datetime="2017-10-10T11:52:00.000Z" itemprop="datePublished">2017-10-10</time>
+	<a href="/2019/02/27/Insert-ignore-和update-导致的死锁问题分析/" class="article-date">
+	  <time datetime="2019-02-27T12:13:00.000Z" itemprop="datePublished">2019-02-27</time>
 	</a>
 </span>
         
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/死锁/">死锁</a>
+  </span>
+
         
   <span class="article-tag">
     <i class="icon icon-tags"></i>
-	<a class="article-tag-link" href="/tags/Protobuf/">Protobuf</a>, <a class="article-tag-link" href="/tags/rpc/">rpc</a>
+	<a class="article-tag-link" href="/tags/MySQL/">MySQL</a>, <a class="article-tag-link" href="/tags/innodb/">innodb</a>
   </span>
 
 
@@ -352,29 +357,148 @@
 	</span>
 
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2017/10/10/proto文件/#comments" class="article-comment-link">评论</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/02/27/Insert-ignore-和update-导致的死锁问题分析/#comments" class="article-comment-link">评论</a></span>
         
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <blockquote>
-<p>proto文件是Proto buffers的描述文件</p>
+        <h3 id="业务逻辑以及死锁现象"><a class="markdownIt-Anchor" href="#业务逻辑以及死锁现象"></a> 业务逻辑以及死锁现象</h3>
+<p>业务逻辑大概如下：</p>
+<ol>
+<li>在粉丝表新增一条关系记录。</li>
+<li>假如关注者也是当前用户的粉丝，则更新2者的标记为相互关注。</li>
+</ol>
+<p>业务代码如下, 最初是考虑用insert ignore 来解决幂等的问题，所以<strong>允许重复调用</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">//是否 关注的用户是操作者的粉丝（互粉）</span><br><span class="line">boolean isHisFans = fansDao.isFans(fansUserId,followingUserId);</span><br><span class="line"></span><br><span class="line">//	insert ignore into </span><br><span class="line">//  fans(fans_user_id,following_user_id,following_each_other)</span><br><span class="line">//	values(#&#123;fansUserId&#125;, #&#123;followingUserId&#125;,#&#123;followingEachOther&#125;)</span><br><span class="line">int updateNum = fansDao.addFans(fansUserId, followingUserId,isHisFans);</span><br><span class="line"></span><br><span class="line">boolean addAndCheck = false;</span><br><span class="line"></span><br><span class="line">if(isHisFans)&#123;</span><br><span class="line">    // update fans</span><br><span class="line">	// set following_each_other = #&#123;followingEachOther&#125;</span><br><span class="line">	// where (fans_user_id = #&#123;fansUserId&#125; and following_user_id =  #&#123;followingUserId&#125; ) or (fans_user_id = #&#123;followingUserId&#125; and following_user_id = #&#123;fansUserId&#125; )</span><br><span class="line">	int num = fansDao.setFollowingEachOther(followingUserId,fansUserId,true);</span><br><span class="line">	if( num &gt;0 )&#123;</span><br><span class="line">		//重新调整数据</span><br><span class="line">		addAndCheck = true;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>线上产生的死锁的信息(show engine innodb status)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">LATEST DETECTED DEADLOCK</span><br><span class="line">------------------------</span><br><span class="line">2019-02-12 23:24:45 7fa406a4f700</span><br><span class="line">*** (1) TRANSACTION:</span><br><span class="line">TRANSACTION 515545684, ACTIVE 0 sec starting index read</span><br><span class="line">mysql tables in use 1, locked 1</span><br><span class="line">LOCK WAIT 3 lock struct(s), heap size 1184, 2 row lock(s)</span><br><span class="line">MySQL thread id 2121, OS thread handle 0x7fa406b12700, query id 1702086 10.10.17.63 jb-glive Searching rows for update</span><br><span class="line">update fans</span><br><span class="line">		set following_each_other = 1</span><br><span class="line">		where (fans_user_id = &apos;1776093&apos; and following_user_id = &apos;1331089&apos; ) or (fans_user_id = &apos;1331089&apos; and following_user_id = &apos;1776093&apos; )</span><br><span class="line">*** (1) WAITING FOR THIS LOCK TO BE GRANTED:</span><br><span class="line">RECORD LOCKS space id 1023 page no 37913 n bits 400 index `UK_USER_ID` of table `glive`.`fans` trx id 515545684 lock_mode X locks rec but not gap waiting</span><br><span class="line">Record lock, heap no 334 PHYSICAL RECORD: n_fields 3; compact format; info bits 0</span><br><span class="line"> 0: len 7; hex 31333331303839; asc 1331089;;</span><br><span class="line"> 1: len 7; hex 31373736303933; asc 1776093;;</span><br><span class="line"> 2: len 8; hex 8000000001282c31; asc      (,1;;</span><br><span class="line"></span><br><span class="line">*** (2) TRANSACTION:</span><br><span class="line">TRANSACTION 515545683, ACTIVE 0 sec starting index read</span><br><span class="line">mysql tables in use 1, locked 1</span><br><span class="line">5 lock struct(s), heap size 1184, 4 row lock(s)</span><br><span class="line">MySQL thread id 3485, OS thread handle 0x7fa406a4f700, query id 1702085 10.10.17.61 jb-glive Searching rows for update</span><br><span class="line">update fans</span><br><span class="line">		set following_each_other = 1</span><br><span class="line">		where (fans_user_id = &apos;1776093&apos; and following_user_id = &apos;1331089&apos; ) or (fans_user_id = &apos;1331089&apos; and following_user_id = &apos;1776093&apos; )</span><br><span class="line">*** (2) HOLDS THE LOCK(S):</span><br><span class="line">RECORD LOCKS space id 1023 page no 37913 n bits 400 index `UK_USER_ID` of table `glive`.`fans` trx id 515545683 lock_mode X locks rec but not gap</span><br><span class="line">Record lock, heap no 334 PHYSICAL RECORD: n_fields 3; compact format; info bits 0</span><br><span class="line"> 0: len 7; hex 31333331303839; asc 1331089;;</span><br><span class="line"> 1: len 7; hex 31373736303933; asc 1776093;;</span><br><span class="line"> 2: len 8; hex 8000000001282c31; asc      (,1;;</span><br><span class="line"></span><br><span class="line">*** (2) WAITING FOR THIS LOCK TO BE GRANTED:</span><br><span class="line">RECORD LOCKS space id 1023 page no 38446 n bits 360 index `UK_USER_ID` of table `glive`.`fans` trx id 515545683 lock_mode X locks rec but not gap waiting</span><br><span class="line">Record lock, heap no 294 PHYSICAL RECORD: n_fields 3; compact format; info bits 0</span><br><span class="line"> 0: len 7; hex 31373736303933; asc 1776093;;</span><br><span class="line"> 1: len 7; hex 31333331303839; asc 1331089;;</span><br><span class="line"> 2: len 8; hex 8000000001282c59; asc      (,Y;;</span><br><span class="line"></span><br><span class="line">*** WE ROLL BACK TRANSACTION (1)</span><br></pre></td></tr></table></figure>
+<p>锁分析：</p>
+<ol>
+<li>事务T2持有 (fans_user_id=1331089,following_user_id=1776093,主键=hex8000000001282c31) X 锁；</li>
+<li>事务T2等待行锁<br>
+(fans_user_id=1776093,following_user_id=1331089,主键=hex8000000001282c59) X 锁；</li>
+<li>事务T1等待T2持有的锁。</li>
+<li>事务T1此时应该还持有T2等待的锁，只是没显示出来。</li>
+</ol>
+<blockquote>
+<p>看起来就是典型的AB-BA问题</p>
 </blockquote>
-<ul>
-<li>syntax 指定pd编译器的版本，可以设置proto2或者proto3</li>
-<li>message 类似java中的class关键字，在PB这里叫消息体</li>
-<li>service 服务声明</li>
-<li>修饰符
-<ul>
-<li>required 非空，必须存在</li>
-<li>optional 可选</li>
-<li>repeated 可重复出现，类似集合的概念吧</li>
-</ul>
-</li>
-<li>更多介绍参考官方文档，<a href="https://developers.google.com/protocol-buffers/docs/proto3#simple" target="_blank" rel="noopener">Protocal Buffers</a></li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">syntax = &quot;proto3&quot;;</span><br><span class="line"></span><br><span class="line">service SearchService&#123;</span><br><span class="line">    rpc search(SearchRequest) returns (SearchResponse) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message SearchRequest &#123;</span><br><span class="line">  required string query = 1;</span><br><span class="line">  optional int32 page_number = 2;</span><br><span class="line">  optional int32 result_per_page = 3;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message SearchResponse &#123;</span><br><span class="line">  string result = 1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="重现"><a class="markdownIt-Anchor" href="#重现"></a> 重现</h2>
+<p>我们先简化上面的业务代码逻辑，假设fans_user_id=11000,following_user_id=10086，其实就是执行2个SQL：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. insert ignore into fans(fans_user_id,following_user_id) values(11000,10086);</span><br><span class="line">2. update fans set following_each_other = 1</span><br><span class="line">		where (fans_user_id = &apos;11000&apos; and following_user_id = &apos;10086&apos; ) </span><br><span class="line">		or (fans_user_id = &apos;10086&apos; and following_user_id = &apos;11000&apos; );</span><br></pre></td></tr></table></figure>
+<p>场景一：不存在fans_user_id=11000,following_user_id=10086的这条数据。</p>
+<table>
+<thead>
+<tr>
+<th>T1</th>
+<th>T2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&gt;begin;</td>
+<td>&gt;begin;</td>
+</tr>
+<tr>
+<td>insert ignore into fans(fans_user_id,following_user_id)<br> values(11000,10086);</td>
+<td>*</td>
+</tr>
+<tr>
+<td>*</td>
+<td>insert ignore into fans(fans_user_id,following_user_id)<br> values(11000,10086); //阻塞</td>
+</tr>
+<tr>
+<td>update fans<br> set following_each_other = 1 <br> where (fans_user_id = ‘11000’ and following_user_id = ‘10086’ ) <br> or (fans_user_id = ‘10086’ and following_user_id = ‘11000’ )</td>
+<td>*</td>
+</tr>
+<tr>
+<td>commit;</td>
+<td>insert 语句开始执行</td>
+</tr>
+<tr>
+<td>*</td>
+<td>update fans<br> set following_each_other = 1 <br> where (fans_user_id = ‘11000’ and following_user_id = ‘10086’ ) <br> or (fans_user_id = ‘10086’ and following_user_id = ‘11000’ )</td>
+</tr>
+<tr>
+<td>*</td>
+<td>commit;</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>分析：</p>
+<ol>
+<li>由于数据库并没有这条记录，所以<strong>事务T1</strong>在执行insert ignore into 时可以执行成功，并给这行数据加了X锁。</li>
+<li><strong>事务T2</strong>在执行insert ignore into 时由于获取不到行锁，直接阻塞。</li>
+<li>后面都是顺序执行，所以并不会出现死锁的问题。</li>
+</ol>
+</blockquote>
+<p>场景二：数据库已经存在fans_user_id=11000,following_user_id=10086的这条数据。</p>
+<table>
+<thead>
+<tr>
+<th>T1</th>
+<th>T2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&gt;begin;</td>
+<td>&gt;begin;</td>
+</tr>
+<tr>
+<td>insert ignore into fans(fans_user_id,following_user_id)<br> values(11000,10086);</td>
+<td>*</td>
+</tr>
+<tr>
+<td>*</td>
+<td>insert ignore into fans(fans_user_id,following_user_id)<br> values(11000,10086); //执行成功</td>
+</tr>
+<tr>
+<td>update fans<br> set following_each_other = 1 <br> where (fans_user_id = ‘11000’ and following_user_id = ‘10086’ ) <br> or (fans_user_id = ‘10086’ and following_user_id = ‘11000’ )</td>
+<td>*</td>
+</tr>
+<tr>
+<td>阻塞等待</td>
+<td>*</td>
+</tr>
+<tr>
+<td>*</td>
+<td>update fans<br> set following_each_other = 1 <br> where (fans_user_id = ‘11000’ and following_user_id = ‘10086’ ) <br> or (fans_user_id = ‘10086’ and following_user_id = ‘11000’ )</td>
+</tr>
+<tr>
+<td>*</td>
+<td>Deadlock found when trying to get lock; <br>try restarting transaction</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>分析：</p>
+<ol>
+<li>由于数据库已经存在该记录，所以事务T1执行insert ignore into 会插入失败，并给该记录加了个S锁。</li>
+<li>由于S锁是相互兼容的，所以事务T2也给该记录加了S锁。</li>
+<li>T1继续执行update语句，尝试给2行数据加X锁，但是其中有一行数据已经被T2加了S锁，此时T1回到等待队列中继续等待。</li>
+<li>T2继续执行update语句，尝试给2行数据加X锁，但是发现T1已经对这2行数据请求了X锁，且在等待T2释放S锁，而T1又因为T2不释放S锁而无法升级为X锁。</li>
+</ol>
+<p>可以参考mysql官方的例子，原理是一样的。<a href="https://dev.mysql.com/doc/refman/5.7/en/innodb-deadlock-example.html" target="_blank" rel="noopener">innodb-死锁例子</a></p>
+</blockquote>
+<p>下面是场景二的DEADLOCK信息（show engine innodb status），你会发现其实跟生产环境的锁是又区别的，线上的死锁信息中T2 持有的是一个X锁（这个不知道怎么解释，无法重现）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">LATEST DETECTED DEADLOCK</span><br><span class="line">------------------------</span><br><span class="line">2019-02-27 14:15:00 0x7000034b5000</span><br><span class="line">*** (1) TRANSACTION:</span><br><span class="line">TRANSACTION 620686, ACTIVE 19 sec starting index read</span><br><span class="line">mysql tables in use 1, locked 1</span><br><span class="line">LOCK WAIT 5 lock struct(s), heap size 1136, 4 row lock(s)</span><br><span class="line">MySQL thread id 63, OS thread handle 123145355350016, query id 1172740 localhost 127.0.0.1 root updating</span><br><span class="line">update fans</span><br><span class="line">		set following_each_other = 1</span><br><span class="line">		where (fans_user_id = &apos;11000&apos; and following_user_id = &apos;10086&apos; ) or (fans_user_id = &apos;10086&apos; and following_user_id = &apos;11000&apos; )</span><br><span class="line">*** (1) WAITING FOR THIS LOCK TO BE GRANTED:</span><br><span class="line">RECORD LOCKS space id 107 page no 7 n bits 624 index UK_USER_ID of table `test`.`fans` trx id 620686 lock_mode X locks rec but not gap waiting</span><br><span class="line">Record lock, heap no 280 PHYSICAL RECORD: n_fields 3; compact format; info bits 0</span><br><span class="line"> 0: len 5; hex 3131303030; asc 11000;;</span><br><span class="line"> 1: len 5; hex 3130303836; asc 10086;;</span><br><span class="line"> 2: len 8; hex 800000000143abeb; asc      C  ;;</span><br><span class="line"></span><br><span class="line">*** (2) TRANSACTION:</span><br><span class="line">TRANSACTION 620687, ACTIVE 16 sec starting index read</span><br><span class="line">mysql tables in use 1, locked 1</span><br><span class="line">3 lock struct(s), heap size 1136, 2 row lock(s)</span><br><span class="line">MySQL thread id 61, OS thread handle 123145357578240, query id 1172741 localhost 127.0.0.1 root updating</span><br><span class="line">update fans</span><br><span class="line">		set following_each_other = 1</span><br><span class="line">		where (fans_user_id = &apos;11000&apos; and following_user_id = &apos;10086&apos; ) or (fans_user_id = &apos;10086&apos; and following_user_id = &apos;11000&apos; )</span><br><span class="line">*** (2) HOLDS THE LOCK(S):</span><br><span class="line">RECORD LOCKS space id 107 page no 7 n bits 624 index UK_USER_ID of table `test`.`fans` trx id 620687 lock mode S</span><br><span class="line">Record lock, heap no 280 PHYSICAL RECORD: n_fields 3; compact format; info bits 0</span><br><span class="line"> 0: len 5; hex 3131303030; asc 11000;;</span><br><span class="line"> 1: len 5; hex 3130303836; asc 10086;;</span><br><span class="line"> 2: len 8; hex 800000000143abeb; asc      C  ;;</span><br><span class="line"></span><br><span class="line">*** (2) WAITING FOR THIS LOCK TO BE GRANTED:</span><br><span class="line">RECORD LOCKS space id 107 page no 7 n bits 624 index UK_USER_ID of table `test`.`fans` trx id 620687 lock_mode X locks rec but not gap waiting</span><br><span class="line">Record lock, heap no 279 PHYSICAL RECORD: n_fields 3; compact format; info bits 0</span><br><span class="line"> 0: len 5; hex 3130303836; asc 10086;;</span><br><span class="line"> 1: len 5; hex 3131303030; asc 11000;;</span><br><span class="line"> 2: len 8; hex 800000000143abdb; asc      C  ;;</span><br><span class="line"></span><br><span class="line">*** WE ROLL BACK TRANSACTION (2)</span><br></pre></td></tr></table></figure>
+<h2 id="解决方法"><a class="markdownIt-Anchor" href="#解决方法"></a> 解决方法</h2>
+<p>在这个案例中，发生死锁的原因主要是insert ignore 在数据已经存在时只是加了S锁。所以解决的办法其实又几个。</p>
+<ol>
+<li>使用其他的幂等处理办法，不要依赖insert ignore。在这个案例中，其实应该直接使用insert，不允许重复执行，可以捕获唯一key异常来获取updateNum进行下个业务处理。</li>
+<li>直接在业务开头使用select for … update 来加排他锁保证业务是串形执行（只是从死锁这个问题考虑，如果考虑性能需要找其他方案）。</li>
+<li>假如就非得使用insert ignore 和 update，那么我们可以考虑在这个业务加个重试，数据库的死锁并不是致命的，设置好数据库的事物超时时间，然后遇到死锁问题，我们可以在业务进行重试解决。</li>
+</ol>
+<h2 id="未分析清楚的点"><a class="markdownIt-Anchor" href="#未分析清楚的点"></a> 未分析清楚的点</h2>
+<ol>
+<li>为什么线上的锁他是一个X锁，并不是一个S锁？是否有场景三？MySQL官方文档有一段话，感觉有点关联，但是无法对应上现象,说的是insert 和 delete 语句其实并不是真正原子的行锁。</li>
+</ol>
+<blockquote>
+<p>InnoDB uses automatic row-level locking. You can get deadlocks even in the case of transactions that just insert or delete a single row. That is because these operations are not really “atomic”; they automatically set locks on the (possibly several) index records of the row inserted or deleted.</p>
+</blockquote>
 
       
     </div>
@@ -384,7 +508,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="http://liaojiacan.me/2017/10/10/proto文件/" title="proto文件" target="_blank" rel="external">http://liaojiacan.me/2017/10/10/proto文件/</a>
+      <a href="http://liaojiacan.me/2019/02/27/Insert-ignore-和update-导致的死锁问题分析/" title="Insert ignore 和update 导致的死锁问题分析" target="_blank" rel="external">http://liaojiacan.me/2019/02/27/Insert-ignore-和update-导致的死锁问题分析/</a>
     </li>
     
     <li class="post-copyright-license">
@@ -432,13 +556,9 @@
   
   <ul class="pager pull-left">
     
-    <li class="prev">
-      <a href="/2017/10/11/proto变量类型与java类型对照表/" title="proto变量类型与java类型对照表"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
-    </li>
-    
     
     <li class="next">
-      <a href="/2017/10/10/javaagent-的使用/" title="javaagent 的使用"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+      <a href="/2019/02/26/JDK1-7-ConcurrentHashMap的源码解读/" title="JDK1.7 ConcurrentHashMap的源码解读"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
     
