@@ -17,21 +17,21 @@
   <meta http-equiv="window-target" content="_top">
   
   
-  <title>抽奖业务设计 | Jiacan&#39;s Blog</title>
-  <meta name="description" content="抽奖是一个比较常见的业务，关于抽奖的算法也有很多种实现，下面介绍一种比较容易实现的方式。  1.根据中奖概率的精确度，取一个权重的基线作为（概率-&amp;gt;概率区间）的放大因子。比如，概率的精确度是到万分位，则基线取10000，保证转换后的区间&amp;gt;=1 2.将奖品按对应的中奖概率*基线 转换成权重区间，并记录权重的上限值。 3.在权重上限值的范围内产生一个随机数，利用迭代查找或者二分查找算法找">
-<meta name="keywords" content="业务开发">
+  <title>Innodb中的锁总结 | Jiacan&#39;s Blog</title>
+  <meta name="description" content="锁的种类  表锁  LOCK TABLE table_name READ : 用读锁锁表，阻塞其他事务修改 LOCK TABLE table_name WRITE: 用写锁锁表，阻塞其他事务读和写   行锁  X锁：排他锁，允许对数据进行删除和更新/插入 S锁：共享锁，允许对数据进行读取，可理解为读锁   锁的兼容性：如果两个事务能对一行数据同时加锁，就认为这个锁是兼容的，如果是要等待其他事务释">
+<meta name="keywords" content="Innodb">
 <meta property="og:type" content="article">
-<meta property="og:title" content="抽奖业务设计">
-<meta property="og:url" content="http://liaojiacan.me/2017/12/16/抽奖业务设计/index.html">
+<meta property="og:title" content="Innodb中的锁总结">
+<meta property="og:url" content="http://liaojiacan.me/2019/02/28/Innodb中的锁总结/index.html">
 <meta property="og:site_name" content="Jiacan‘s Blog">
-<meta property="og:description" content="抽奖是一个比较常见的业务，关于抽奖的算法也有很多种实现，下面介绍一种比较容易实现的方式。  1.根据中奖概率的精确度，取一个权重的基线作为（概率-&amp;gt;概率区间）的放大因子。比如，概率的精确度是到万分位，则基线取10000，保证转换后的区间&amp;gt;=1 2.将奖品按对应的中奖概率*基线 转换成权重区间，并记录权重的上限值。 3.在权重上限值的范围内产生一个随机数，利用迭代查找或者二分查找算法找">
+<meta property="og:description" content="锁的种类  表锁  LOCK TABLE table_name READ : 用读锁锁表，阻塞其他事务修改 LOCK TABLE table_name WRITE: 用写锁锁表，阻塞其他事务读和写   行锁  X锁：排他锁，允许对数据进行删除和更新/插入 S锁：共享锁，允许对数据进行读取，可理解为读锁   锁的兼容性：如果两个事务能对一行数据同时加锁，就认为这个锁是兼容的，如果是要等待其他事务释">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-02-08T06:58:59.000Z">
+<meta property="og:updated_time" content="2019-02-28T11:23:06.288Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="抽奖业务设计">
-<meta name="twitter:description" content="抽奖是一个比较常见的业务，关于抽奖的算法也有很多种实现，下面介绍一种比较容易实现的方式。  1.根据中奖概率的精确度，取一个权重的基线作为（概率-&amp;gt;概率区间）的放大因子。比如，概率的精确度是到万分位，则基线取10000，保证转换后的区间&amp;gt;=1 2.将奖品按对应的中奖概率*基线 转换成权重区间，并记录权重的上限值。 3.在权重上限值的范围内产生一个随机数，利用迭代查找或者二分查找算法找">
+<meta name="twitter:title" content="Innodb中的锁总结">
+<meta name="twitter:description" content="锁的种类  表锁  LOCK TABLE table_name READ : 用读锁锁表，阻塞其他事务修改 LOCK TABLE table_name WRITE: 用写锁锁表，阻塞其他事务读和写   行锁  X锁：排他锁，允许对数据进行删除和更新/插入 S锁：共享锁，允许对数据进行读取，可理解为读锁   锁的兼容性：如果两个事务能对一行数据同时加锁，就认为这个锁是兼容的，如果是要等待其他事务释">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://liaojiacan.me/2017/12/16/抽奖业务设计/index.html">
+  <link rel="canonical" href="http://liaojiacan.me/2019/02/28/Innodb中的锁总结/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Jiacan‘s Blog" type="application/atom+xml">
   
@@ -316,14 +316,14 @@
   
 <main class="main" role="main">
   <div class="content">
-  <article id="post-抽奖业务设计" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <article id="post-Innodb中的锁总结" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
       
         
   
     <h1 class="article-title" itemprop="name">
-      抽奖业务设计
+      Innodb中的锁总结
     </h1>
   
 
@@ -331,20 +331,20 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/2017/12/16/抽奖业务设计/" class="article-date">
-	  <time datetime="2017-12-16T08:12:00.000Z" itemprop="datePublished">2017-12-16</time>
+	<a href="/2019/02/28/Innodb中的锁总结/" class="article-date">
+	  <time datetime="2019-02-28T11:22:00.000Z" itemprop="datePublished">2019-02-28</time>
 	</a>
 </span>
         
   <span class="article-category">
     <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/java/">java</a>
+    <a class="article-category-link" href="/categories/数据库/">数据库</a>
   </span>
 
         
   <span class="article-tag">
     <i class="icon icon-tags"></i>
-	<a class="article-tag-link" href="/tags/业务开发/">业务开发</a>
+	<a class="article-tag-link" href="/tags/Innodb/">Innodb</a>
   </span>
 
 
@@ -357,25 +357,215 @@
 	</span>
 
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2017/12/16/抽奖业务设计/#comments" class="article-comment-link">评论</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/02/28/Innodb中的锁总结/#comments" class="article-comment-link">评论</a></span>
         
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <blockquote>
-<p>抽奖是一个比较常见的业务，关于抽奖的算法也有很多种实现，下面介绍一种比较容易实现的方式。</p>
+        <h3 id="锁的种类"><a class="markdownIt-Anchor" href="#锁的种类"></a> 锁的种类</h3>
+<h4 id="表锁"><a class="markdownIt-Anchor" href="#表锁"></a> 表锁</h4>
+<ul>
+<li>LOCK TABLE <em>table_name</em> READ : 用读锁锁表，阻塞其他事务修改</li>
+<li>LOCK TABLE <em>table_name</em> WRITE: 用写锁锁表，阻塞其他事务读和写</li>
+</ul>
+<h4 id="行锁"><a class="markdownIt-Anchor" href="#行锁"></a> 行锁</h4>
+<ul>
+<li>X锁：排他锁，允许对数据进行删除和更新/插入</li>
+<li>S锁：共享锁，允许对数据进行读取，可理解为读锁</li>
+</ul>
+<blockquote>
+<p>锁的兼容性：如果两个事务能对一行数据同时加锁，就认为这个锁是兼容的，如果是要等待其他事务释放，则认为这2个锁是不兼容的。</p>
 </blockquote>
-<p>1.根据中奖概率的精确度，取一个权重的基线作为（概率-&gt;概率区间）的放大因子。比如，概率的精确度是到万分位，则基线取10000，保证转换后的区间&gt;=1</p>
-<p>2.将奖品按对应的中奖概率*基线 转换成权重区间，并记录权重的上限值。</p>
-<p>3.在权重上限值的范围内产生一个随机数，利用迭代查找或者二分查找算法找到对应的权重区间，即可获取到对应的奖品。</p>
-<p>假设奖品的配置如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&quot;一等奖&quot;:0.01</span><br><span class="line">&quot;二等奖&quot;:0.1</span><br><span class="line">&quot;三等奖&quot;:0.15</span><br><span class="line">&quot;四等奖&quot;:0.2</span><br><span class="line">&quot;五等奖&quot;:0.25</span><br><span class="line">&quot;六等奖&quot;:0.29</span><br></pre></td></tr></table></figure>
-<p>概率转换到权重区间（放大10000倍）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">一等奖:[0.000000,100.000000)</span><br><span class="line">二等奖:[100.000000,1100.000000)</span><br><span class="line">三等奖:[1100.000000,2600.000000)</span><br><span class="line">四等奖:[2600.000000,4100.000000)</span><br><span class="line">五等奖:[4100.000000,6100.000000)</span><br><span class="line">六等奖:[6100.000000,8600.000000)</span><br></pre></td></tr></table></figure>
-<p>算法实现：<a href="https://github.com/liaojiacan/code-snippets/tree/master/function-design/src/main/java/com/github/liaojiacan/lottery" target="_blank" rel="noopener">Github</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">public class LotteryPrize &#123;</span><br><span class="line">	private String id;</span><br><span class="line">	private String name;</span><br><span class="line">	private double possibility;</span><br><span class="line"></span><br><span class="line">	public LotteryPrize() &#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	public LotteryPrize(String id, String name, double possibility) &#123;</span><br><span class="line">		this.id = id;</span><br><span class="line">		this.name = name;</span><br><span class="line">		this.possibility = possibility;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getId() &#123;</span><br><span class="line">		return id;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setId(String id) &#123;</span><br><span class="line">		this.id = id;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getName() &#123;</span><br><span class="line">		return name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setName(String name) &#123;</span><br><span class="line">		this.name = name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public double getPossibility() &#123;</span><br><span class="line">		return possibility;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setPossibility(double possibility) &#123;</span><br><span class="line">		this.possibility = possibility;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class LotteryMachine &#123;</span><br><span class="line"></span><br><span class="line">	private PossibilityArea[] table;</span><br><span class="line">	private int bound = 1;</span><br><span class="line">	private Random random = new Random();</span><br><span class="line"></span><br><span class="line">	private static final int BASE_WEIGHT = 10000;</span><br><span class="line"></span><br><span class="line">	class PossibilityArea&#123;</span><br><span class="line">		private LotteryPrize prize;</span><br><span class="line">		private double start;</span><br><span class="line">		private double end;</span><br><span class="line">		public PossibilityArea(LotteryPrize prize, double start, double end) &#123;</span><br><span class="line">			this.prize = prize;</span><br><span class="line">			this.start = start;</span><br><span class="line">			this.end = end;</span><br><span class="line">			System.out.printf(&quot;%s:[%f,%f)\n&quot;,prize.getName(),start,end);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public LotteryMachine(List&lt;LotteryPrize&gt; prizes) &#123;</span><br><span class="line">		table = new PossibilityArea[prizes.size()];</span><br><span class="line">		double start = 0;</span><br><span class="line">		for(int i=0;i&lt;prizes.size();i++)&#123;</span><br><span class="line">			LotteryPrize prize = prizes.get(i);</span><br><span class="line">			double weight = prize.getPossibility() * BASE_WEIGHT;</span><br><span class="line">			Double end = start + weight;</span><br><span class="line">			PossibilityArea area = new PossibilityArea(prize,start,end);</span><br><span class="line">			table[i]= area;</span><br><span class="line">			bound = end.intValue();</span><br><span class="line">			start=end;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	private LotteryPrize binarySearch(int rnd)&#123;</span><br><span class="line">		int low = 0;</span><br><span class="line">		int hight = table.length;</span><br><span class="line">		while (low&lt;hight)&#123;</span><br><span class="line">			int mid = (low + hight) / 2;</span><br><span class="line">			PossibilityArea area = table[mid];</span><br><span class="line">			if(area.start&lt;=rnd &amp;&amp; area.end&gt;rnd)&#123;</span><br><span class="line">				return  area.prize;</span><br><span class="line">			&#125;</span><br><span class="line">			if(area.end&lt;=rnd)&#123;</span><br><span class="line">				low=mid+1;</span><br><span class="line">			&#125;</span><br><span class="line">			if(area.start&gt;rnd)&#123;</span><br><span class="line">				hight=mid;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		return null;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public LotteryPrize go()&#123;</span><br><span class="line">		int rnd = random.nextInt(bound);</span><br><span class="line">		return binarySearch(rnd);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>*</th>
+<th>X</th>
+<th>S</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>X</td>
+<td>不兼容</td>
+<td>不兼容</td>
+</tr>
+<tr>
+<td>S</td>
+<td>不兼容</td>
+<td>兼容</td>
+</tr>
+</tbody>
+</table>
+<h4 id="意向锁"><a class="markdownIt-Anchor" href="#意向锁"></a> 意向锁</h4>
+<p>MySQL innodb 是支持多粒度锁的，比如可以同时存在表锁和行锁，为了更好的实现多粒度锁，innodb引入了意向锁，在innodb中的意向锁是表级的锁，意向锁与意向锁之间是兼容了，假如不存在表锁，不会有事务在加意向锁的时候阻塞。</p>
+<ul>
+<li>IS锁：意向共享锁，表明表中存在一行或者多行的S锁，即在给一行数据加S锁之前必在这个表加IS锁。</li>
+<li>IX锁：意向排他锁，表明表中存在一行或者多行的X锁，即在给一行数据加S锁之前必在这个表加IX锁。</li>
+</ul>
+<blockquote>
+<p>思考：为什么需要这个意向锁？</p>
+</blockquote>
+<p>我们比如思考一下这个场景，事务1给某个表中的N行加了行锁，这个时候事务2想给这个表加个表锁，那么事务2需要确认的事情有：</p>
+<ol>
+<li>这个表是否存在不兼容的表锁，比如我想加个X锁，但是已经有其他事务加了S锁。</li>
+<li>这个表中是否已经存在不兼容的行锁。</li>
+</ol>
+<p>显然在确认第二个条件时，如果采用全表扫描的话，效率太低，所以意向锁的目的就是在粗粒度的锁（表锁）可以快速判断是否与低粒度的锁存在冲突。</p>
+<table>
+<thead>
+<tr>
+<th>*</th>
+<th>IX</th>
+<th>S</th>
+<th>IS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>X</td>
+<td>不兼容</td>
+<td>不兼容</td>
+<td>不兼容</td>
+</tr>
+<tr>
+<td>IX</td>
+<td>不兼容</td>
+<td>兼容</td>
+<td>不兼容</td>
+</tr>
+<tr>
+<td>S</td>
+<td>不兼容</td>
+<td>不兼容</td>
+<td>兼容</td>
+</tr>
+<tr>
+<td>IS</td>
+<td>不兼容</td>
+<td>兼容</td>
+<td>兼容</td>
+</tr>
+</tbody>
+</table>
+<h3 id="innodb行锁的形式或者算法"><a class="markdownIt-Anchor" href="#innodb行锁的形式或者算法"></a> innodb行锁的形式或者算法</h3>
+<blockquote>
+<p>Innodb中行锁都是加在索引上的，针对不同的场景都有不同的加锁策略。</p>
+</blockquote>
+<h4 id="record-lock"><a class="markdownIt-Anchor" href="#record-lock"></a> Record Lock</h4>
+<p>记录锁，顾名思义就是锁住记录本身，锁主主键和唯一索引，如果表中没有加任何索引，锁会加在隐式生成的主键上。</p>
+<h4 id="gap-lock"><a class="markdownIt-Anchor" href="#gap-lock"></a> Gap Lock</h4>
+<p>间隙锁，当存在范围扫描的时候，给扫描范围加间隙锁，[起始地址，终止)</p>
+<ol>
+<li>不同事务对同一个区间加间隙锁是不冲突的，所以S Gap Lock 和 X Gap Lock不存在区别。</li>
+<li>READ_COMMITED 隔离级别下不会启用间隙锁。</li>
+</ol>
+<h4 id="next-key-lock"><a class="markdownIt-Anchor" href="#next-key-lock"></a> Next Key Lock</h4>
+<p>临键锁，Record Lock + Gap Lock ,锁主当前值区间+下一个区间(不一定)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">10, 11, 13, 20</span><br><span class="line">(negative infinity, 10]</span><br><span class="line">(10, 11]</span><br><span class="line">(11, 13]</span><br><span class="line">(13, 20]</span><br><span class="line">(20, positive infinity)</span><br></pre></td></tr></table></figure>
+<ol>
+<li>解决的是当前读下的幻读问题。</li>
+</ol>
+<h4 id="insert-intention-lock"><a class="markdownIt-Anchor" href="#insert-intention-lock"></a> Insert Intention Lock</h4>
+<p>插入意向锁，是一种特殊的间隙锁；insert之前会向插入区间加上Insert Intention Lock。</p>
+<ol>
+<li>Gap Lock / Next key Lock 与 Insert Intention Lock不兼容。</li>
+<li>Gap lock 和Next key lock 的目的就是防止有数据插入间隙</li>
+</ol>
+<h3 id="不同sql产生的锁"><a class="markdownIt-Anchor" href="#不同sql产生的锁"></a> 不同SQL产生的锁</h3>
+<p><a href="https://dev.mysql.com/doc/refman/5.7/en/innodb-locks-set.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/5.7/en/innodb-locks-set.html</a></p>
+<ol>
+<li>SELECT…FROM</li>
+</ol>
+<blockquote>
+<p>一致性非锁定读，除了在 SERIALIZABLE隔离级别下会存在S锁，其他隔离级别下都不会有锁。</p>
+</blockquote>
+<ol start="2">
+<li>SELECT…FOR UPDATE/SELECT…LOCK IN SHARE MODE</li>
+</ol>
+<blockquote>
+<ul>
+<li>也叫做当前读，会在给扫描过程中的索引加X或S锁，跟Where条件实际上没有强关系，只跟扫描的过程有关，所以where条件是否能够命中索引比较重要。</li>
+<li>在检索的过程中会给用到的索引加Next Key Lock。不过如果检索条件是唯一索引能定位到一行数据，则只加Record Lock</li>
+</ul>
+</blockquote>
+<ol start="3">
+<li>UPDATE…WHERE…</li>
+</ol>
+<blockquote>
+<p>同样给检索到的记录加next key lock, 如果WHERE条件中是使用主键或者唯一索引进行限定的话，只在索引加了Record Lock。<br>
+如果UPDATE的是聚簇索引记录，会对受影响的辅助索引加隐式锁，当有新的辅助索引插入前的重复检测，以及在执行插入新的辅助索引记录时，对受影响的索引记录加S锁。</p>
+</blockquote>
+<ol start="4">
+<li>DELETE FROM … WHERE …</li>
+</ol>
+<blockquote>
+<p>与UPDATE基本一致</p>
+</blockquote>
+<ol start="5">
+<li>INSERT</li>
+</ol>
+<blockquote>
+<ul>
+<li>给插入索引的记录加一个X锁</li>
+<li>插入前前会加个Insert Intention Lock。</li>
+<li>如果发生唯一键异常（duplicate-key error ），会在原记录上加S锁，这个如果和delete和update一起使用可能会导致死锁。</li>
+</ul>
+</blockquote>
+<ol start="6">
+<li>INSERT … ON DUPLICATE KEY UPDATE</li>
+</ol>
+<blockquote>
+<ul>
+<li>跟INSERT语句有点不同的就是，当发生重复键异常是，这里加的是排他锁，而不是共享锁。</li>
+<li>如果是唯一键异常，则加的是Next key lock。</li>
+</ul>
+</blockquote>
+<ol start="7">
+<li>REPLACE</li>
+</ol>
+<blockquote>
+<ul>
+<li>如果没有发生冲突，则行为跟INSERT是一致的。</li>
+<li>如果发生冲突，则对唯一键加的是Next key lock。</li>
+</ul>
+</blockquote>
+<ol start="8">
+<li>INSERT INTO T SELECT … FROM S WHERE …</li>
+</ol>
+<blockquote>
+<ul>
+<li>给子查询语句加的X锁。</li>
+<li>如果是READ COMMITED 隔离基本，则采用的是快照读</li>
+</ul>
+</blockquote>
+<ol start="9">
+<li>外键约束</li>
+</ol>
+<blockquote>
+<p>在进行外键约束检测时，会给记录加行级共享锁。</p>
+</blockquote>
+<h3 id="死锁"><a class="markdownIt-Anchor" href="#死锁"></a> 死锁</h3>
+<blockquote>
+<p>死锁是只当2个或者2个以上的事务抢占各自的资源，导致的相互等待的现象。</p>
+</blockquote>
+<h4 id="案例"><a class="markdownIt-Anchor" href="#案例"></a> 案例</h4>
+<ol>
+<li><a href="http://liaojiacan.me/2019/02/27/Insert-ignore-%E5%92%8Cupdate-%E5%AF%BC%E8%87%B4%E7%9A%84%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/">Insert-ignore-和update-导致的死锁问题分析</a></li>
+</ol>
+<h4 id="解决死锁和进行死锁检测"><a class="markdownIt-Anchor" href="#解决死锁和进行死锁检测"></a> 解决死锁和进行死锁检测</h4>
+<ol>
+<li>设置超时时间,事务有限时间超时,回滚其中一个事务。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show variables like &quot;%innodb_lock_wait_timeout%&quot;;</span><br><span class="line">+--------------------------+-------+</span><br><span class="line">| Variable_name            | Value |</span><br><span class="line">+--------------------------+-------+</span><br><span class="line">| innodb_lock_wait_timeout | 50    |</span><br><span class="line">+--------------------------+-------+</span><br><span class="line">1 row in set (0.07 sec)</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>wait-graph 等待图死锁检测</li>
+</ol>
+<ul>
+<li>锁的信息链</li>
+<li>事务等待链</li>
+</ul>
 
       
     </div>
@@ -385,7 +575,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="http://liaojiacan.me/2017/12/16/抽奖业务设计/" title="抽奖业务设计" target="_blank" rel="external">http://liaojiacan.me/2017/12/16/抽奖业务设计/</a>
+      <a href="http://liaojiacan.me/2019/02/28/Innodb中的锁总结/" title="Innodb中的锁总结" target="_blank" rel="external">http://liaojiacan.me/2019/02/28/Innodb中的锁总结/</a>
     </li>
     
     <li class="post-copyright-license">
@@ -433,13 +623,9 @@
   
   <ul class="pager pull-left">
     
-    <li class="prev">
-      <a href="/2018/02/07/Source-Tree-配置支持gerrit-review/" title="Source Tree 配置支持gerrit review"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
-    </li>
-    
     
     <li class="next">
-      <a href="/2017/10/16/Java根据指定的country和lang格式化时间/" title="Java根据指定的country和lang格式化时间"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+      <a href="/2019/02/27/Insert-ignore-和update-导致的死锁问题分析/" title="Insert ignore 和update 导致的死锁问题分析"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
     

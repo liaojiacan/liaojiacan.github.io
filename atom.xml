@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://liaojiacan.me/"/>
-  <updated>2019-02-27T12:13:59.560Z</updated>
+  <updated>2019-02-28T11:23:06.288Z</updated>
   <id>http://liaojiacan.me/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Innodb中的锁总结</title>
+    <link href="http://liaojiacan.me/2019/02/28/Innodb%E4%B8%AD%E7%9A%84%E9%94%81%E6%80%BB%E7%BB%93/"/>
+    <id>http://liaojiacan.me/2019/02/28/Innodb中的锁总结/</id>
+    <published>2019-02-28T11:22:00.000Z</published>
+    <updated>2019-02-28T11:23:06.288Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="锁的种类"><a class="markdownIt-Anchor" href="#锁的种类"></a> 锁的种类</h3><h4 id="表锁"><a class="markdownIt-Anchor" href="#表锁"></a> 表锁</h4><ul><li>LOCK TABLE <em>table_name</em> READ : 用读锁锁表，阻塞其他事务修改</li><li>LOCK TABLE <em>table_name</em> WRITE: 用写锁锁表，阻塞其他事务读和写</li></ul><h4 id="行锁"><a class="markdownIt-Anchor" href="#行锁"></a> 行锁</h4><ul><li>X锁：排他锁，允许对数据进行删除和更新/插入</li><li>S锁：共享锁，允许对数据进行读取，可理解为读锁</li></ul><blockquote><p>锁的兼容性：如果两个事务能对一行数据同时加锁，就认为这个锁是兼容的，如果是要等待其他事务释放，则认为这2个锁是不兼容的。</p></blockquote><table><thead><tr><th>*</th><th>X</th><th>S</th></tr></thead><tbody><tr><td>X</td><td>不兼容</td><td>不兼容</td></tr><tr><td>S</td><td>不兼容</td><td>兼容</td></tr></tbody></table><h4 id="意向锁"><a class="markdownIt-Anchor" href="#意向锁"></a> 意向锁</h4><p>MySQL innodb 是支持多粒度锁的，比如可以同时存在表锁和行锁，为了更好的实现多粒度锁，innodb引入了意向锁，在innodb中的意向锁是表级的锁，意向锁与意向锁之间是兼容了，假如不存在表锁，不会有事务在加意向锁的时候阻塞。</p><ul><li>IS锁：意向共享锁，表明表中存在一行或者多行的S锁，即在给一行数据加S锁之前必在这个表加IS锁。</li><li>IX锁：意向排他锁，表明表中存在一行或者多行的X锁，即在给一行数据加S锁之前必在这个表加IX锁。</li></ul><blockquote><p>思考：为什么需要这个意向锁？</p></blockquote><p>我们比如思考一下这个场景，事务1给某个表中的N行加了行锁，这个时候事务2想给这个表加个表锁，那么事务2需要确认的事情有：</p><ol><li>这个表是否存在不兼容的表锁，比如我想加个X锁，但是已经有其他事务加了S锁。</li><li>这个表中是否已经存在不兼容的行锁。</li></ol><p>显然在确认第二个条件时，如果采用全表扫描的话，效率太低，所以意向锁的目的就是在粗粒度的锁（表锁）可以快速判断是否与低粒度的锁存在冲突。</p><table><thead><tr><th>*</th><th>IX</th><th>S</th><th>IS</th></tr></thead><tbody><tr><td>X</td><td>不兼容</td><td>不兼容</td><td>不兼容</td></tr><tr><td>IX</td><td>不兼容</td><td>兼容</td><td>不兼容</td></tr><tr><td>S</td><td>不兼容</td><td>不兼容</td><td>兼容</td></tr><tr><td>IS</td><td>不兼容</td><td>兼容</td><td>兼容</td></tr></tbody></table><h3 id="innodb行锁的形式或者算法"><a class="markdownIt-Anchor" href="#innodb行锁的形式或者算法"></a> innodb行锁的形式或者算法</h3><blockquote><p>Innodb中行锁都是加在索引上的，针对不同的场景都有不同的加锁策略。</p></blockquote><h4 id="record-lock"><a class="markdownIt-Anchor" href="#record-lock"></a> Record Lock</h4><p>记录锁，顾名思义就是锁住记录本身，锁主主键和唯一索引，如果表中没有加任何索引，锁会加在隐式生成的主键上。</p><h4 id="gap-lock"><a class="markdownIt-Anchor" href="#gap-lock"></a> Gap Lock</h4><p>间隙锁，当存在范围扫描的时候，给扫描范围加间隙锁，[起始地址，终止)</p><ol><li>不同事务对同一个区间加间隙锁是不冲突的，所以S Gap Lock 和 X Gap Lock不存在区别。</li><li>READ_COMMITED 隔离级别下不会启用间隙锁。</li></ol><h4 id="next-key-lock"><a class="markdownIt-Anchor" href="#next-key-lock"></a> Next Key Lock</h4><p>临键锁，Record Lock + Gap Lock ,锁主当前值区间+下一个区间(不一定)。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">10, 11, 13, 20</span><br><span class="line">(negative infinity, 10]</span><br><span class="line">(10, 11]</span><br><span class="line">(11, 13]</span><br><span class="line">(13, 20]</span><br><span class="line">(20, positive infinity)</span><br></pre></td></tr></table></figure><ol><li>解决的是当前读下的幻读问题。</li></ol><h4 id="insert-intention-lock"><a class="markdownIt-Anchor" href="#insert-intention-lock"></a> Insert Intention Lock</h4><p>插入意向锁，是一种特殊的间隙锁；insert之前会向插入区间加上Insert Intention Lock。</p><ol><li>Gap Lock / Next key Lock 与 Insert Intention Lock不兼容。</li><li>Gap lock 和Next key lock 的目的就是防止有数据插入间隙</li></ol><h3 id="不同sql产生的锁"><a class="markdownIt-Anchor" href="#不同sql产生的锁"></a> 不同SQL产生的锁</h3><p><a href="https://dev.mysql.com/doc/refman/5.7/en/innodb-locks-set.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/5.7/en/innodb-locks-set.html</a></p><ol><li>SELECT…FROM</li></ol><blockquote><p>一致性非锁定读，除了在 SERIALIZABLE隔离级别下会存在S锁，其他隔离级别下都不会有锁。</p></blockquote><ol start="2"><li>SELECT…FOR UPDATE/SELECT…LOCK IN SHARE MODE</li></ol><blockquote><ul><li>也叫做当前读，会在给扫描过程中的索引加X或S锁，跟Where条件实际上没有强关系，只跟扫描的过程有关，所以where条件是否能够命中索引比较重要。</li><li>在检索的过程中会给用到的索引加Next Key Lock。不过如果检索条件是唯一索引能定位到一行数据，则只加Record Lock</li></ul></blockquote><ol start="3"><li>UPDATE…WHERE…</li></ol><blockquote><p>同样给检索到的记录加next key lock, 如果WHERE条件中是使用主键或者唯一索引进行限定的话，只在索引加了Record Lock。<br>如果UPDATE的是聚簇索引记录，会对受影响的辅助索引加隐式锁，当有新的辅助索引插入前的重复检测，以及在执行插入新的辅助索引记录时，对受影响的索引记录加S锁。</p></blockquote><ol start="4"><li>DELETE FROM … WHERE …</li></ol><blockquote><p>与UPDATE基本一致</p></blockquote><ol start="5"><li>INSERT</li></ol><blockquote><ul><li>给插入索引的记录加一个X锁</li><li>插入前前会加个Insert Intention Lock。</li><li>如果发生唯一键异常（duplicate-key error ），会在原记录上加S锁，这个如果和delete和update一起使用可能会导致死锁。</li></ul></blockquote><ol start="6"><li>INSERT … ON DUPLICATE KEY UPDATE</li></ol><blockquote><ul><li>跟INSERT语句有点不同的就是，当发生重复键异常是，这里加的是排他锁，而不是共享锁。</li><li>如果是唯一键异常，则加的是Next key lock。</li></ul></blockquote><ol start="7"><li>REPLACE</li></ol><blockquote><ul><li>如果没有发生冲突，则行为跟INSERT是一致的。</li><li>如果发生冲突，则对唯一键加的是Next key lock。</li></ul></blockquote><ol start="8"><li>INSERT INTO T SELECT … FROM S WHERE …</li></ol><blockquote><ul><li>给子查询语句加的X锁。</li><li>如果是READ COMMITED 隔离基本，则采用的是快照读</li></ul></blockquote><ol start="9"><li>外键约束</li></ol><blockquote><p>在进行外键约束检测时，会给记录加行级共享锁。</p></blockquote><h3 id="死锁"><a class="markdownIt-Anchor" href="#死锁"></a> 死锁</h3><blockquote><p>死锁是只当2个或者2个以上的事务抢占各自的资源，导致的相互等待的现象。</p></blockquote><h4 id="案例"><a class="markdownIt-Anchor" href="#案例"></a> 案例</h4><ol><li><a href="http://liaojiacan.me/2019/02/27/Insert-ignore-%E5%92%8Cupdate-%E5%AF%BC%E8%87%B4%E7%9A%84%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/">Insert-ignore-和update-导致的死锁问题分析</a></li></ol><h4 id="解决死锁和进行死锁检测"><a class="markdownIt-Anchor" href="#解决死锁和进行死锁检测"></a> 解决死锁和进行死锁检测</h4><ol><li>设置超时时间,事务有限时间超时,回滚其中一个事务。</li></ol><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show variables like &quot;%innodb_lock_wait_timeout%&quot;;</span><br><span class="line">+--------------------------+-------+</span><br><span class="line">| Variable_name            | Value |</span><br><span class="line">+--------------------------+-------+</span><br><span class="line">| innodb_lock_wait_timeout | 50    |</span><br><span class="line">+--------------------------+-------+</span><br><span class="line">1 row in set (0.07 sec)</span><br></pre></td></tr></table></figure><ol start="2"><li>wait-graph 等待图死锁检测</li></ol><ul><li>锁的信息链</li><li>事务等待链</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h3 id=&quot;锁的种类&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#锁的种类&quot;&gt;&lt;/a&gt; 锁的种类&lt;/h3&gt;
+&lt;h4 id=&quot;表锁&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#表锁&quot;&gt;&lt;/a&gt; 表锁&lt;/h4&gt;
+&lt;ul&gt;
+      
+    
+    </summary>
+    
+      <category term="数据库" scheme="http://liaojiacan.me/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+      <category term="Innodb" scheme="http://liaojiacan.me/tags/Innodb/"/>
+    
+  </entry>
   
   <entry>
     <title>Insert ignore 和update 导致的死锁问题分析</title>
@@ -97,9 +124,9 @@
       <category term="架构总结" scheme="http://liaojiacan.me/categories/%E6%9E%B6%E6%9E%84%E6%80%BB%E7%BB%93/"/>
     
     
-      <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
-    
       <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
+    
+      <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
     
   </entry>
   
@@ -153,9 +180,9 @@
       <category term="架构总结" scheme="http://liaojiacan.me/categories/%E6%9E%B6%E6%9E%84%E6%80%BB%E7%BB%93/"/>
     
     
-      <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
-    
       <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
+    
+      <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
     
   </entry>
   
@@ -180,9 +207,9 @@
       <category term="架构总结" scheme="http://liaojiacan.me/categories/%E6%9E%B6%E6%9E%84%E6%80%BB%E7%BB%93/"/>
     
     
-      <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
-    
       <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
+    
+      <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
     
   </entry>
   
@@ -388,9 +415,9 @@
       <category term="逆向" scheme="http://liaojiacan.me/categories/%E9%80%86%E5%90%91/"/>
     
     
-      <category term="java" scheme="http://liaojiacan.me/tags/java/"/>
-    
       <category term="java逆向" scheme="http://liaojiacan.me/tags/java%E9%80%86%E5%90%91/"/>
+    
+      <category term="java" scheme="http://liaojiacan.me/tags/java/"/>
     
   </entry>
   
