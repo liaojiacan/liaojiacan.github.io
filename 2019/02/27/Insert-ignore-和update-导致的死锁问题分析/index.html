@@ -17,7 +17,7 @@
   <meta http-equiv="window-target" content="_top">
   
   
-  <title>Insert ignore 和update 导致的死锁问题分析 | Hexo</title>
+  <title>Insert ignore 和update 导致的死锁问题分析 | Jiacan&#39;s Blog</title>
   <meta name="description" content="业务逻辑以及死锁现象 业务逻辑大概如下：  在粉丝表新增一条关系记录。 假如关注者也是当前用户的粉丝，则更新2者的标记为相互关注。  业务代码如下, 最初是考虑用insert ignore 来解决幂等的问题，所以允许重复调用。 123456789101112131415161718192021//是否 关注的用户是操作者的粉丝（互粉）boolean isHisFans = fansDao.isF">
 <meta name="keywords" content="MySQL,innodb">
 <meta property="og:type" content="article">
