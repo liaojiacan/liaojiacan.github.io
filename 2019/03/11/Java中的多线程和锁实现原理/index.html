@@ -17,21 +17,21 @@
   <meta http-equiv="window-target" content="_top">
   
   
-  <title>Innodb中的锁总结 | Jiacan&#39;s Blog</title>
-  <meta name="description" content="锁的种类  表锁  LOCK TABLE table_name READ : 用读锁锁表，阻塞其他事务修改 LOCK TABLE table_name WRITE: 用写锁锁表，阻塞其他事务读和写   行锁  X锁：排他锁，允许对数据进行删除和更新/插入 S锁：共享锁，允许对数据进行读取，可理解为读锁   锁的兼容性：如果两个事务能对一行数据同时加锁，就认为这个锁是兼容的，如果是要等待其他事务释">
-<meta name="keywords" content="Innodb">
+  <title>Java中的多线程和锁实现原理 | Jiacan&#39;s Blog</title>
+  <meta name="description" content="线程的实现 Java 规范里面并没有规定JVM要如何实现线程模型，在HotSpot VM 中使用的是1:1的线程模型，即1个java线程对应一个OS的线程（内核线程），在Thread中又很多native方法，就是调用OS的函数进行用户线程和内核线程的绑定。  每个线程都又一个内核线程与之绑定，用户线程推出，内核线程也会一起退出。 内核线程的数量是有限制的 内核线程调用，上下文切换开销很大。">
+<meta name="keywords" content="多线程,synchronized,AQS">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Innodb中的锁总结">
-<meta property="og:url" content="http://liaojiacan.me/2019/02/28/Innodb中的锁总结/index.html">
+<meta property="og:title" content="Java中的多线程和锁实现原理">
+<meta property="og:url" content="http://liaojiacan.me/2019/03/11/Java中的多线程和锁实现原理/index.html">
 <meta property="og:site_name" content="Jiacan‘s Blog">
-<meta property="og:description" content="锁的种类  表锁  LOCK TABLE table_name READ : 用读锁锁表，阻塞其他事务修改 LOCK TABLE table_name WRITE: 用写锁锁表，阻塞其他事务读和写   行锁  X锁：排他锁，允许对数据进行删除和更新/插入 S锁：共享锁，允许对数据进行读取，可理解为读锁   锁的兼容性：如果两个事务能对一行数据同时加锁，就认为这个锁是兼容的，如果是要等待其他事务释">
+<meta property="og:description" content="线程的实现 Java 规范里面并没有规定JVM要如何实现线程模型，在HotSpot VM 中使用的是1:1的线程模型，即1个java线程对应一个OS的线程（内核线程），在Thread中又很多native方法，就是调用OS的函数进行用户线程和内核线程的绑定。  每个线程都又一个内核线程与之绑定，用户线程推出，内核线程也会一起退出。 内核线程的数量是有限制的 内核线程调用，上下文切换开销很大。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-02-28T11:23:06.288Z">
+<meta property="og:updated_time" content="2019-03-11T09:21:40.571Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Innodb中的锁总结">
-<meta name="twitter:description" content="锁的种类  表锁  LOCK TABLE table_name READ : 用读锁锁表，阻塞其他事务修改 LOCK TABLE table_name WRITE: 用写锁锁表，阻塞其他事务读和写   行锁  X锁：排他锁，允许对数据进行删除和更新/插入 S锁：共享锁，允许对数据进行读取，可理解为读锁   锁的兼容性：如果两个事务能对一行数据同时加锁，就认为这个锁是兼容的，如果是要等待其他事务释">
+<meta name="twitter:title" content="Java中的多线程和锁实现原理">
+<meta name="twitter:description" content="线程的实现 Java 规范里面并没有规定JVM要如何实现线程模型，在HotSpot VM 中使用的是1:1的线程模型，即1个java线程对应一个OS的线程（内核线程），在Thread中又很多native方法，就是调用OS的函数进行用户线程和内核线程的绑定。  每个线程都又一个内核线程与之绑定，用户线程推出，内核线程也会一起退出。 内核线程的数量是有限制的 内核线程调用，上下文切换开销很大。">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://liaojiacan.me/2019/02/28/Innodb中的锁总结/index.html">
+  <link rel="canonical" href="http://liaojiacan.me/2019/03/11/Java中的多线程和锁实现原理/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Jiacan‘s Blog" type="application/atom+xml">
   
@@ -316,14 +316,14 @@
   
 <main class="main" role="main">
   <div class="content">
-  <article id="post-Innodb中的锁总结" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <article id="post-Java中的多线程和锁实现原理" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
       
         
   
     <h1 class="article-title" itemprop="name">
-      Innodb中的锁总结
+      Java中的多线程和锁实现原理
     </h1>
   
 
@@ -331,20 +331,20 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/2019/02/28/Innodb中的锁总结/" class="article-date">
-	  <time datetime="2019-02-28T11:22:00.000Z" itemprop="datePublished">2019-02-28</time>
+	<a href="/2019/03/11/Java中的多线程和锁实现原理/" class="article-date">
+	  <time datetime="2019-03-11T09:19:00.000Z" itemprop="datePublished">2019-03-11</time>
 	</a>
 </span>
         
   <span class="article-category">
     <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/数据库/">数据库</a>
+    <a class="article-category-link" href="/categories/jdk/">jdk</a>
   </span>
 
         
   <span class="article-tag">
     <i class="icon icon-tags"></i>
-	<a class="article-tag-link" href="/tags/Innodb/">Innodb</a>
+	<a class="article-tag-link" href="/tags/AQS/">AQS</a>, <a class="article-tag-link" href="/tags/synchronized/">synchronized</a>, <a class="article-tag-link" href="/tags/多线程/">多线程</a>
   </span>
 
 
@@ -357,214 +357,199 @@
 	</span>
 
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/02/28/Innodb中的锁总结/#comments" class="article-comment-link">评论</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/03/11/Java中的多线程和锁实现原理/#comments" class="article-comment-link">评论</a></span>
         
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <h3 id="锁的种类"><a class="markdownIt-Anchor" href="#锁的种类"></a> 锁的种类</h3>
-<h4 id="表锁"><a class="markdownIt-Anchor" href="#表锁"></a> 表锁</h4>
+        <h2 id="线程的实现"><a class="markdownIt-Anchor" href="#线程的实现"></a> 线程的实现</h2>
+<p>Java 规范里面并没有规定JVM要如何实现线程模型，在HotSpot VM 中使用的是1:1的线程模型，即1个java线程对应一个OS的线程（内核线程），在Thread中又很多native方法，就是调用OS的函数进行用户线程和内核线程的绑定。</p>
 <ul>
-<li>LOCK TABLE <em>table_name</em> READ : 用读锁锁表，阻塞其他事务修改</li>
-<li>LOCK TABLE <em>table_name</em> WRITE: 用写锁锁表，阻塞其他事务读和写</li>
+<li>每个线程都又一个内核线程与之绑定，用户线程推出，内核线程也会一起退出。</li>
+<li>内核线程的数量是有限制的</li>
+<li>内核线程调用，上下文切换开销很大。</li>
 </ul>
-<h4 id="行锁"><a class="markdownIt-Anchor" href="#行锁"></a> 行锁</h4>
+<h3 id="线程调度"><a class="markdownIt-Anchor" href="#线程调度"></a> 线程调度</h3>
+<h4 id="线程的状态-threadstate枚举"><a class="markdownIt-Anchor" href="#线程的状态-threadstate枚举"></a> 线程的状态 （Thread.State枚举）</h4>
 <ul>
-<li>X锁：排他锁，允许对数据进行删除和更新/插入</li>
-<li>S锁：共享锁，允许对数据进行读取，可理解为读锁</li>
+<li>NEW :</li>
+<li>RUNNABLE : 对应的就绪和运行态</li>
+<li>BLOCKED : 阻塞状态，处于阻塞状态的线程会不断地请求资源，请求成功后就会进入就绪状态。</li>
+<li>WAITING : 等待状态，当线程调用wait,join,park等函数。等待状态下会释放资源，让出CPU和释放锁。需要其他线程唤醒。</li>
+<li>TIMED_WAITING  有限的等待。</li>
+<li>TERMINATED</li>
 </ul>
+<h3 id="线程相关的一些文章"><a class="markdownIt-Anchor" href="#线程相关的一些文章"></a> 线程相关的一些文章</h3>
+<ul>
+<li><a href="https://www.zhihu.com/question/27491155/answer/36847691" target="_blank" rel="noopener">Java的线程管理器能保证每个线程都有执行的机会么?</a></li>
+<li><a href="http://www.hainiubl.com/topics/29" target="_blank" rel="noopener">wait/notify实现原理</a></li>
+</ul>
+<h2 id="锁"><a class="markdownIt-Anchor" href="#锁"></a> 锁</h2>
+<p>因为多线程的共享数据存在线程安全问题，需要通过一些控制来保证共享数据的读写，JVM层面提供sychronized的锁，而java层面current包下面有许多基于AQS的Lock的实现,在jdk1.6后,synchronized 和 ReentrantLock性能上以及没有太大的差距，ReentrantLock的使用更佳灵活，性能稳定，支持超时机制等，而采用synchronized不需要程序自己控制锁的加锁和释放，不容易出现死锁等问题。</p>
+<h3 id="synchronized-的实现原理"><a class="markdownIt-Anchor" href="#synchronized-的实现原理"></a> synchronized 的实现原理</h3>
+<p>JVM规范规定基于进入和退出monitor对象来控制方法和代码块的同步，也是就是monitorenter和monitorexit两个指令，当程序执行到monitorenter指令时会尝试获取对象的monitor所有权，也就是获取对象的锁。在最开始的JVM实现中是采用重量级锁的实现，线程的切换都涉及到用户态到内核态的切换，比较消化资源，所以在jdk1.6对锁进行优化。</p>
+<h4 id="同步原理"><a class="markdownIt-Anchor" href="#同步原理"></a> 同步原理</h4>
 <blockquote>
-<p>锁的兼容性：如果两个事务能对一行数据同时加锁，就认为这个锁是兼容的，如果是要等待其他事务释放，则认为这2个锁是不兼容的。</p>
+<ul>
+<li>JVM是怎么控制多线程程序的交替访问的？</li>
+</ul>
 </blockquote>
+<p>Java中每个对象都有一个内置锁与之对应，所有需要对该对象进行排他性或者一致性访问时需要获取对象的内置锁（synchronized 中的代码，monitorenter指令）。这个内置锁的信息存在对象的对象头中（一些基本信息，其他的condition，队列等是在native heap中的）。一个对象的Monitor只能被一个线程获取到，其他线程得等待持有的Monitor的线程释放。</p>
+<blockquote>
+<p>对象的monitor的说法有点不对啊，但是不知道怎么表达好，在一些官方的注释中说的是ObjectMonitor是一个内联锁对象的封装，就好比JVM层面实现的一个类似JUC框架下的Lock（不是说ObjectMonitor是JUC的Lock实现，说的是他们可能实现思路是一样的）。</p>
+</blockquote>
+<p>做好线程的同步协调，我认为需要这3样东西（ObjectMonitor 和J.U.C的AQS 都是这样的）：</p>
+<ol>
+<li>维护一个竞争的互斥量</li>
+<li>一个队列</li>
+<li>线程的挂起和唤醒</li>
+</ol>
+<blockquote>
+<p>实现同步也可以只用一个互斥量，自旋锁就是这么实现的，但是锁竞争太激烈会导致CPU做无用功。</p>
+</blockquote>
+<p>想继续了解ObjectMonitor的实现可以看这篇文章：<a href="http://moonfacex.github.io/blog/java/2016/03/31/synchronized_and_monitor.html" target="_blank" rel="noopener">synchronized 与 object’s Monitor</a></p>
+<h4 id="对象头"><a class="markdownIt-Anchor" href="#对象头"></a> 对象头</h4>
+<blockquote>
+<ul>
+<li>Object的锁信息是存在在哪里的？</li>
+<li>在获取对象的锁的过程中都用到了对象头的哪些数据？</li>
+</ul>
+</blockquote>
+<p>锁的信息存在java对象头里面。如果对象是数组，这虚拟机会用3个Word(32位虚拟机，32bit)来存对象头，如果对象是非数组类型，则用2个Word来存对象头，其中 有一个word用来存储对象的hashcode和锁信息，32bit，叫Mark word。</p>
+<ul>
+<li>Mark Word 不是一个固定的数据结构，具体的信息分布需要先判断2bit的锁标志位，不同的锁标志位，剩余的30bit可能表示不同的意思。</li>
+<li>32bit的信息是不够存Monitor线程同步（调度）所需要的信息的，所以重量级锁是有另外的native heap存储的，之后再把指针存在Mark word 中。</li>
+</ul>
+<table width="500" border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td rowspan="2" valign="top" width="76"><strong>锁状态</strong></td>
+<td colspan="3" valign="top" width="106">
+<p align="center">25 bit</p>
+</td>
+<td rowspan="2" valign="top" width="85">
+<p align="center">4bit</p>
+</td>
+<td valign="top" width="85">1bit</td>
+<td valign="top" width="78">2bit</td>
+</tr>
+<tr>
+<td colspan="2" valign="top" width="70">23bit</td>
+<td valign="top" width="56">2bit</td>
+<td valign="top" width="120">是否是偏向锁</td>
+<td valign="top" width="100">锁标志位</td>
+</tr>
+<tr>
+<td valign="top" width="90">轻量级锁</td>
+<td colspan="5" valign="top" width="276">指向栈中锁记录的指针</td>
+<td valign="top" width="78">00</td>
+</tr>
+<tr>
+<td valign="top" width="76">重量级锁</td>
+<td colspan="5" valign="top" width="276">指向互斥量（重量级锁）的指针</td>
+<td valign="top" width="78">10</td>
+</tr>
+<tr>
+<td valign="top" width="76">GC标记</td>
+<td colspan="5" valign="top" width="276">空</td>
+<td valign="top" width="78">11</td>
+</tr>
+<tr>
+<td valign="top" width="76">偏向锁</td>
+<td valign="top" width="80">线程ID</td>
+<td colspan="2" valign="top" width="80">Epoch</td>
+<td valign="top" width="120">对象分代年龄</td>
+<td valign="top" width="85">1</td>
+<td valign="top" width="78">01</td>
+</tr>
+</tbody>
+</table>
+<h4 id="锁的优化"><a class="markdownIt-Anchor" href="#锁的优化"></a> 锁的优化</h4>
+<p>在jdk1.6之前synchronized是单纯的重量级锁实现，由于重量级锁，线程获取不到锁就需要挂起等待唤醒，这种切换涉及到了用户态到内核态的转换，开销还是比较大的。在jdk1.6加入了偏向锁、轻量级锁。只有一个线程请求对象锁的时候，启用的是偏向锁，当有第二个线程竞争的时候（应该说是偏向状态出现锁竞争），这个时候会升级为轻量级锁（cas 自旋锁），处于轻量级锁状态下，如果自旋10次（可以配置）还是获取锁失败，则锁升级为重量级锁。</p>
+<ul>
+<li>偏向锁 ：在大部分情况下一个同步方法或者一个同步代码块不存在多线程的竞争，这样只需要在对象头和当前线程的栈帧中存一个线程ID，每次获取锁的时候只需要判断一些线程ID释放一致就行了，不用进行CAS的加锁和解锁。加入有第二个线程需要竞争锁，这个时候会通过CAS设置Mark Word中的锁状态位，实则成功则修改为偏向当前线程，失败的话就进行锁的升级，锁升级涉及到偏向锁的撤销，会将偏向锁线程挂起。</li>
+<li>轻量级锁：线程在获取锁之前，当前线程会在栈帧中创建一个Mark Word的拷贝作为锁记录，官方称为Displaced Mark Word。然后将对象头中的锁记录替换成锁记录的指针（CAS），如果失败则会自旋10次，之后升级为重量级锁。</li>
+<li>重量级锁：ObjectMonitor有更多的空间来实现线程同步，可以更好像的实现线程同步（挂起和唤醒）。<a href="https://www.zhihu.com/question/41930877/answer/136699311" target="_blank" rel="noopener">轻量级锁为什么要膨胀？</a></li>
+</ul>
+<h4 id="优缺点"><a class="markdownIt-Anchor" href="#优缺点"></a> 优缺点</h4>
 <table>
 <thead>
 <tr>
-<th>*</th>
-<th>X</th>
-<th>S</th>
+<th>锁</th>
+<th>优点</th>
+<th>缺点</th>
+<th>使用场景</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>X</td>
-<td>不兼容</td>
-<td>不兼容</td>
+<td>偏向锁</td>
+<td>只需比较threadId释放是否是当前线程<br>没有CAS的消耗</td>
+<td>当出现锁竞争的时候会有锁撤销的消耗</td>
+<td>单个线程</td>
 </tr>
 <tr>
-<td>S</td>
-<td>不兼容</td>
-<td>兼容</td>
+<td>轻量级锁</td>
+<td>线程一直在用户态，不用挂起。没有线程切换的消耗</td>
+<td>自旋会导致CPU做无用功</td>
+<td>同步代码块执行较快。</td>
+</tr>
+<tr>
+<td>重量级锁</td>
+<td>线程挂起，不用进行自旋</td>
+<td>用户态到内核态转化，开销大</td>
+<td>同步代码块执行时间较长，锁竞争激烈</td>
 </tr>
 </tbody>
 </table>
-<h4 id="意向锁"><a class="markdownIt-Anchor" href="#意向锁"></a> 意向锁</h4>
-<p>MySQL innodb 是支持多粒度锁的，比如可以同时存在表锁和行锁，为了更好的实现多粒度锁，innodb引入了意向锁，在innodb中的意向锁是表级的锁，意向锁与意向锁之间是兼容了，假如不存在表锁，不会有事务在加意向锁的时候阻塞。</p>
+<h3 id="juc中的锁"><a class="markdownIt-Anchor" href="#juc中的锁"></a> J.U.C中的锁</h3>
+<p>上面锁的synchronzied是JVM的内置锁，在1.6之前性能比较差，Doug Lea就写个并发框架(java.util.current)，在1.6之后synchronized的性能已经跟Lock查不不多了，但是还少了锁的获取和释放的操作性，不支持超时，只有一个condition等。</p>
+<h4 id="aqs"><a class="markdownIt-Anchor" href="#aqs"></a> AQS</h4>
+<p>AbstractQueueSynchronizer是J.U.C中其他锁或者同步器的基础框架（ReentrantLock,ReentrantReadWriteLock,CountdDownLatch,CyclicBarrier等），这些框架在AQS的基础上进行了扩展，通常是继承AQS然后实现了AQS的几个抽象方法。</p>
+<blockquote>
+<p>我在上面说ObjectMonitor有说到，同步器为了完成同步工作，需要3个东西：</p>
+</blockquote>
+<ol>
+<li>用于同步的状态量</li>
+<li>一个队列或者一个保存等待线程的容器</li>
+<li>线程的挂起和唤醒</li>
+</ol>
+<p>我们看下AQS是怎么围绕这3个部分进行实现的。</p>
+<h5 id="1-同步的状态量互斥量"><a class="markdownIt-Anchor" href="#1-同步的状态量互斥量"></a> 1. 同步的状态量(互斥量)</h5>
+<p>AQS中维护一个volatile 的int 变量state，线程通过cas来获取这个互斥量。AQS提供一下几个方法来对state变量进行操作。</p>
 <ul>
-<li>IS锁：意向共享锁，表明表中存在一行或者多行的S锁，即在给一行数据加S锁之前必在这个表加IS锁。</li>
-<li>IX锁：意向排他锁，表明表中存在一行或者多行的X锁，即在给一行数据加S锁之前必在这个表加IX锁。</li>
+<li>getState()</li>
+<li>compareAndSetState(int expect, int update)</li>
+<li>setState(int state)</li>
 </ul>
+<p>有了上面的3个方法，同步器就可以实现自旋锁，但是如果想实现公平锁，上面的三个方法或者说单用一个state变量是无法做到了。这个时候就需要一个FIFO的队列来维护这些线程。此外为了实现重入锁，我们还得需要一个变量来存当前持有的锁是什么线程。</p>
+<h5 id="2等待线程队列"><a class="markdownIt-Anchor" href="#2等待线程队列"></a> 2.等待线程队列</h5>
+<p>AQS 用了一个CLH的双向队列，Node的数据结构大概如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">statci final class Node&#123;</span><br><span class="line">    </span><br><span class="line">    volatile int waitStatus;</span><br><span class="line">    volatile Node prev;</span><br><span class="line">    volatile Node next;</span><br><span class="line">    Node nextWaiter;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AQS维护一个头节点和一个尾节点，入队的时候通过CAS加入到未尾节点中。入队后开始开始自旋。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">final boolean acquireQueued(final Node node, int arg) &#123;</span><br><span class="line">    boolean failed = true;</span><br><span class="line">    try &#123;</span><br><span class="line">        boolean interrupted = false;</span><br><span class="line">        for (;;) &#123;</span><br><span class="line">            final Node p = node.predecessor();</span><br><span class="line">            // 前趋节点是头节点，并且获取到互斥量，说明获取锁成功。</span><br><span class="line">            if (p == head &amp;&amp; tryAcquire(arg)) &#123;</span><br><span class="line">                setHead(node);</span><br><span class="line">                p.next = null; // help GC</span><br><span class="line">                failed = false;</span><br><span class="line">                return interrupted;</span><br><span class="line">            &#125;</span><br><span class="line">            // 判断是否需要挂起</span><br><span class="line">            if (shouldParkAfterFailedAcquire(p, node) &amp;&amp;</span><br><span class="line">                parkAndCheckInterrupt())</span><br><span class="line">                interrupted = true;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        if (failed)</span><br><span class="line">            cancelAcquire(node);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从上面代码片段可以看出，加入队列的线程节点并不是完全的自旋，shouldParkAfterFailedAcquire方法判断当前线程是否需要挂起。</p>
 <blockquote>
-<p>思考：为什么需要这个意向锁？</p>
+<p>下面的这个方法表明shouldParkAfterFailedAcquire 会在调用1到2次后会返回true（如果期间节点没有发生改变的话）。也就是自旋锁只自旋了2次就会被挂起。</p>
 </blockquote>
-<p>我们比如思考一下这个场景，事务1给某个表中的N行加了行锁，这个时候事务2想给这个表加个表锁，那么事务2需要确认的事情有：</p>
-<ol>
-<li>这个表是否存在不兼容的表锁，比如我想加个X锁，但是已经有其他事务加了S锁。</li>
-<li>这个表中是否已经存在不兼容的行锁。</li>
-</ol>
-<p>显然在确认第二个条件时，如果采用全表扫描的话，效率太低，所以意向锁的目的就是在粗粒度的锁（表锁）可以快速判断是否与低粒度的锁存在冲突。</p>
-<table>
-<thead>
-<tr>
-<th>*</th>
-<th>IX</th>
-<th>S</th>
-<th>IS</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>X</td>
-<td>不兼容</td>
-<td>不兼容</td>
-<td>不兼容</td>
-</tr>
-<tr>
-<td>IX</td>
-<td>不兼容</td>
-<td>兼容</td>
-<td>不兼容</td>
-</tr>
-<tr>
-<td>S</td>
-<td>不兼容</td>
-<td>不兼容</td>
-<td>兼容</td>
-</tr>
-<tr>
-<td>IS</td>
-<td>不兼容</td>
-<td>兼容</td>
-<td>兼容</td>
-</tr>
-</tbody>
-</table>
-<h3 id="innodb行锁的形式或者算法"><a class="markdownIt-Anchor" href="#innodb行锁的形式或者算法"></a> innodb行锁的形式或者算法</h3>
-<blockquote>
-<p>Innodb中行锁都是加在索引上的，针对不同的场景都有不同的加锁策略。</p>
-</blockquote>
-<h4 id="record-lock"><a class="markdownIt-Anchor" href="#record-lock"></a> Record Lock</h4>
-<p>记录锁，顾名思义就是锁住记录本身，锁主主键和唯一索引，如果表中没有加任何索引，锁会加在隐式生成的主键上。</p>
-<h4 id="gap-lock"><a class="markdownIt-Anchor" href="#gap-lock"></a> Gap Lock</h4>
-<p>间隙锁，当存在范围扫描的时候，给扫描范围加间隙锁，[起始地址，终止)</p>
-<ol>
-<li>不同事务对同一个区间加间隙锁是不冲突的，所以S Gap Lock 和 X Gap Lock不存在区别。</li>
-<li>READ_COMMITED 隔离级别下不会启用间隙锁。</li>
-</ol>
-<h4 id="next-key-lock"><a class="markdownIt-Anchor" href="#next-key-lock"></a> Next Key Lock</h4>
-<p>临键锁，Record Lock + Gap Lock ,锁主当前值区间+下一个区间(不一定)。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">10, 11, 13, 20</span><br><span class="line">(negative infinity, 10]</span><br><span class="line">(10, 11]</span><br><span class="line">(11, 13]</span><br><span class="line">(13, 20]</span><br><span class="line">(20, positive infinity)</span><br></pre></td></tr></table></figure>
-<ol>
-<li>解决的是当前读下的幻读问题。</li>
-</ol>
-<h4 id="insert-intention-lock"><a class="markdownIt-Anchor" href="#insert-intention-lock"></a> Insert Intention Lock</h4>
-<p>插入意向锁，是一种特殊的间隙锁；insert之前会向插入区间加上Insert Intention Lock。</p>
-<ol>
-<li>Gap Lock / Next key Lock 与 Insert Intention Lock不兼容。</li>
-<li>Gap lock 和Next key lock 的目的就是防止有数据插入间隙</li>
-</ol>
-<h3 id="不同sql产生的锁"><a class="markdownIt-Anchor" href="#不同sql产生的锁"></a> 不同SQL产生的锁</h3>
-<p><a href="https://dev.mysql.com/doc/refman/5.7/en/innodb-locks-set.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/5.7/en/innodb-locks-set.html</a></p>
-<ol>
-<li>SELECT…FROM</li>
-</ol>
-<blockquote>
-<p>一致性非锁定读，除了在 SERIALIZABLE隔离级别下会存在S锁，其他隔离级别下都不会有锁。</p>
-</blockquote>
-<ol start="2">
-<li>SELECT…FOR UPDATE/SELECT…LOCK IN SHARE MODE</li>
-</ol>
-<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) &#123;</span><br><span class="line">        int ws = pred.waitStatus;</span><br><span class="line">        if (ws == Node.SIGNAL)</span><br><span class="line">            /*</span><br><span class="line">             * This node has already set status asking a release</span><br><span class="line">             * to signal it, so it can safely park.</span><br><span class="line">             */</span><br><span class="line">            return true;</span><br><span class="line">        if (ws &gt; 0) &#123;</span><br><span class="line">            /*</span><br><span class="line">             * Predecessor was cancelled. Skip over predecessors and</span><br><span class="line">             * indicate retry.</span><br><span class="line">             */</span><br><span class="line">            do &#123;</span><br><span class="line">                node.prev = pred = pred.prev;</span><br><span class="line">            &#125; while (pred.waitStatus &gt; 0);</span><br><span class="line">            pred.next = node;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            /* </span><br><span class="line">             * 进行到这里说明前驱节点的waitStatus 是0 或者PROPAGATE ，利用CAS的设置为SIGNAL，这样下次自旋就会阻塞了，这里不返回true的目的是让当前线程再自旋一次，确保挂起前是无法获取到锁（避免发生刚挂起就被唤醒的情况）。</span><br><span class="line">             * waitStatus must be 0 or PROPAGATE.  Indicate that we</span><br><span class="line">             * need a signal, but don&apos;t park yet.  Caller will need to</span><br><span class="line">             * retry to make sure it cannot acquire before parking.</span><br><span class="line">             */</span><br><span class="line">            compareAndSetWaitStatus(pred, ws, Node.SIGNAL);</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h5 id="3线程的挂起和唤醒"><a class="markdownIt-Anchor" href="#3线程的挂起和唤醒"></a> 3.线程的挂起和唤醒</h5>
+<p>AQS中实现线程的挂起和唤醒是通过LockSupport这个工具，LockSupport的底层实现是调用Unsafe的native方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public static void unpark(Thread thread) &#123;</span><br><span class="line">    if (thread != null)</span><br><span class="line">        UNSAFE.unpark(thread);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void park(Object blocker) &#123;</span><br><span class="line">    Thread t = Thread.currentThread();</span><br><span class="line">    setBlocker(t, blocker);</span><br><span class="line">    UNSAFE.park(false, 0L);</span><br><span class="line">    setBlocker(t, null);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="conditionobject"><a class="markdownIt-Anchor" href="#conditionobject"></a> ConditionObject</h5>
+<p>ConditionObject 是AQS实现类似object类的wait/notify/notifyAll方法的，ConditionObject提供的是aw<br>
+ait/awaitNanos(long nanos)/awaitUtil(Date date)/awaitUniterrutibly()/signal()/signalAll()。底层的实现也是各自维护一个队列，Node.nextWaiter。</p>
 <ul>
-<li>也叫做当前读，会在给扫描过程中的索引加X或S锁，跟Where条件实际上没有强关系，只跟扫描的过程有关，所以where条件是否能够命中索引比较重要。</li>
-<li>在检索的过程中会给用到的索引加Next Key Lock。不过如果检索条件是唯一索引能定位到一行数据，则只加Record Lock</li>
+<li>对于超时机制也是用LockSupport中的实现，但并不是所有情况下都使用系统的休眠，有个休眠的自旋时间阀值<code>spinForTimeoutThreshold = 1000L</code> ，默认是1000 纳秒，少于这个阀值的都不用休眠，而是直接自旋。</li>
 </ul>
-</blockquote>
-<ol start="3">
-<li>UPDATE…WHERE…</li>
-</ol>
-<blockquote>
-<p>同样给检索到的记录加next key lock, 如果WHERE条件中是使用主键或者唯一索引进行限定的话，只在索引加了Record Lock。<br>
-如果UPDATE的是聚簇索引记录，会对受影响的辅助索引加隐式锁，当有新的辅助索引插入前的重复检测，以及在执行插入新的辅助索引记录时，对受影响的索引记录加S锁。</p>
-</blockquote>
-<ol start="4">
-<li>DELETE FROM … WHERE …</li>
-</ol>
-<blockquote>
-<p>与UPDATE基本一致</p>
-</blockquote>
-<ol start="5">
-<li>INSERT</li>
-</ol>
-<blockquote>
+<h3 id="参考文章"><a class="markdownIt-Anchor" href="#参考文章"></a> 参考文章</h3>
 <ul>
-<li>给插入索引的记录加一个X锁</li>
-<li>插入前前会加个Insert Intention Lock。</li>
-<li>如果发生唯一键异常（duplicate-key error ），会在原记录上加S锁，这个如果和delete和update一起使用可能会导致死锁。</li>
-</ul>
-</blockquote>
-<ol start="6">
-<li>INSERT … ON DUPLICATE KEY UPDATE</li>
-</ol>
-<blockquote>
-<ul>
-<li>跟INSERT语句有点不同的就是，当发生重复键异常是，这里加的是排他锁，而不是共享锁。</li>
-<li>如果是唯一键异常，则加的是Next key lock。</li>
-</ul>
-</blockquote>
-<ol start="7">
-<li>REPLACE</li>
-</ol>
-<blockquote>
-<ul>
-<li>如果没有发生冲突，则行为跟INSERT是一致的。</li>
-<li>如果发生冲突，则对唯一键加的是Next key lock。</li>
-</ul>
-</blockquote>
-<ol start="8">
-<li>INSERT INTO T SELECT … FROM S WHERE …</li>
-</ol>
-<blockquote>
-<ul>
-<li>给子查询语句加的X锁。</li>
-<li>如果是READ COMMITED 隔离基本，则采用的是快照读</li>
-</ul>
-</blockquote>
-<ol start="9">
-<li>外键约束</li>
-</ol>
-<blockquote>
-<p>在进行外键约束检测时，会给记录加行级共享锁。</p>
-</blockquote>
-<h3 id="死锁"><a class="markdownIt-Anchor" href="#死锁"></a> 死锁</h3>
-<blockquote>
-<p>死锁是只当2个或者2个以上的事务抢占各自的资源，导致的相互等待的现象。</p>
-</blockquote>
-<h4 id="案例"><a class="markdownIt-Anchor" href="#案例"></a> 案例</h4>
-<ol>
-<li><a href="http://liaojiacan.me/2019/02/27/Insert-ignore-%E5%92%8Cupdate-%E5%AF%BC%E8%87%B4%E7%9A%84%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90/">Insert-ignore-和update-导致的死锁问题分析</a></li>
-</ol>
-<h4 id="解决死锁和进行死锁检测"><a class="markdownIt-Anchor" href="#解决死锁和进行死锁检测"></a> 解决死锁和进行死锁检测</h4>
-<ol>
-<li>设置超时时间,事务有限时间超时,回滚其中一个事务。</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show variables like &quot;%innodb_lock_wait_timeout%&quot;;</span><br><span class="line">+--------------------------+-------+</span><br><span class="line">| Variable_name            | Value |</span><br><span class="line">+--------------------------+-------+</span><br><span class="line">| innodb_lock_wait_timeout | 50    |</span><br><span class="line">+--------------------------+-------+</span><br><span class="line">1 row in set (0.07 sec)</span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>wait-graph 等待图死锁检测</li>
-</ol>
-<ul>
-<li>锁的信息链</li>
-<li>事务等待链</li>
+<li><a href="http://moonfacex.github.io/blog/java/2016/03/31/synchronized_and_monitor.html" target="_blank" rel="noopener">synchronized 与 object’s Monitor</a></li>
+<li><a href="http://ifeve.com/introduce-abstractqueuedsynchronizer/" target="_blank" rel="noopener">AbstractQueuedSynchronizer的介绍和原理分析</a></li>
+<li><a href="https://blog.csdn.net/chenssy/article/details/65449785" target="_blank" rel="noopener">J.U.C之AQS：阻塞和唤醒线程</a></li>
+<li><a href="https://blog.csdn.net/m_xiaoer/article/details/73274642" target="_blank" rel="noopener">关于synchronized的Monitor Object机制的研究</a></li>
+<li><a href="https://docs.oracle.com/javase/tutorial/essential/concurrency/locksync.html" target="_blank" rel="noopener">Intrinsic Locks and Synchronization</a></li>
 </ul>
 
       
@@ -575,7 +560,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="http://liaojiacan.me/2019/02/28/Innodb中的锁总结/" title="Innodb中的锁总结" target="_blank" rel="external">http://liaojiacan.me/2019/02/28/Innodb中的锁总结/</a>
+      <a href="http://liaojiacan.me/2019/03/11/Java中的多线程和锁实现原理/" title="Java中的多线程和锁实现原理" target="_blank" rel="external">http://liaojiacan.me/2019/03/11/Java中的多线程和锁实现原理/</a>
     </li>
     
     <li class="post-copyright-license">
@@ -623,13 +608,9 @@
   
   <ul class="pager pull-left">
     
-    <li class="prev">
-      <a href="/2019/03/11/Java中的多线程和锁实现原理/" title="Java中的多线程和锁实现原理"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
-    </li>
-    
     
     <li class="next">
-      <a href="/2019/02/27/Insert-ignore-和update-导致的死锁问题分析/" title="Insert ignore 和update 导致的死锁问题分析"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+      <a href="/2019/02/28/Innodb中的锁总结/" title="Innodb中的锁总结"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
     
