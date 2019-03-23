@@ -26,7 +26,7 @@
 <meta property="og:site_name" content="Jiacan‘s Blog">
 <meta property="og:description" content="线程的实现 Java 规范里面并没有规定JVM要如何实现线程模型，在HotSpot VM 中使用的是1:1的线程模型，即1个java线程对应一个OS的线程（内核线程），在Thread中又很多native方法，就是调用OS的函数进行用户线程和内核线程的绑定。  每个线程都又一个内核线程与之绑定，用户线程推出，内核线程也会一起退出。 内核线程的数量是有限制的 内核线程调用，上下文切换开销很大。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-03-14T07:02:35.113Z">
+<meta property="og:updated_time" content="2019-03-23T09:40:54.721Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java中的多线程和锁实现原理">
 <meta name="twitter:description" content="线程的实现 Java 规范里面并没有规定JVM要如何实现线程模型，在HotSpot VM 中使用的是1:1的线程模型，即1个java线程对应一个OS的线程（内核线程），在Thread中又很多native方法，就是调用OS的函数进行用户线程和内核线程的绑定。  每个线程都又一个内核线程与之绑定，用户线程推出，内核线程也会一起退出。 内核线程的数量是有限制的 内核线程调用，上下文切换开销很大。">
@@ -397,7 +397,7 @@
 </blockquote>
 <p>Java中每个对象都有一个内置锁与之对应，所有需要对该对象进行排他性或者一致性访问时需要获取对象的内置锁（synchronized 中的代码，monitorenter指令）。这个内置锁的信息存在对象的对象头中（一些基本信息，其他的condition，队列等是在native heap中的）。一个对象的Monitor只能被一个线程获取到，其他线程得等待持有的Monitor的线程释放。</p>
 <blockquote>
-<p>对象的monitor的说法有点不对啊，但是不知道怎么表达好，在一些官方的注释中说的是ObjectMonitor是一个内联锁对象的封装，就好比JVM层面实现的一个类似JUC框架下的Lock（不是说ObjectMonitor是JUC的Lock实现，说的是他们可能实现思路是一样的）。</p>
+<p>在一些官方的注释中说的是ObjectMonitor是一个内联锁对象的封装，就好比JVM层面实现的一个类似JUC框架下的Lock（不是说ObjectMonitor是JUC的Lock实现，说的是他们可能实现思路是一样的）。</p>
 </blockquote>
 <p>做好线程的同步协调，我认为需要这3样东西（ObjectMonitor 和J.U.C的AQS 都是这样的）：</p>
 <ol>
@@ -472,9 +472,22 @@
 <h4 id="锁的优化"><a class="markdownIt-Anchor" href="#锁的优化"></a> 锁的优化</h4>
 <p>在jdk1.6之前synchronized是单纯的重量级锁实现，由于重量级锁，线程获取不到锁就需要挂起等待唤醒，这种切换涉及到了用户态到内核态的转换，开销还是比较大的。在jdk1.6加入了偏向锁、轻量级锁。只有一个线程请求对象锁的时候，启用的是偏向锁，当有第二个线程竞争的时候（应该说是偏向状态出现锁竞争），这个时候会升级为轻量级锁（cas 自旋锁），处于轻量级锁状态下，如果自旋10次（可以配置）还是获取锁失败，则锁升级为重量级锁。</p>
 <ul>
-<li>偏向锁 ：在大部分情况下一个同步方法或者一个同步代码块不存在多线程的竞争，这样只需要在对象头和当前线程的栈帧中存一个线程ID，每次获取锁的时候只需要判断一些线程ID释放一致就行了，不用进行CAS的加锁和解锁。加入有第二个线程需要竞争锁，这个时候会通过CAS设置Mark Word中的锁状态位，实则成功则修改为偏向当前线程，失败的话就进行锁的升级，锁升级涉及到偏向锁的撤销，会将偏向锁线程挂起。</li>
-<li>轻量级锁：线程在获取锁之前，当前线程会在栈帧中创建一个Mark Word的拷贝作为锁记录，官方称为Displaced Mark Word。然后将对象头中的锁记录替换成锁记录的指针（CAS），如果失败则会自旋10次（在1.6之后是采用自适应锁，这个时间已经不能自己配置了），之后升级为重量级锁。</li>
-<li>重量级锁：ObjectMonitor有更多的空间来实现线程同步，可以更好像的实现线程同步（挂起和唤醒）。<a href="https://www.zhihu.com/question/41930877/answer/136699311" target="_blank" rel="noopener">轻量级锁为什么要膨胀？</a></li>
+<li>
+<p>偏向锁 ：在大部分情况下一个同步方法或者一个同步代码块不存在多线程的竞争，这样只需要在对象头和当前线程的栈帧中存一个线程ID，每次获取锁的时候只需要判断一些线程ID释放一致就行了，不用进行CAS的加锁和解锁。如果有第二个线程需要竞争锁，这个时候会通过CAS设置Mark Word中的锁状态位，成功则修改为偏向当前线程，失败的话就进行锁的升级，锁升级涉及到偏向锁的撤销，会将偏向锁线程挂起。</p>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/14717736/where-is-objects-hash-code-stored-if-biased-locking-is-enabled-in-hotspot-jvm" target="_blank" rel="noopener">偏向锁会将Mark Word设置为当前threadId，那么hashCode存哪里了?</a><br>
+如果处于偏向的的对象调用的hashCode方法就会触发撤销偏向锁</p>
+</blockquote>
+</li>
+<li>
+<p>轻量级锁：线程在获取锁之前，当前线程会在栈帧中创建一个Mark Word的拷贝作为锁记录，官方称为Displaced Mark Word。然后将对象头中替换成锁记录的指针（CAS），如果失败则会自旋10次（在1.6之后是采用自适应锁，这个时间已经不能自己配置了），之后升级为重量级锁。</p>
+<blockquote>
+<p>为什么一定要拷贝到Displaced Mark Word，而不直接就采用一个threadId？一个原因是需要恢复hash和GC分代的信息，一个就是解决重入锁的问题。</p>
+</blockquote>
+</li>
+<li>
+<p>重量级锁：ObjectMonitor有更多的空间来实现线程同步，可以更好像的实现线程同步（挂起和唤醒）。<a href="https://www.zhihu.com/question/41930877/answer/136699311" target="_blank" rel="noopener">轻量级锁为什么要膨胀？</a></p>
+</li>
 </ul>
 <h4 id="优缺点"><a class="markdownIt-Anchor" href="#优缺点"></a> 优缺点</h4>
 <table>
