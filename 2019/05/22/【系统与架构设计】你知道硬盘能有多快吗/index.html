@@ -17,16 +17,24 @@
   <meta http-equiv="window-target" content="_top">
   
   
-  <title>归档 | Jiacan&#39;s Blog</title>
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Jiacan‘s Blog">
-<meta property="og:url" content="http://liaojiacan.me/archives/index.html">
+  <title>【系统与架构设计】你知道硬盘能有多快吗？ | Jiacan&#39;s Blog</title>
+  <meta name="description" content="应用软件通常都是由各种类型的软硬件相互配合实现，无论你是单体架构还是分布式架构，任何一个模块或者环节都可能是系统的瓶颈，可能是CPU，可能是网络，也可能是硬盘等。了解一些基础的边界（“量”），有助于我们分析系统的瓶颈。   问题   大部分的应用系统都是IO密集型，同机房的服务一般性能的瓶颈在于磁盘IO，那么一般机械硬盘的性能上限是怎么样的，根据磁盘的最大性能能否判断我们的系统是否有优化的空间？">
+<meta name="keywords" content="系统设计,架构设计,存储">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【系统与架构设计】你知道硬盘能有多快吗？">
+<meta property="og:url" content="http://liaojiacan.me/2019/05/22/【系统与架构设计】你知道硬盘能有多快吗/index.html">
 <meta property="og:site_name" content="Jiacan‘s Blog">
+<meta property="og:description" content="应用软件通常都是由各种类型的软硬件相互配合实现，无论你是单体架构还是分布式架构，任何一个模块或者环节都可能是系统的瓶颈，可能是CPU，可能是网络，也可能是硬盘等。了解一些基础的边界（“量”），有助于我们分析系统的瓶颈。   问题   大部分的应用系统都是IO密集型，同机房的服务一般性能的瓶颈在于磁盘IO，那么一般机械硬盘的性能上限是怎么样的，根据磁盘的最大性能能否判断我们的系统是否有优化的空间？">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/liaojiacan/assets/master/img/WX20190522-165652.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/liaojiacan/assets/master/img/WX20190522-181048.png">
+<meta property="og:updated_time" content="2019-05-22T11:05:37.070Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Jiacan‘s Blog">
+<meta name="twitter:title" content="【系统与架构设计】你知道硬盘能有多快吗？">
+<meta name="twitter:description" content="应用软件通常都是由各种类型的软硬件相互配合实现，无论你是单体架构还是分布式架构，任何一个模块或者环节都可能是系统的瓶颈，可能是CPU，可能是网络，也可能是硬盘等。了解一些基础的边界（“量”），有助于我们分析系统的瓶颈。   问题   大部分的应用系统都是IO密集型，同机房的服务一般性能的瓶颈在于磁盘IO，那么一般机械硬盘的性能上限是怎么样的，根据磁盘的最大性能能否判断我们的系统是否有优化的空间？">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/liaojiacan/assets/master/img/WX20190522-165652.png">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://liaojiacan.me/archives/index.html">
+  <link rel="canonical" href="http://liaojiacan.me/2019/05/22/【系统与架构设计】你知道硬盘能有多快吗/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Jiacan‘s Blog" type="application/atom+xml">
   
@@ -310,182 +318,337 @@
   
   
 <main class="main" role="main">
-  	<article class="content article article-archives article-type-list" itemscope>
-	    <header class="article-header">
-	      <h1 itemprop="title">归档</h1>
-	      <p class="text-muted">共 10 篇文章</p>
-	    </header>
-	    <div class="article-body">
-	      
-  
-  
+  <div class="content">
+  <article id="post-【系统与架构设计】你知道硬盘能有多快吗" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
-    
+    <div class="article-header">
       
+        
+  
+    <h1 class="article-title" itemprop="name">
+      【系统与架构设计】你知道硬盘能有多快吗？
+    </h1>
+  
+
       
-      <section class="panel panel-default b-no">
-        <div class="panel-heading" role="tab">
-          <h3 class="panel-title">
-            <a data-toggle="collapse" href="#collapse2019" aria-expanded="true">
-              <i class="icon icon-calendar-plus text-active"></i><i class="icon icon-calendar-minus text"></i>
-              2019
-            </a>
-            <!-- <a href="/archives/2019" class="archive-year">2019</a> -->
-          </h3>
-        </div>
-        <div id="collapse2019" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading2019">
-        <div class="panel-body">
-          <div class="collection">
-    
-    
-<a href="/2019/05/22/【系统与架构设计】你知道硬盘能有多快吗/index.html" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-05-22T08:40:14.000Z" itemprop="datePublished">2019-05-22</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 【系统与架构设计】你知道硬盘能有多快吗？
-</a>
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/05/22/【系统与架构设计】你知道硬盘能有多快吗/" class="article-date">
+	  <time datetime="2019-05-22T08:40:14.000Z" itemprop="datePublished">2019-05-22</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/系统与架构设计/">系统与架构设计</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/存储/">存储</a>, <a class="article-tag-link" href="/tags/架构设计/">架构设计</a>, <a class="article-tag-link" href="/tags/系统设计/">系统设计</a>
+  </span>
 
 
-  
-    
-    
-    
-<a href="/2019/05/21/一种适合后端代码的GIT分支管理办法/index.html" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-05-21T08:45:44.000Z" itemprop="datePublished">2019-05-21</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 一种适合后端团队代码的GIT分支管理办法
-</a>
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
 
 
-  
-    
-    
-    
-<a href="/2019/03/17/自定义ClassLoader实现一个支持热加载的应用启动器/index.html" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-03-17T08:46:00.000Z" itemprop="datePublished">2019-03-17</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 自定义ClassLoader实现一个支持热加载的应用启动器
-</a>
-
-
-  
-    
-    
-    
-<a href="/2019/03/11/Java中的多线程和锁实现原理/index.html" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-03-11T09:19:00.000Z" itemprop="datePublished">2019-03-11</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> Java中的多线程和锁实现原理
-</a>
-
-
-  
-    
-    
-    
-<a href="/2019/02/28/Innodb中的锁总结/index.html" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-02-28T11:22:00.000Z" itemprop="datePublished">2019-02-28</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> Innodb中的锁总结
-</a>
-
-
-  
-    
-    
-    
-<a href="/2019/02/27/Insert-ignore-和update-导致的死锁问题分析/index.html" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-02-27T12:13:00.000Z" itemprop="datePublished">2019-02-27</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> Insert ignore 和update 导致的死锁问题分析
-</a>
-
-
-  
-    
-    
-    
-<a href="/2019/02/26/JDK1-7-ConcurrentHashMap的源码解读/index.html" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2019-02-26T03:18:00.000Z" itemprop="datePublished">2019-02-26</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> JDK1.7 ConcurrentHashMap的源码解读
-</a>
-
-
-  
-    
-    
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/05/22/【系统与架构设计】你知道硬盘能有多快吗/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
       
-        </div></div></div></section>
+        <blockquote>
+<p>应用软件通常都是由各种类型的软硬件相互配合实现，无论你是单体架构还是分布式架构，任何一个模块或者环节都可能是系统的瓶颈，可能是CPU，可能是网络，也可能是硬盘等。了解一些基础的边界（“量”），有助于我们分析系统的瓶颈。</p>
+</blockquote>
+<h3 id="问题"><a class="markdownIt-Anchor" href="#问题"></a> 问题</h3>
+<ul>
+<li>
+<p>大部分的应用系统都是IO密集型，同机房的服务一般性能的瓶颈在于磁盘IO，那么一般机械硬盘的性能上限是怎么样的，根据磁盘的最大性能能否判断我们的系统是否有优化的空间？</p>
+</li>
+<li>
+<p>B+ tree 的索引 一般是3～4层，也就是平均情况下需要3到4次的I/O，我们的应用需要1000TPS，普通的机械磁盘的性能是否能达到要求？</p>
+</li>
+<li>
+<p>假如innodb的事务处理能力只受redo log 的写入速度影响，一条操作日志1kb的话，TPS可以到达多少？</p>
+</li>
+<li>
+<p>假如网络带宽限制不计的话，我们从一台机器同步一个1TB的数据，机械硬盘需要多久？</p>
+</li>
+</ul>
+<blockquote>
+<p>这些问题可能都不是正确的问题，我想表达的是假如现在来解答这些问题，能否根据自己的一些印象（磁盘的性能的量级。HDD硬盘100MB/s，SSD 500MB/s ，IOPS 100… 等）来估算一下。</p>
+</blockquote>
+<h3 id="存储设备的2个性能指标"><a class="markdownIt-Anchor" href="#存储设备的2个性能指标"></a> 存储设备的2个性能指标</h3>
+<ul>
+<li>
+<p>IOPS ：(Input/Output Per Second)  每秒的输入输出量，代表存储系统的每秒的I/O请求数。“只关系数量”</p>
+<ul>
+<li>Random Read IOPS(随机读)</li>
+<li>Random Write IOPS(随机写)</li>
+<li>Sequential Read IOPS(顺序读)</li>
+<li>Sequential Write IOPS(顺序写)</li>
+<li>Total IOPS （混合读写）</li>
+</ul>
+</li>
+<li>
+<p>带宽/吞吐量：单位时间内传输的数据大小，比如10MB/秒 。“只关系比特数或者说容量”</p>
+</li>
+</ul>
+<blockquote>
+<p>对于OLTP应用/数据库，我们看重的更多的是随机I/O的性能，这个时候看IOPS更加合理，对于大文件或者顺序读写的应用（hadoop/kafka……），更加看重的是吞吐量。</p>
+</blockquote>
+<h3 id="机械硬盘-hdd"><a class="markdownIt-Anchor" href="#机械硬盘-hdd"></a> 机械硬盘 HDD</h3>
+<ul>
+<li>IOPS ：100左右</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>设备</th>
+<th>形式</th>
+<th>IOPS</th>
+<th>接口</th>
+<th>注解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7,200RPMSATA硬盘驱动器</td>
+<td>硬盘驱动器</td>
+<td>~75-100 IOPS</td>
+<td>SATA 3Gbit/s</td>
+<td></td>
+</tr>
+<tr>
+<td>10,000 RPM SATA硬盘驱动器</td>
+<td>硬盘驱动器</td>
+<td>~125-150 IOPS</td>
+<td>SATA 3 Gbit/s</td>
+<td></td>
+</tr>
+<tr>
+<td>10,000 rpmSAS硬盘驱动器</td>
+<td>硬盘驱动器</td>
+<td>~140 IOPS</td>
+<td>SAS（串列SCSI）</td>
+<td></td>
+</tr>
+<tr>
+<td>15,000 rpmSAS硬盘驱动器</td>
+<td>硬盘驱动器</td>
+<td>~175-210 IOPS</td>
+<td>SAS（串列SCSI）</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>数据来源于百度百科 <a href="https://baike.baidu.com/item/IOPS" target="_blank" rel="noopener">https://baike.baidu.com/item/IOPS</a></p>
+</blockquote>
+<ul>
+<li>带宽/吞吐量 ：100MB/s 左右</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/liaojiacan/assets/master/img/WX20190522-165652.png" alt></p>
+<blockquote>
+<p>数据来源 <a href="https://hdd.userbenchmark.com/" target="_blank" rel="noopener">https://hdd.userbenchmark.com/</a></p>
+</blockquote>
+<p>可以看到 机械硬盘的的读写速度在 ～20.6MB/s - 200MB/S 之间</p>
+<h3 id="固态硬盘-ssd"><a class="markdownIt-Anchor" href="#固态硬盘-ssd"></a> 固态硬盘 SSD</h3>
+<ul>
+<li>IOPS ：8000～80000</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>设备</th>
+<th>形式</th>
+<th>IOPS</th>
+<th>接口</th>
+<th>注解</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>英特尔Intel X25-M G2（MLC）</td>
+<td>SSD</td>
+<td>~8,600 IOPS</td>
+<td>SATA 3 Gbit/s</td>
+<td>英特尔的数据表声称在4KB数据的写入及读取时，分别有有6,600/8,600 IOPS (80GB/160GB版本)及35,000 IOPS的速度。</td>
+</tr>
+<tr>
+<td>英特尔 Intel X25-E (SLC)</td>
+<td>SSD</td>
+<td>~5,000 IOPS</td>
+<td>SATA 3 Gbit/s</td>
+<td>英特尔数据表声称在写入和读取的速度为3,300 IOPS及35,000 IOPS。写入和读取混和时为5,000 IOPS。英特尔的X25-E G1比X25-M G2快了约三倍</td>
+</tr>
+<tr>
+<td>G.SkillPhoenix Pro</td>
+<td>SSD</td>
+<td>~20,000 IOPS。</td>
+<td>SATA 3 Gbit/s</td>
+<td>SandForce-1200为基础的固态硬件，配合加强版的固件，最快可到50,000 IOPS，性能测试的结果是随机读取可到~25,000 IOPS，随机写入可到~15,000 IOPS。</td>
+</tr>
+<tr>
+<td>OCZVertex 3</td>
+<td>SSD</td>
+<td>最高可到60,000 IOPS</td>
+<td>SATA 6 Gbit/s</td>
+<td>随机写入4KB (Aligned)</td>
+</tr>
+<tr>
+<td>CorsairForce Series GT</td>
+<td>SSD</td>
+<td>最高可到85,000 IOPS</td>
+<td>SATA 6 Gbit/s</td>
+<td>240GB Drive，循序读取为555 MB/s，循序写入为525 MB/s。随机写入4KB (Aligned)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>数据来源于百度百科 <a href="https://baike.baidu.com/item/IOPS" target="_blank" rel="noopener">https://baike.baidu.com/item/IOPS</a></p>
+</blockquote>
+<ul>
+<li>带宽/吞吐量： 读548MB/S  | 写 370MB/s</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/liaojiacan/assets/master/img/WX20190522-181048.png" alt></p>
+<blockquote>
+<p>数据来源 <a href="https://ssd.userbenchmark.com/" target="_blank" rel="noopener">https://ssd.userbenchmark.com/</a></p>
+</blockquote>
+
       
-      
-      <section class="panel panel-default b-no">
-        <div class="panel-heading" role="tab">
-          <h3 class="panel-title">
-            <a data-toggle="collapse" href="#collapse2018" aria-expanded="true">
-              <i class="icon icon-calendar-plus text-active"></i><i class="icon icon-calendar-minus text"></i>
-              2018
-            </a>
-            <!-- <a href="/archives/2018" class="archive-year">2018</a> -->
-          </h3>
-        </div>
-        <div id="collapse2018" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading2018">
-        <div class="panel-body">
-          <div class="collection">
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
     
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://liaojiacan.me/2019/05/22/【系统与架构设计】你知道硬盘能有多快吗/" title="【系统与架构设计】你知道硬盘能有多快吗？" target="_blank" rel="external">http://liaojiacan.me/2019/05/22/【系统与架构设计】你知道硬盘能有多快吗/</a>
+    </li>
     
-<a href="/2018/04/13/谈谈多语言设计（三）Spring-i18n-拓展之自定义MessageSource/index.html" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2018-04-13T08:08:00.000Z" itemprop="datePublished">2018-04-13</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 谈谈多语言设计（三）Spring-i18n 拓展之自定义MessageSource
-</a>
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
 
 
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/liaojiacan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt>
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/liaojiacan" target="_blank"><span class="text-dark">Jiacan Liao</span><small class="ml-1x">Java Developer</small></a></h3>
+        <div>主要从事Java后端开发，并擅长Web相关技术，对网络安全和应用逆向也很感兴趣。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
   
     
-    
-    
-<a href="/2018/03/09/Idea使用骨架生成项目卡住的解决办法/index.html" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2018-03-09T11:01:00.000Z" itemprop="datePublished">2018-03-09</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> Idea使用骨架生成项目卡住的解决办法
-</a>
-
-
-  
-    
-    
-    
-<a href="/2018/03/08/谈谈多语言设计（二）之Spring多语言/index.html" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2018-03-08T11:07:00.000Z" itemprop="datePublished">2018-03-08</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 谈谈多语言设计（二）之Spring多语言
-</a>
-
-
-  
-  
-    </div></div></div></section>
-  
-
-	    </div>
-  	</article>
+  <section id="comments">
   	
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTExMi83NjYx">
+        <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>    
     
-    <nav class="bar bar-footer clearfix" data-stick-bottom>
-        <div class="bar-inner">
-        <ul class="pager pull-left">
-            
-            <li class="prev disabled">
-                <a href="javascript:;">
-                    <i class="icon icon-angle-left"></i>
-                    上一页
-                </a>
-            </li>
-            
-            
-            <li class="next">
-                <a href="/archives/page/2/">
-                    下一页
-                    <i class="icon icon-angle-right"></i>
-                </a>
-            </li>
-            
-        </ul>
-        <div class="total-article bar-right">Page 1 of 2</div>
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2019/05/21/一种适合后端代码的GIT分支管理办法/" title="一种适合后端团队代码的GIT分支管理办法"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫">
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/weipayimg.png" alt="扫码支持" title="扫一扫">
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class>
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
         </div>
-    </nav>
-    
- 	
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 </main>
 
   <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
@@ -539,6 +702,30 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
 
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+<script defer type="text/javascript">
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+
+    if (typeof LivereTower === 'function') { return; }
+
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
 
 
 
