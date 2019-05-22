@@ -51,19 +51,7 @@ index_generator:
   path: ''
   per_page: 10
   order_by: -date
-
-# feed   
-feed:
-  type: atom
-  path: atom.xml
-  limit: 20
-  hub:
-  content:
-## sitemap
-sitemap:
-  path: sitemap.xml
-baidusitemap:
-  path: baidusitemap.xml
+  
 # Category & Tag
 default_category: uncategorized
 category_map:
@@ -84,7 +72,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: hexo-theme-pure
+theme: pure
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html

@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang=zh>
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
+  
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
   <meta name="renderer" content="webkit">
-  <meta http-equiv="Cache-Control" content="no-transform" />
-  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="format-detection" content="telephone=no,email=no,adress=no">
   <!-- Color theme for statusbar -->
-  <meta name="theme-color" content="#000000" />
+  <meta name="theme-color" content="#000000">
   <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
-  <meta http-equiv="window-target" content="_top" />
+  <meta http-equiv="window-target" content="_top">
   
   
   <title>抽奖业务设计 | Jiacan&#39;s Blog</title>
@@ -25,7 +26,7 @@
 <meta property="og:site_name" content="Jiacan‘s Blog">
 <meta property="og:description" content="抽奖是一个比较常见的业务，关于抽奖的算法也有很多种实现，下面介绍一种比较容易实现的方式。  1.根据中奖概率的精确度，取一个权重的基线作为（概率-&amp;gt;概率区间）的放大因子。比如，概率的精确度是到万分位，则基线取10000，保证转换后的区间&amp;gt;=1 2.将奖品按对应的中奖概率*基线 转换成权重区间，并记录权重的上限值。 3.在权重上限值的范围内产生一个随机数，利用迭代查找或者二分查找算法找">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2017-12-16T08:22:20.264Z">
+<meta property="og:updated_time" content="2018-02-08T06:58:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="抽奖业务设计">
 <meta name="twitter:description" content="抽奖是一个比较常见的业务，关于抽奖的算法也有很多种实现，下面介绍一种比较容易实现的方式。  1.根据中奖概率的精确度，取一个权重的基线作为（概率-&amp;gt;概率区间）的放大因子。比如，概率的精确度是到万分位，则基线取10000，保证转换后的区间&amp;gt;=1 2.将奖品按对应的中奖概率*基线 转换成权重区间，并记录权重的上限值。 3.在权重上限值的范围内产生一个随机数，利用迭代查找或者二分查找算法找">
@@ -37,13 +38,11 @@
   
     <link rel="icon" href="/favicon.png" type="image/x-icon">
   
-  <!-- font-awesome CSS -->
-  <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
   
-    
-    
-
+  
+  
+  
 </head>
 
 
@@ -55,36 +54,36 @@
       
       <div class="profile-block text-center">
         <a id="avatar" href="https://github.com/liaojiacan" target="_blank">
-          <img class="thumb-xl img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
         </a>
         <h2 id="name" class="hidden-xs hidden-sm">Jiacan Liao</h2>
-        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Java Developer &amp; Geeker</h3>
-        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="fa fa-map-marker"></i> GuangZhou, China</small>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Java Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> GuangZhou, China</small>
       </div>
       
       <div class="search" id="search-form-wrap">
 
     <form class="search-form sidebar-form">
         <div class="input-group">
-            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <input type="text" class="search-form-input form-control" placeholder="搜索">
             <span class="input-group-btn">
-                <button type="submit" class="search-form-submit btn btn-flat"><i class="fa fa-search"></i></button>
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
             </span>
         </div>
     </form>
     <div class="ins-search">
-    <div class="ins-search-mask"></div>
-    <div class="ins-search-container">
-        <div class="ins-input-wrapper">
-            <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
-            <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-            <!-- <span class="ins-close ins-selectable"><i class="fa fa-times"></i></span> -->
-        </div>
-        <div class="ins-section-wrapper">
-            <div class="ins-section-container"></div>
-        </div>
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech>
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
     </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
 </div>
+
 
 </div>
       <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
@@ -95,93 +94,55 @@
       </button>
     </div>
     <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
-      <ul class="nav navbar-nav main-nav">
-        
+      <ul class="nav navbar-nav main-nav ">
         
         
         <li class="menu-item menu-item-home">
           <a href="/.">
             
-            <i class="fa fa-fw fa-dashboard"></i>
+            <i class="icon icon-home-fill"></i>
             
             <span class="menu-title">首页</span>
           </a>
         </li>
         
         
-        
         <li class="menu-item menu-item-archives">
           <a href="/archives">
             
-            <i class="fa fa-fw fa-delicious"></i>
+            <i class="icon icon-archives-fill"></i>
             
             <span class="menu-title">归档</span>
           </a>
         </li>
         
         
-        
         <li class="menu-item menu-item-categories">
           <a href="/categories">
             
-            <i class="fa fa-fw fa-folder"></i>
+            <i class="icon icon-folder"></i>
             
             <span class="menu-title">分类</span>
           </a>
         </li>
         
         
-        
         <li class="menu-item menu-item-tags">
           <a href="/tags">
             
-            <i class="fa fa-fw fa-tags"></i>
+            <i class="icon icon-tags"></i>
             
             <span class="menu-title">标签</span>
           </a>
         </li>
         
         
-        
         <li class="menu-item menu-item-repository">
           <a href="/repository">
             
-            <i class="fa fa-fw fa-code"></i>
+            <i class="icon icon-project"></i>
             
             <span class="menu-title">项目</span>
-          </a>
-        </li>
-        
-        
-        
-        <li class="menu-item menu-item-books">
-          <a href="/books">
-            
-            <i class="fa fa-fw fa-leanpub"></i>
-            
-            <span class="menu-title">书单</span>
-          </a>
-        </li>
-        
-        
-        
-        <li class="menu-item menu-item-links">
-          <a href="/links">
-            
-            <i class="fa fa-fw fa-gg"></i>
-            
-            <span class="menu-title">友链</span>
-          </a>
-        </li>
-        
-        
-        
-        <li class="menu-item menu-item-about">
-          <a href="/about">
-            
-            <i class="fa fa-fw fa-coffee"></i>
-            
-            <span class="menu-title">关于</span>
           </a>
         </li>
         
@@ -190,13 +151,15 @@
 	
     <ul class="social-links">
     	
-        <li><a href="https://github.com/liaojiacan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="fa fa-github"></i></a></li>
+        <li><a href="https://github.com/liaojiacan" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
         
-        <li><a href="http://weibo.com/liaojican" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="fa fa-weibo"></i></a></li>
+        <li><a href="http://weibo.com/liaojican" target="_blank" title="Weibo" data-toggle="tooltip" data-placement="top"><i class="icon icon-weibo"></i></a></li>
         
-        <li><a href="https://twitter.com/liaojiacan" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="fa fa-twitter"></i></a></li>
+        <li><a href="https://twitter.com/liaojiacan" target="_blank" title="Twitter" data-toggle="tooltip" data-placement="top"><i class="icon icon-twitter"></i></a></li>
         
-        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="fa fa-rss"></i></a></li>
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle="tooltip" data-placement="top"><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
         
     </ul>
 
@@ -212,9 +175,6 @@
     <h3 class="widget-title">公告</h3>
     <div class="widget-body">
         <div id="board">
-            
-            <p>您好，您是第<span id="busuanzi_value_site_uv">0</span>位访客</p>
-            
             <div class="content">
                 <p>欢迎交流与分享经验!</p>
             </div>
@@ -227,7 +187,7 @@
   <div class="widget">
     <h3 class="widget-title">分类</h3>
     <div class="widget-body">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/逆向/">逆向</a><span class="category-list-count">2</span></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JDK/">JDK</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jdk/">jdk</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发规范/">开发规范</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/架构总结/">架构总结</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/死锁/">死锁</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/源码解读/">源码解读</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/源码解读/JDK/">JDK</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/逆向/">逆向</a><span class="category-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -237,7 +197,7 @@
   <div class="widget">
     <h3 class="widget-title">标签</h3>
     <div class="widget-body">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/">Protobuf</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java逆向/">java逆向</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rpc/">rpc</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/业务开发/">业务开发</a><span class="tag-list-count">2</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AQS/">AQS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/">ClassLoader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ConcurrentHashMap/">ConcurrentHashMap</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GIT/">GIT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Idea/">Idea</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Innodb/">Innodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/J-U-C/">J.U.C</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/">Protobuf</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/archetypeCatalog/">archetypeCatalog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/i18n/">i18n</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/innodb/">innodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java逆向/">java逆向</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rpc/">rpc</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/synchronized/">synchronized</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/业务开发/">业务开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码管理/">代码管理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多线程/">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多语言/">多语言</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发规范/">开发规范</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/热加载/">热加载</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -247,7 +207,7 @@
   <div class="widget">
     <h3 class="widget-title">标签云</h3>
     <div class="widget-body tagcloud">
-      <a href="/tags/Protobuf/" style="font-size: 14px;">Protobuf</a> <a href="/tags/java/" style="font-size: 14px;">java</a> <a href="/tags/java逆向/" style="font-size: 14px;">java逆向</a> <a href="/tags/linux/" style="font-size: 13px;">linux</a> <a href="/tags/rpc/" style="font-size: 14px;">rpc</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/业务开发/" style="font-size: 14px;">业务开发</a>
+      <a href="/tags/AQS/" style="font-size: 13px;">AQS</a> <a href="/tags/ClassLoader/" style="font-size: 13px;">ClassLoader</a> <a href="/tags/ConcurrentHashMap/" style="font-size: 13px;">ConcurrentHashMap</a> <a href="/tags/GIT/" style="font-size: 13px;">GIT</a> <a href="/tags/Idea/" style="font-size: 13px;">Idea</a> <a href="/tags/Innodb/" style="font-size: 13px;">Innodb</a> <a href="/tags/J-U-C/" style="font-size: 13px;">J.U.C</a> <a href="/tags/MySQL/" style="font-size: 13px;">MySQL</a> <a href="/tags/Protobuf/" style="font-size: 13.5px;">Protobuf</a> <a href="/tags/archetypeCatalog/" style="font-size: 13px;">archetypeCatalog</a> <a href="/tags/i18n/" style="font-size: 14px;">i18n</a> <a href="/tags/innodb/" style="font-size: 13px;">innodb</a> <a href="/tags/java/" style="font-size: 13.5px;">java</a> <a href="/tags/java逆向/" style="font-size: 13.5px;">java逆向</a> <a href="/tags/linux/" style="font-size: 13px;">linux</a> <a href="/tags/rpc/" style="font-size: 13.5px;">rpc</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/synchronized/" style="font-size: 13px;">synchronized</a> <a href="/tags/业务开发/" style="font-size: 13.5px;">业务开发</a> <a href="/tags/代码管理/" style="font-size: 13px;">代码管理</a> <a href="/tags/多线程/" style="font-size: 13px;">多线程</a> <a href="/tags/多语言/" style="font-size: 14px;">多语言</a> <a href="/tags/开发规范/" style="font-size: 13px;">开发规范</a> <a href="/tags/热加载/" style="font-size: 13px;">热加载</a>
     </div>
   </div>
 
@@ -256,7 +216,7 @@
   <div class="widget">
     <h3 class="widget-title">归档</h3>
     <div class="widget-body">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -272,13 +232,13 @@
             
             <div class="item-inner">
               <p class="item-category">
-                
+                <a class="category-link" href="/categories/开发规范/">开发规范</a>
               </p>
               <p class="item-title">
-                <a href="/2018/02/07/Source-Tree-配置支持gerrit-review/" class="title">Source Tree 配置支持gerrit review</a>
+                <a href="/2019/05/21/一种适合后端代码的GIT分支管理办法/" class="title">一种适合后端团队代码的GIT分支管理办法</a>
               </p>
               <p class="item-date">
-                <time datetime="2018-02-07T07:34:45.000Z" itemprop="datePublished">2018-02-07</time>
+                <time datetime="2019-05-21T08:45:44.000Z" itemprop="datePublished">2019-05-21</time>
               </p>
             </div>
           </li>
@@ -287,13 +247,13 @@
             
             <div class="item-inner">
               <p class="item-category">
-                <a class="category-link" href="/categories/java/">java</a>
+                <a class="category-link" href="/categories/JDK/">JDK</a>
               </p>
               <p class="item-title">
-                <a href="/2017/12/16/抽奖业务设计/" class="title">抽奖业务设计</a>
+                <a href="/2019/03/17/自定义ClassLoader实现一个支持热加载的应用启动器/" class="title">自定义ClassLoader实现一个支持热加载的应用启动器</a>
               </p>
               <p class="item-date">
-                <time datetime="2017-12-16T08:12:00.000Z" itemprop="datePublished">2017-12-16</time>
+                <time datetime="2019-03-17T08:46:00.000Z" itemprop="datePublished">2019-03-17</time>
               </p>
             </div>
           </li>
@@ -302,13 +262,13 @@
             
             <div class="item-inner">
               <p class="item-category">
-                
+                <a class="category-link" href="/categories/jdk/">jdk</a>
               </p>
               <p class="item-title">
-                <a href="/2017/10/16/Java根据指定的country和lang格式化时间/" class="title">Java根据指定的country和lang格式化时间</a>
+                <a href="/2019/03/11/Java中的多线程和锁实现原理/" class="title">Java中的多线程和锁实现原理</a>
               </p>
               <p class="item-date">
-                <time datetime="2017-10-16T13:18:00.000Z" itemprop="datePublished">2017-10-16</time>
+                <time datetime="2019-03-11T09:19:00.000Z" itemprop="datePublished">2019-03-11</time>
               </p>
             </div>
           </li>
@@ -317,13 +277,13 @@
             
             <div class="item-inner">
               <p class="item-category">
-                <a class="category-link" href="/categories/逆向/">逆向</a>
+                <a class="category-link" href="/categories/数据库/">数据库</a>
               </p>
               <p class="item-title">
-                <a href="/2017/10/12/Iedis破解思路/" class="title">Iedis破解思路</a>
+                <a href="/2019/02/28/Innodb中的锁总结/" class="title">Innodb中的锁总结</a>
               </p>
               <p class="item-date">
-                <time datetime="2017-10-12T07:01:00.000Z" itemprop="datePublished">2017-10-12</time>
+                <time datetime="2019-02-28T11:22:00.000Z" itemprop="datePublished">2019-02-28</time>
               </p>
             </div>
           </li>
@@ -332,13 +292,13 @@
             
             <div class="item-inner">
               <p class="item-category">
-                
+                <a class="category-link" href="/categories/死锁/">死锁</a>
               </p>
               <p class="item-title">
-                <a href="/2017/10/11/proto变量类型与java类型对照表/" class="title">proto变量类型与java类型对照表</a>
+                <a href="/2019/02/27/Insert-ignore-和update-导致的死锁问题分析/" class="title">Insert ignore 和update 导致的死锁问题分析</a>
               </p>
               <p class="item-date">
-                <time datetime="2017-10-11T02:53:00.000Z" itemprop="datePublished">2017-10-11</time>
+                <time datetime="2019-02-27T12:13:00.000Z" itemprop="datePublished">2019-02-27</time>
               </p>
             </div>
           </li>
@@ -370,39 +330,38 @@
       
       <div class="article-meta">
         <span class="article-date">
-    <i class="fa fa-calendar-check-o"></i>
-	<a href="/2017/12/16/抽奖业务设计/index.html" class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2017/12/16/抽奖业务设计/" class="article-date">
 	  <time datetime="2017-12-16T08:12:00.000Z" itemprop="datePublished">2017-12-16</time>
 	</a>
 </span>
         
   <span class="article-category">
-    <i class="fa fa-folder"></i>
+    <i class="icon icon-folder"></i>
     <a class="article-category-link" href="/categories/java/">java</a>
   </span>
 
         
   <span class="article-tag">
-    <i class="fa fa-tag"></i>
+    <i class="icon icon-tags"></i>
 	<a class="article-tag-link" href="/tags/业务开发/">业务开发</a>
   </span>
 
 
         
 	<span class="article-read hidden-xs">
-	    <i class="fa fa-eye" aria-hidden="true"></i>
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
 	    <span id="busuanzi_container_page_pv">
-			阅读<span id="busuanzi_value_page_pv">0</span>次
+			<span id="busuanzi_value_page_pv">0</span>
 		</span>
 	</span>
 
 
-        <span class="post-comment"><i class="fa fa-commenting-o"></i> <a href="/2017/12/16/抽奖业务设计/index.html#comments" class="article-comment-link">评论</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2017/12/16/抽奖业务设计/#comments" class="article-comment-link">评论</a></span>
         
       </div>
-      
     </div>
-    <div class="article-entry markdown-body" itemprop="articleBody">
+    <div class="article-entry marked-body" itemprop="articleBody">
       
         <blockquote>
 <p>抽奖是一个比较常见的业务，关于抽奖的算法也有很多种实现，下面介绍一种比较容易实现的方式。</p>
@@ -411,12 +370,12 @@
 <p>2.将奖品按对应的中奖概率*基线 转换成权重区间，并记录权重的上限值。</p>
 <p>3.在权重上限值的范围内产生一个随机数，利用迭代查找或者二分查找算法找到对应的权重区间，即可获取到对应的奖品。</p>
 <p>假设奖品的配置如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&quot;一等奖&quot;:0.01</div><div class="line">&quot;二等奖&quot;:0.1</div><div class="line">&quot;三等奖&quot;:0.15</div><div class="line">&quot;四等奖&quot;:0.2</div><div class="line">&quot;五等奖&quot;:0.25</div><div class="line">&quot;六等奖&quot;:0.29</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&quot;一等奖&quot;:0.01</span><br><span class="line">&quot;二等奖&quot;:0.1</span><br><span class="line">&quot;三等奖&quot;:0.15</span><br><span class="line">&quot;四等奖&quot;:0.2</span><br><span class="line">&quot;五等奖&quot;:0.25</span><br><span class="line">&quot;六等奖&quot;:0.29</span><br></pre></td></tr></table></figure>
 <p>概率转换到权重区间（放大10000倍）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">一等奖:[0.000000,100.000000)</div><div class="line">二等奖:[100.000000,1100.000000)</div><div class="line">三等奖:[1100.000000,2600.000000)</div><div class="line">四等奖:[2600.000000,4100.000000)</div><div class="line">五等奖:[4100.000000,6100.000000)</div><div class="line">六等奖:[6100.000000,8600.000000)</div></pre></td></tr></table></figure>
-<p>算法实现：<a href="https://github.com/liaojiacan/code-snippets/tree/master/function-design/src/main/java/com/github/liaojiacan/lottery" target="_blank" rel="external">Github</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">public class LotteryPrize &#123;</div><div class="line">	private String id;</div><div class="line">	private String name;</div><div class="line">	private double possibility;</div><div class="line"></div><div class="line">	public LotteryPrize() &#123;</div><div class="line">	&#125;</div><div class="line"></div><div class="line"></div><div class="line">	public LotteryPrize(String id, String name, double possibility) &#123;</div><div class="line">		this.id = id;</div><div class="line">		this.name = name;</div><div class="line">		this.possibility = possibility;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public String getId() &#123;</div><div class="line">		return id;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public void setId(String id) &#123;</div><div class="line">		this.id = id;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public String getName() &#123;</div><div class="line">		return name;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public void setName(String name) &#123;</div><div class="line">		this.name = name;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public double getPossibility() &#123;</div><div class="line">		return possibility;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public void setPossibility(double possibility) &#123;</div><div class="line">		this.possibility = possibility;</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">public class LotteryMachine &#123;</div><div class="line"></div><div class="line">	private PossibilityArea[] table;</div><div class="line">	private int bound = 1;</div><div class="line">	private Random random = new Random();</div><div class="line"></div><div class="line">	private static final int BASE_WEIGHT = 10000;</div><div class="line"></div><div class="line">	class PossibilityArea&#123;</div><div class="line">		private LotteryPrize prize;</div><div class="line">		private double start;</div><div class="line">		private double end;</div><div class="line">		public PossibilityArea(LotteryPrize prize, double start, double end) &#123;</div><div class="line">			this.prize = prize;</div><div class="line">			this.start = start;</div><div class="line">			this.end = end;</div><div class="line">			System.out.printf(&quot;%s:[%f,%f)\n&quot;,prize.getName(),start,end);</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public LotteryMachine(List&lt;LotteryPrize&gt; prizes) &#123;</div><div class="line">		table = new PossibilityArea[prizes.size()];</div><div class="line">		double start = 0;</div><div class="line">		for(int i=0;i&lt;prizes.size();i++)&#123;</div><div class="line">			LotteryPrize prize = prizes.get(i);</div><div class="line">			double weight = prize.getPossibility() * BASE_WEIGHT;</div><div class="line">			Double end = start + weight;</div><div class="line">			PossibilityArea area = new PossibilityArea(prize,start,end);</div><div class="line">			table[i]= area;</div><div class="line">			bound = end.intValue();</div><div class="line">			start=end;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line"></div><div class="line"></div><div class="line">	private LotteryPrize binarySearch(int rnd)&#123;</div><div class="line">		int low = 0;</div><div class="line">		int hight = table.length;</div><div class="line">		while (low&lt;hight)&#123;</div><div class="line">			int mid = (low + hight) / 2;</div><div class="line">			PossibilityArea area = table[mid];</div><div class="line">			if(area.start&lt;=rnd &amp;&amp; area.end&gt;rnd)&#123;</div><div class="line">				return  area.prize;</div><div class="line">			&#125;</div><div class="line">			if(area.end&lt;=rnd)&#123;</div><div class="line">				low=mid+1;</div><div class="line">			&#125;</div><div class="line">			if(area.start&gt;rnd)&#123;</div><div class="line">				hight=mid;</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">		return null;</div><div class="line"></div><div class="line">	&#125;</div><div class="line"></div><div class="line">	public LotteryPrize go()&#123;</div><div class="line">		int rnd = random.nextInt(bound);</div><div class="line">		return binarySearch(rnd);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">一等奖:[0.000000,100.000000)</span><br><span class="line">二等奖:[100.000000,1100.000000)</span><br><span class="line">三等奖:[1100.000000,2600.000000)</span><br><span class="line">四等奖:[2600.000000,4100.000000)</span><br><span class="line">五等奖:[4100.000000,6100.000000)</span><br><span class="line">六等奖:[6100.000000,8600.000000)</span><br></pre></td></tr></table></figure>
+<p>算法实现：<a href="https://github.com/liaojiacan/code-snippets/tree/master/function-design/src/main/java/com/github/liaojiacan/lottery" target="_blank" rel="noopener">Github</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">public class LotteryPrize &#123;</span><br><span class="line">	private String id;</span><br><span class="line">	private String name;</span><br><span class="line">	private double possibility;</span><br><span class="line"></span><br><span class="line">	public LotteryPrize() &#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	public LotteryPrize(String id, String name, double possibility) &#123;</span><br><span class="line">		this.id = id;</span><br><span class="line">		this.name = name;</span><br><span class="line">		this.possibility = possibility;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getId() &#123;</span><br><span class="line">		return id;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setId(String id) &#123;</span><br><span class="line">		this.id = id;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getName() &#123;</span><br><span class="line">		return name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setName(String name) &#123;</span><br><span class="line">		this.name = name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public double getPossibility() &#123;</span><br><span class="line">		return possibility;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setPossibility(double possibility) &#123;</span><br><span class="line">		this.possibility = possibility;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class LotteryMachine &#123;</span><br><span class="line"></span><br><span class="line">	private PossibilityArea[] table;</span><br><span class="line">	private int bound = 1;</span><br><span class="line">	private Random random = new Random();</span><br><span class="line"></span><br><span class="line">	private static final int BASE_WEIGHT = 10000;</span><br><span class="line"></span><br><span class="line">	class PossibilityArea&#123;</span><br><span class="line">		private LotteryPrize prize;</span><br><span class="line">		private double start;</span><br><span class="line">		private double end;</span><br><span class="line">		public PossibilityArea(LotteryPrize prize, double start, double end) &#123;</span><br><span class="line">			this.prize = prize;</span><br><span class="line">			this.start = start;</span><br><span class="line">			this.end = end;</span><br><span class="line">			System.out.printf(&quot;%s:[%f,%f)\n&quot;,prize.getName(),start,end);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public LotteryMachine(List&lt;LotteryPrize&gt; prizes) &#123;</span><br><span class="line">		table = new PossibilityArea[prizes.size()];</span><br><span class="line">		double start = 0;</span><br><span class="line">		for(int i=0;i&lt;prizes.size();i++)&#123;</span><br><span class="line">			LotteryPrize prize = prizes.get(i);</span><br><span class="line">			double weight = prize.getPossibility() * BASE_WEIGHT;</span><br><span class="line">			Double end = start + weight;</span><br><span class="line">			PossibilityArea area = new PossibilityArea(prize,start,end);</span><br><span class="line">			table[i]= area;</span><br><span class="line">			bound = end.intValue();</span><br><span class="line">			start=end;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	private LotteryPrize binarySearch(int rnd)&#123;</span><br><span class="line">		int low = 0;</span><br><span class="line">		int hight = table.length;</span><br><span class="line">		while (low&lt;hight)&#123;</span><br><span class="line">			int mid = (low + hight) / 2;</span><br><span class="line">			PossibilityArea area = table[mid];</span><br><span class="line">			if(area.start&lt;=rnd &amp;&amp; area.end&gt;rnd)&#123;</span><br><span class="line">				return  area.prize;</span><br><span class="line">			&#125;</span><br><span class="line">			if(area.end&lt;=rnd)&#123;</span><br><span class="line">				low=mid+1;</span><br><span class="line">			&#125;</span><br><span class="line">			if(area.start&gt;rnd)&#123;</span><br><span class="line">				hight=mid;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		return null;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public LotteryPrize go()&#123;</span><br><span class="line">		int rnd = random.nextInt(bound);</span><br><span class="line">		return binarySearch(rnd);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -441,11 +400,11 @@
     <figure class="media">
       <div class="media-left">
         <a href="https://github.com/liaojiacan" target="_blank" class="img-burn thumb-sm visible-lg">
-          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt>
         </a>
       </div>
       <div class="media-body">
-        <h3 class="media-heading"><a href="https://github.com/liaojiacan" target="_blank"><span class="text-dark">Jiacan Liao</span><small class="ml-1x">Java Developer &amp; Geeker</small></a></h3>
+        <h3 class="media-heading"><a href="https://github.com/liaojiacan" target="_blank"><span class="text-dark">Jiacan Liao</span><small class="ml-1x">Java Developer</small></a></h3>
         <div>主要从事Java后端开发，并擅长Web相关技术，对网络安全和应用逆向也很感兴趣。</div>
       </div>
     </figure>
@@ -459,11 +418,9 @@
     
   <section id="comments">
   	
-       
-<div id="lv-container" data-id="city" data-uid="MTAyMC8zMTExMi83NjYx">
-  <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
-</div>
-      
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTExMi83NjYx">
+        <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>    
     
   </section>
 
@@ -477,58 +434,68 @@
   <ul class="pager pull-left">
     
     <li class="prev">
-      <a href="/2018/02/07/Source-Tree-配置支持gerrit-review/" title="Source Tree 配置支持gerrit review"><i class="fa fa-angle-left" aria-hidden="true"></i>&nbsp;&nbsp;上一篇</a>
+      <a href="/2018/02/07/Source-Tree-配置支持gerrit-review/" title="Source Tree 配置支持gerrit review"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
     </li>
     
     
     <li class="next">
-      <a href="/2017/10/16/Java根据指定的country和lang格式化时间/" title="Java根据指定的country和lang格式化时间">下一篇&nbsp;&nbsp;<i class="fa fa-angle-right" aria-hidden="true"></i></a>
+      <a href="/2017/10/16/Java根据指定的country和lang格式化时间/" title="Java根据指定的country和lang格式化时间"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
+    
     
   </ul>
   
   
   <!-- Button trigger modal -->
-  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning hidden-xs" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
   
   
   <div class="bar-right">
+    
     <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
   </div>
-  
   </div>
 </nav>
   
 <!-- Modal -->
-<div class="modal modal-center modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <div class="modal-content donate">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       <div class="modal-body">
         <div class="donate-box">
-          <div class="donate-tit">
+          <div class="donate-head">
             <p>感谢您的支持，我会继续努力的!</p>
           </div>
-          <div class="donate-payimg">
-            <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
-          </div>
-          <p class="text-muted mv">扫码打赏，你说多少就多少</p>
-          <div class="donate-payselect">
-            <div class="pay_item checked" data-id="alipay" data-src="/images/donate/alipayimg.png">
-              <div class="radio">
-                <input type="radio" name="payment" id="input-alipay" value="alipay" checked>
-                <label class="pay_logo clickable" for="input-alipay"><img src="/images/donate/alipay.jpg" alt="支付宝" /></label>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫">
               </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
             </div>
-            <div class="pay_item" data-id="weipay" data-src="/images/donate/weipayimg.png">
-              <div class="radio">
-                <input type="radio" name="payment" id="input-weipay" value="weipay">
-                <label class="pay_logo clickable" for="input-weipay"><img src="/images/donate/weipay.jpg" alt="微信支付" /></label>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/weipayimg.png" alt="扫码支持" title="扫一扫">
               </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
             </div>
           </div>
-          <div class="text-grey">
-            <p>打开<span id="donate-pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class>
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -545,13 +512,15 @@
 	
     <ul class="social-links">
     	
-        <li><a href="https://github.com/liaojiacan" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="fa fa-github"></i></a></li>
+        <li><a href="https://github.com/liaojiacan" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
         
-        <li><a href="http://weibo.com/liaojican" target="_blank" title="Weibo" data-toggle=tooltip data-placement=top><i class="fa fa-weibo"></i></a></li>
+        <li><a href="http://weibo.com/liaojican" target="_blank" title="Weibo" data-toggle="tooltip" data-placement="top"><i class="icon icon-weibo"></i></a></li>
         
-        <li><a href="https://twitter.com/liaojiacan" target="_blank" title="Twitter" data-toggle=tooltip data-placement=top><i class="fa fa-twitter"></i></a></li>
+        <li><a href="https://twitter.com/liaojiacan" target="_blank" title="Twitter" data-toggle="tooltip" data-placement="top"><i class="icon icon-twitter"></i></a></li>
         
-        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle=tooltip data-placement=top><i class="fa fa-rss"></i></a></li>
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle="tooltip" data-placement="top"><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
         
     </ul>
 
@@ -562,17 +531,14 @@
         </div>
     </div>
 </footer>
-  <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
 <script>
 window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 </script>
-<script src="/js/plugin.js"></script>
+<script src="/js/plugin.min.js"></script>
 <script src="/js/application.js"></script>
-  
-    
-    
-    
-        <script>
+
+    <script>
 (function (window) {
     var INSIGHT_CONFIG = {
         TRANSLATION: {
@@ -589,16 +555,19 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 })(window);
 </script>
 <script src="/js/insight.js"></script>
-    
-    
-        
-<script defer src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 
-    
-    
-        
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
     
 <script defer type="text/javascript">
   (function(d, s) {
@@ -615,8 +584,9 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 </script>
 
 
-    
-    
+
+
+
 
 
 
