@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://liaojiacan.me/"/>
-  <updated>2019-05-22T11:05:37.070Z</updated>
+  <updated>2019-05-27T11:07:19.572Z</updated>
   <id>http://liaojiacan.me/</id>
   
   <author>
@@ -15,6 +15,39 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【高可用架构】理解有状态服务和无状态服务？</title>
+    <link href="http://liaojiacan.me/2019/05/27/%E3%80%90%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9E%B6%E6%9E%84%E3%80%91%E7%90%86%E8%A7%A3%E6%9C%89%E7%8A%B6%E6%80%81%E6%9C%8D%E5%8A%A1%E5%92%8C%E6%97%A0%E7%8A%B6%E6%80%81%E6%9C%8D%E5%8A%A1/"/>
+    <id>http://liaojiacan.me/2019/05/27/【高可用架构】理解有状态服务和无状态服务/</id>
+    <published>2019-05-27T08:41:14.000Z</published>
+    <updated>2019-05-27T11:07:19.572Z</updated>
+    
+    <content type="html"><![CDATA[<hr><h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2><p>“有状态&quot;和&quot;无状态” 这个两词经常会出现在一些架构设计的文章中，怎么去理解这两个的含义？这2种场景下该如何做高可用，数据一致性怎么解决？</p><h2 id="正文"><a class="markdownIt-Anchor" href="#正文"></a> 正文</h2><p>对于&quot;状态&quot;我个人的理解是， 对于同一时刻同一个请求产生的数据的状态数为一的则为无状态，大于一则认为有状态，至于是否允许多状态共存，取决于对一致性的要求。</p><h3 id="从数据层面看状态"><a class="markdownIt-Anchor" href="#从数据层面看状态"></a> 从数据层面看状态</h3><blockquote><p>数据的状态往往受2个纬度有关，一是与时间相关或者顺序相关的，不同的操作顺序可能导致同一个时间点上的数据状态&gt; 1个，二是与数据的副本状态相关的，数据落在多个副本上，可能出现多种数据状态的组合。</p></blockquote><p><strong>时间状态</strong>： 操作顺序有一定的限制，同一个状态的数据不能出现在2个时间点（重复请求）。</p><ul><li>如有个数据新增 ，更新，删除这3个顺序的请求，在下游业务也需要同样的顺序操作。</li><li>对于单状态的数据，如计数器，不能出现重复添加，也就是这个数据只有第一次出现的时间状态是对的，后来的数据在时间状态上是不允许的，对于这种场景，往往通过把这个&quot;点&quot;状的数据，换成&quot;线&quot;数据，比如换把计数器记录成操作历史，这个点的状态由这些历史数据聚合而成，&quot;线”数据容易做幂等操作。</li></ul><p><strong>位置状态</strong> :   数据落地点的状态。</p><ul><li>数据拆分后的应用，同一个数据就有了状态，他只能落在指定的节点上。</li><li>对于复制集架构，数据是存在多个副本的，也就是说数据落在的位置在集群上需要有一定的数量保证，以满足一定的共识基础，比如要写半数以上节点，也就是说这个数据是存在2个状态的，对于已经写成功的节点是成功状态，对于未写成功的节点是未成功/处理中的状态。如何协调这些状态，往往要引入一些共识协议（Paxos，Raft）。</li></ul><h3 id="从服务层面看状态"><a class="markdownIt-Anchor" href="#从服务层面看状态"></a> 从服务层面看状态</h3><blockquote><p>服务层面的状态取决于实例是单独维护数据还是共享数据，或者说是否存在多个数据闭环让数据的流向产生了多条路径。有状态的服务往往比较难进行水平拓展，在现在容器盛行的环境，把服务设计成无状态的更加高效，即便是有状态的服务，也要将状态内敛在系统的某个范围，比如分布式的存储，对于业务服务，我不需要关系数据在多个副本的状态，数据的状态由分布式存储这个服务本身解决。</p></blockquote><h4 id="有状态服务"><a class="markdownIt-Anchor" href="#有状态服务"></a> 有状态服务</h4><ul><li>服务本身依赖或者存在局部的状态数据，这些数据需要自身持久化或者可以通过其他节点恢复。</li><li>一个请求只能被某个节点（或者同等状态下的节点）处理。</li><li>存储状态数据，实例的拓展需要整个系统参与状态的迁移。</li><li>在一个封闭的系统中，存在多个数据闭环，需要考虑这些闭环的数据一致性问题。</li><li>通常存在于分布式架构中。</li></ul><h4 id="无状态服务"><a class="markdownIt-Anchor" href="#无状态服务"></a> 无状态服务</h4><ul><li>服务不依赖自身的状态，实例的状态数据可以维护在内存中。</li><li>任何一个请求都可以被任意一个实例处理。</li><li>不存储状态数据，实例可以水平拓展，通过负载均衡将请求分发到各个节点。</li><li>在一个封闭的系统中，只存在一个数据闭环。</li><li>通常存在于单体架构的集群中。</li></ul><h3 id="怎么做转换"><a class="markdownIt-Anchor" href="#怎么做转换"></a> 怎么做转换</h3><ol><li>采用复制或者集中式消除数据状态。</li></ol><p><img src="https://raw.githubusercontent.com/liaojiacan/assets/master/img/stateless%20vs%20stateful%20(1).png" alt></p><ul><li>对于Web服务，如果数据存在session中，那么这个服务就有了状态。</li><li>一种是对session进行复制，同步复制还是异步复制，取决于你对数据一致性的敏感程度。</li><li>也可以将session集中式管理，如用redis，出现性能或者容量的瓶颈，再换分布式的缓存，把状态交于缓存服务维护。</li><li>我们可以看出，有状态的服务，它的数据是存在多个闭环的，比如Web01-session-01-&gt; DB 和 Web02-session-&gt;DB 。通过复制，将session-01 和 02 等同于同一个。</li><li>或者我们可以将数据进行分区，让负载均衡器通过hash算法将请求落在固定的处理节点上。</li></ul><ol start="2"><li>采用控制节点来保证集中式存储的高可用和一致性。</li></ol><p><img src="https://raw.githubusercontent.com/liaojiacan/assets/master/img/stateless%20vs%20stateful%20-%20DB.png" alt></p><ul><li>在高可用的架构下，数据往往得存在多副本（鸡蛋别放一个篮子里面）</li><li>CAP理论，C和A不可能同时满足，多副本的存在让A可在有限时间内恢复，而C可用采用Quorum 机制来控制多个副本节点的数据一致性问题，保证半数以上的节点的写成功。</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;hr&gt;
+&lt;h2 id=&quot;前言&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#前言&quot;&gt;&lt;/a&gt; 前言&lt;/h2&gt;
+&lt;p&gt;“有状态&amp;quot;和&amp;quot;无状态” 这个两词经常会出现在一些架构设计的文章中，怎么去理解这两个的含义？这2种场景下该如何做高可
+      
+    
+    </summary>
+    
+      <category term="高可用架构" scheme="http://liaojiacan.me/categories/%E9%AB%98%E5%8F%AF%E7%94%A8%E6%9E%B6%E6%9E%84/"/>
+    
+    
+      <category term="系统设计" scheme="http://liaojiacan.me/tags/%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1/"/>
+    
+      <category term="架构设计" scheme="http://liaojiacan.me/tags/%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/"/>
+    
+      <category term="分布式" scheme="http://liaojiacan.me/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+      <category term="高可用" scheme="http://liaojiacan.me/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/"/>
+    
+  </entry>
   
   <entry>
     <title>【系统与架构设计】你知道硬盘能有多快吗？</title>

@@ -17,16 +17,24 @@
   <meta http-equiv="window-target" content="_top">
   
   
-  <title>归档: 2018/2 | Jiacan&#39;s Blog</title>
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Jiacan‘s Blog">
-<meta property="og:url" content="http://liaojiacan.me/archives/2018/02/index.html">
+  <title>【高可用架构】理解有状态服务和无状态服务？ | Jiacan&#39;s Blog</title>
+  <meta name="description" content="前言 “有状态&amp;quot;和&amp;quot;无状态” 这个两词经常会出现在一些架构设计的文章中，怎么去理解这两个的含义？这2种场景下该如何做高可用，数据一致性怎么解决？  正文 对于&amp;quot;状态&amp;quot;我个人的理解是， 对于同一时刻同一个请求产生的数据的状态数为一的则为无状态，大于一则认为有状态，至于是否允许多状态共存，取决于对一致性的要求。  从数据层面看状态  数据的状态往往受2个纬度">
+<meta name="keywords" content="系统设计,架构设计,分布式,高可用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【高可用架构】理解有状态服务和无状态服务？">
+<meta property="og:url" content="http://liaojiacan.me/2019/05/27/【高可用架构】理解有状态服务和无状态服务/index.html">
 <meta property="og:site_name" content="Jiacan‘s Blog">
+<meta property="og:description" content="前言 “有状态&amp;quot;和&amp;quot;无状态” 这个两词经常会出现在一些架构设计的文章中，怎么去理解这两个的含义？这2种场景下该如何做高可用，数据一致性怎么解决？  正文 对于&amp;quot;状态&amp;quot;我个人的理解是， 对于同一时刻同一个请求产生的数据的状态数为一的则为无状态，大于一则认为有状态，至于是否允许多状态共存，取决于对一致性的要求。  从数据层面看状态  数据的状态往往受2个纬度">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/liaojiacan/assets/master/img/stateless%20vs%20stateful%20(1).png">
+<meta property="og:image" content="https://raw.githubusercontent.com/liaojiacan/assets/master/img/stateless%20vs%20stateful%20-%20DB.png">
+<meta property="og:updated_time" content="2019-05-27T11:07:19.572Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Jiacan‘s Blog">
+<meta name="twitter:title" content="【高可用架构】理解有状态服务和无状态服务？">
+<meta name="twitter:description" content="前言 “有状态&amp;quot;和&amp;quot;无状态” 这个两词经常会出现在一些架构设计的文章中，怎么去理解这两个的含义？这2种场景下该如何做高可用，数据一致性怎么解决？  正文 对于&amp;quot;状态&amp;quot;我个人的理解是， 对于同一时刻同一个请求产生的数据的状态数为一的则为无状态，大于一则认为有状态，至于是否允许多状态共存，取决于对一致性的要求。  从数据层面看状态  数据的状态往往受2个纬度">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/liaojiacan/assets/master/img/stateless%20vs%20stateful%20(1).png">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://liaojiacan.me/archives/2018/02/index.html">
+  <link rel="canonical" href="http://liaojiacan.me/2019/05/27/【高可用架构】理解有状态服务和无状态服务/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Jiacan‘s Blog" type="application/atom+xml">
   
@@ -310,48 +318,238 @@
   
   
 <main class="main" role="main">
-  	<article class="content article article-archives article-type-list" itemscope>
-	    <header class="article-header">
-	      <h1 itemprop="title">归档: 2018/2</h1>
-	      <p class="text-muted">共 1 篇文章</p>
-	    </header>
-	    <div class="article-body">
-	      
+  <div class="content">
+  <article id="post-【高可用架构】理解有状态服务和无状态服务" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
   
+    <h1 class="article-title" itemprop="name">
+      【高可用架构】理解有状态服务和无状态服务？
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/05/27/【高可用架构】理解有状态服务和无状态服务/" class="article-date">
+	  <time datetime="2019-05-27T08:41:14.000Z" itemprop="datePublished">2019-05-27</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/高可用架构/">高可用架构</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/分布式/">分布式</a>, <a class="article-tag-link" href="/tags/架构设计/">架构设计</a>, <a class="article-tag-link" href="/tags/系统设计/">系统设计</a>, <a class="article-tag-link" href="/tags/高可用/">高可用</a>
+  </span>
+
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/05/27/【高可用架构】理解有状态服务和无状态服务/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <hr>
+<h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p>“有状态&quot;和&quot;无状态” 这个两词经常会出现在一些架构设计的文章中，怎么去理解这两个的含义？这2种场景下该如何做高可用，数据一致性怎么解决？</p>
+<h2 id="正文"><a class="markdownIt-Anchor" href="#正文"></a> 正文</h2>
+<p>对于&quot;状态&quot;我个人的理解是， 对于同一时刻同一个请求产生的数据的状态数为一的则为无状态，大于一则认为有状态，至于是否允许多状态共存，取决于对一致性的要求。</p>
+<h3 id="从数据层面看状态"><a class="markdownIt-Anchor" href="#从数据层面看状态"></a> 从数据层面看状态</h3>
+<blockquote>
+<p>数据的状态往往受2个纬度有关，一是与时间相关或者顺序相关的，不同的操作顺序可能导致同一个时间点上的数据状态&gt; 1个，二是与数据的副本状态相关的，数据落在多个副本上，可能出现多种数据状态的组合。</p>
+</blockquote>
+<p><strong>时间状态</strong>： 操作顺序有一定的限制，同一个状态的数据不能出现在2个时间点（重复请求）。</p>
+<ul>
+<li>如有个数据新增 ，更新，删除这3个顺序的请求，在下游业务也需要同样的顺序操作。</li>
+<li>对于单状态的数据，如计数器，不能出现重复添加，也就是这个数据只有第一次出现的时间状态是对的，后来的数据在时间状态上是不允许的，对于这种场景，往往通过把这个&quot;点&quot;状的数据，换成&quot;线&quot;数据，比如换把计数器记录成操作历史，这个点的状态由这些历史数据聚合而成，&quot;线”数据容易做幂等操作。</li>
+</ul>
+<p><strong>位置状态</strong> :   数据落地点的状态。</p>
+<ul>
+<li>数据拆分后的应用，同一个数据就有了状态，他只能落在指定的节点上。</li>
+<li>对于复制集架构，数据是存在多个副本的，也就是说数据落在的位置在集群上需要有一定的数量保证，以满足一定的共识基础，比如要写半数以上节点，也就是说这个数据是存在2个状态的，对于已经写成功的节点是成功状态，对于未写成功的节点是未成功/处理中的状态。如何协调这些状态，往往要引入一些共识协议（Paxos，Raft）。</li>
+</ul>
+<h3 id="从服务层面看状态"><a class="markdownIt-Anchor" href="#从服务层面看状态"></a> 从服务层面看状态</h3>
+<blockquote>
+<p>服务层面的状态取决于实例是单独维护数据还是共享数据，或者说是否存在多个数据闭环让数据的流向产生了多条路径。有状态的服务往往比较难进行水平拓展，在现在容器盛行的环境，把服务设计成无状态的更加高效，即便是有状态的服务，也要将状态内敛在系统的某个范围，比如分布式的存储，对于业务服务，我不需要关系数据在多个副本的状态，数据的状态由分布式存储这个服务本身解决。</p>
+</blockquote>
+<h4 id="有状态服务"><a class="markdownIt-Anchor" href="#有状态服务"></a> 有状态服务</h4>
+<ul>
+<li>服务本身依赖或者存在局部的状态数据，这些数据需要自身持久化或者可以通过其他节点恢复。</li>
+<li>一个请求只能被某个节点（或者同等状态下的节点）处理。</li>
+<li>存储状态数据，实例的拓展需要整个系统参与状态的迁移。</li>
+<li>在一个封闭的系统中，存在多个数据闭环，需要考虑这些闭环的数据一致性问题。</li>
+<li>通常存在于分布式架构中。</li>
+</ul>
+<h4 id="无状态服务"><a class="markdownIt-Anchor" href="#无状态服务"></a> 无状态服务</h4>
+<ul>
+<li>服务不依赖自身的状态，实例的状态数据可以维护在内存中。</li>
+<li>任何一个请求都可以被任意一个实例处理。</li>
+<li>不存储状态数据，实例可以水平拓展，通过负载均衡将请求分发到各个节点。</li>
+<li>在一个封闭的系统中，只存在一个数据闭环。</li>
+<li>通常存在于单体架构的集群中。</li>
+</ul>
+<h3 id="怎么做转换"><a class="markdownIt-Anchor" href="#怎么做转换"></a> 怎么做转换</h3>
+<ol>
+<li>采用复制或者集中式消除数据状态。</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/liaojiacan/assets/master/img/stateless%20vs%20stateful%20(1).png" alt></p>
+<ul>
+<li>对于Web服务，如果数据存在session中，那么这个服务就有了状态。</li>
+<li>一种是对session进行复制，同步复制还是异步复制，取决于你对数据一致性的敏感程度。</li>
+<li>也可以将session集中式管理，如用redis，出现性能或者容量的瓶颈，再换分布式的缓存，把状态交于缓存服务维护。</li>
+<li>我们可以看出，有状态的服务，它的数据是存在多个闭环的，比如Web01-session-01-&gt; DB 和 Web02-session-&gt;DB 。通过复制，将session-01 和 02 等同于同一个。</li>
+<li>或者我们可以将数据进行分区，让负载均衡器通过hash算法将请求落在固定的处理节点上。</li>
+</ul>
+<ol start="2">
+<li>采用控制节点来保证集中式存储的高可用和一致性。</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/liaojiacan/assets/master/img/stateless%20vs%20stateful%20-%20DB.png" alt></p>
+<ul>
+<li>在高可用的架构下，数据往往得存在多副本（鸡蛋别放一个篮子里面）</li>
+<li>CAP理论，C和A不可能同时满足，多副本的存在让A可在有限时间内恢复，而C可用采用Quorum 机制来控制多个副本节点的数据一致性问题，保证半数以上的节点的写成功。</li>
+</ul>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://liaojiacan.me/2019/05/27/【高可用架构】理解有状态服务和无状态服务/" title="【高可用架构】理解有状态服务和无状态服务？" target="_blank" rel="external">http://liaojiacan.me/2019/05/27/【高可用架构】理解有状态服务和无状态服务/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/liaojiacan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt>
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/liaojiacan" target="_blank"><span class="text-dark">Jiacan Liao</span><small class="ml-1x">Java Developer</small></a></h3>
+        <div>主要从事Java后端开发，并擅长Web相关技术，对网络安全和应用逆向也很感兴趣。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
   
     
+  <section id="comments">
+  	
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTExMi83NjYx">
+        <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>    
     
-      
-      
-      <section class="panel panel-default b-no">
-        <div class="panel-heading" role="tab">
-          <h3 class="panel-title">
-            <a data-toggle="collapse" href="#collapse2018" aria-expanded="true">
-              <i class="icon icon-calendar-plus text-active"></i><i class="icon icon-calendar-minus text"></i>
-              2018
-            </a>
-            <!-- <a href="/archives/2018" class="archive-year">2018</a> -->
-          </h3>
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2019/05/22/【系统与架构设计】你知道硬盘能有多快吗/" title="【系统与架构设计】你知道硬盘能有多快吗？"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫">
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/weipayimg.png" alt="扫码支持" title="扫一扫">
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class>
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div id="collapse2018" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading2018">
-        <div class="panel-body">
-          <div class="collection">
-    
-    
-<a href="/2018/02/07/Source-Tree-配置支持gerrit-review/index.html" class="collection-item" target="_blank" itemprop="url">
-  <time datetime="2018-02-07T07:34:45.000Z" itemprop="datePublished">2018-02-07</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> Source Tree 配置支持gerrit review
-</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 
-  
-  
-    </div></div></div></section>
-  
 
-	    </div>
-  	</article>
-  	 	
 </main>
 
   <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
@@ -405,6 +603,30 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
 
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+<script defer type="text/javascript">
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+
+    if (typeof LivereTower === 'function') { return; }
+
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
 
 
 
