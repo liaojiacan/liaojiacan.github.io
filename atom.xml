@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://liaojiacan.me/"/>
-  <updated>2019-05-29T12:04:49.335Z</updated>
+  <updated>2019-05-30T03:17:51.452Z</updated>
   <id>http://liaojiacan.me/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="http://liaojiacan.me/2019/05/29/%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86%E7%9A%84%E4%B8%80%E8%88%AC%E5%8A%9E%E6%B3%95%E6%80%BB%E7%BB%93/"/>
     <id>http://liaojiacan.me/2019/05/29/生产环境故障处理的一般办法总结/</id>
     <published>2019-05-29T09:45:44.000Z</published>
-    <updated>2019-05-29T12:04:49.335Z</updated>
+    <updated>2019-05-30T03:17:51.452Z</updated>
     
-    <content type="html"><![CDATA[<h3 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h3><p>任何一个系统上线运营后都或多或少会遇到生产环境故障问题，大部分情况下&quot;重启大法&quot;的确好用，但是能否有更符合我们这些&quot;有经验的&quot;工程师的做法呢？</p><hr><p>故障： 慢了，挂了，出异常。</p><p>处理：找线索、推测原因、再进一步找具体线索验证。</p><h3 id="总体的思路"><a class="markdownIt-Anchor" href="#总体的思路"></a> 总体的思路</h3><p>定位-&gt;保留现场-&gt; 故障快速恢复（重启/限流/降级/会滚）-&gt; 事后分析（日志/软硬件负载等）-&gt; 优化以及针对性加告警。</p><ul><li>线上告警/或者测试/客服反馈故障（模块/用户信息/时间等）</li><li>先看对应的模块工作是否正常（把接口往浏览器一敲，看看能不能访问，😄）</li><li>上机器看服务日志，看是否有异常日志（一般这种运行时异常，都要通过告警系统告警出来）</li><li>如果日志出现异常，回顾是否最近有更新服务，考虑是否需要会滚。</li><li>如果没有日志异常，纯粹是服务慢、超时，就要进一步分析了。</li><li>服务慢、超时，先看看目前的请求量多少，是否超出了当时的设计，一般这些都有做预警，如果没有预警出来，大概率不是这个原因，当然还是排除一下最好。</li><li>如果量不大，那一般就只有几种情况了，一是连接池或者线程池满了，二是GC 导致的停顿，三是数据库。</li><li>连接池和线程池满了都可能导致的新的请求无法处理，这个时候可以看下一些连接池的配置，线程池的配置，像数据库连接池如果用的是durid 可以有可视化的界面看，如果没有，可以通过jmap 把 heap都dump出来，查看链接池对象的属性，看类似idle等counter值，当然你也可以用一些在线的反射工具去看。像线程池的话如果是有届队列的可以通过 自定义拒绝策略类将异常告警出来。</li><li>GC 过程中的STW也可能导致请求超时，这个时候就要看是否堆空间不足，新老年代是否合理，可以考虑隔离一台机器出来把堆dump出来，看是否有内存泄漏。</li><li>数据库的话需要看下数据库服务的情况，慢查询等。</li><li>如果量大，那么是否考虑进行一个扩容，或者限流，或者考虑是否有DDOS攻击和CC攻击。</li><li>当然上一步只是一个分析过程，实际上也不可能让服务一直不回复等我们找到原因，一般都想先收集现场，能打快照的打快照，不能打快照的隔离出一台机器保留现场。</li></ul><h3 id="方法"><a class="markdownIt-Anchor" href="#方法"></a> 方法</h3><h4 id="1-先对现场数据进行定量归类"><a class="markdownIt-Anchor" href="#1-先对现场数据进行定量归类"></a> 1. 先对现场数据进行定量归类：</h4><ul><li>异常节点数量，少数节点故障还是多数节点故障。</li><li>时间点，出现异常的时间点或者范围，这个很重要，方便定位日志区间。</li><li>共同特征，比如是否都是依赖了某个下游服务，是同机房/ISP/程序版本/操作系统</li></ul><blockquote><p>这些最开始的归类有助于快速定位问题所在，记录故障路径，方便后面复盘。由于这些要求保留故障现场，但是我们也不能让服务一直不恢复，所以这些工作要在短时间内完成，如果公司的基础设施比较完善这些也应该能够在事后在各种监控系统进行复查。</p></blockquote><p>先解决问题再找原因，一般操作就是先保留现场，如果能保留快照（短时间内能完成），就保留快照后进行服务恢复，如果不能（比如JVM  dump heap 一般要很久），留一台线上机器，隔离流量（域名摘掉解析，nginx upstream 去掉，微服务得话将服务节点下线），其他机器重启恢复。</p><h4 id="2-对于无法从服务表象日志接口看出问题的情况就要深入服务运行环境进行分析排查"><a class="markdownIt-Anchor" href="#2-对于无法从服务表象日志接口看出问题的情况就要深入服务运行环境进行分析排查"></a> 2. 对于无法从服务表象（日志/接口）看出问题的情况，就要深入服务运行环境进行分析排查。</h4><ul><li><p>服务的表现：慢、挂、异常； 应用日志、上下游服务状态。</p><blockquote><p>Nginx 的 access log</p><p>一些trace 服务，如 spring cloud 的 Sleuth / Zipkin (dubbo 也可以)</p><p>Metric类的系统，直接定位到业务。</p></blockquote></li><li><p>硬件状态：CPU、内存、磁盘、网络是否有瓶颈。</p><blockquote><p>top 命令</p><p>free -h 看内存</p><p>df -h</p><p>iftop</p><p>nload</p><p>ping</p><p>lsof</p><p>netstat</p></blockquote></li><li><p>系统/容器/VM状态：系统日志，容器日志，VM GC日志等。</p><blockquote><p>jstat -gcutil  [pid] [period] 查看GC信息</p><p>jmap -heap [pid] 查看jvm堆的使用情况</p><p>唯品会开源的一些工具也挺好用的，<a href="https://github.com/vipshop/vjtools" target="_blank" rel="noopener">https://github.com/vipshop/vjtools</a></p></blockquote></li></ul><p>上面这些信息 可以通过一些监控系统，一般上规模的公司都有这些，可以快速获取到这些信息，没有的话，也可以自行上机器通过linux 命令查询到。</p>]]></content>
+    <content type="html"><![CDATA[<h3 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h3><p>任何一个系统上线运营后都或多或少会遇到生产环境故障问题，大部分情况下&quot;重启大法&quot;的确好用，但是能否有更符合我们这些&quot;有经验的&quot;工程师的做法呢？</p><hr><p>故障： 慢了，挂了，出异常。</p><p>处理：找线索、推测原因、再进一步找具体线索验证。</p><h3 id="总体的思路"><a class="markdownIt-Anchor" href="#总体的思路"></a> 总体的思路</h3><p>定位-&gt;保留现场-&gt; 故障快速恢复（重启/限流/降级/会滚）-&gt; 事后分析（日志/软硬件负载等）-&gt; 优化以及针对性加告警。</p><ul><li>线上告警/或者测试/客服反馈故障（模块/用户信息/时间等）</li><li>先看对应的模块工作是否正常（把接口往浏览器一敲，看看能不能访问，😄）</li><li>上机器看服务日志，看是否有异常日志（一般这种运行时异常，都要通过告警系统告警出来）</li><li>如果日志出现异常，回顾是否最近有更新服务，考虑是否需要会滚。</li><li>如果没有日志异常，纯粹是服务慢、超时，就要进一步分析了。</li><li>服务慢、超时，先看看目前的请求量多少，是否超出了当时的设计，一般这些都有做预警，如果没有预警出来，大概率不是这个原因，当然还是排除一下最好。</li><li>如果量不大，那一般就只有几种情况了，一是连接池或者线程池满了，二是GC 导致的停顿，三是数据库。</li><li>连接池和线程池满了都可能导致的新的请求无法处理，这个时候可以看下一些连接池的配置，线程池的配置，像数据库连接池如果用的是durid 可以有可视化的界面看，如果没有，可以通过jmap 把 heap都dump出来，查看链接池对象的属性，看类似idle等counter值，当然你也可以用一些在线的反射工具去看。像线程池的话如果是有界队列的可以通过 自定义拒绝策略类将异常告警出来。</li><li>GC 过程中的STW也可能导致请求超时，这个时候就要看是否堆空间不足，新老年代是否合理，可以考虑隔离一台机器出来把堆dump出来，看是否有内存泄漏。</li><li>数据库的话需要看下数据库服务的情况，慢查询等。</li><li>如果量大，那么是否考虑进行一个扩容，或者限流，或者考虑是否有DDOS攻击和CC攻击。</li><li>当然上一步只是一个分析过程，实际上也不可能让服务一直不回复等我们找到原因，一般都想先收集现场，能打快照的打快照，不能打快照的隔离出一台机器保留现场。</li></ul><h3 id="方法"><a class="markdownIt-Anchor" href="#方法"></a> 方法</h3><h4 id="1-先对现场数据进行定量归类"><a class="markdownIt-Anchor" href="#1-先对现场数据进行定量归类"></a> 1. 先对现场数据进行定量归类：</h4><ul><li>异常节点数量，少数节点故障还是多数节点故障。</li><li>时间点，出现异常的时间点或者范围，这个很重要，方便定位日志区间。</li><li>共同特征，比如是否都是依赖了某个下游服务，是同机房/ISP/程序版本/操作系统</li></ul><blockquote><p>这些最开始的归类有助于快速定位问题所在，记录故障路径，方便后面复盘。由于这些要求保留故障现场，但是我们也不能让服务一直不恢复，所以这些工作要在短时间内完成，如果公司的基础设施比较完善这些也应该能够在事后在各种监控系统进行复查。</p></blockquote><p>先解决问题再找原因，一般操作就是先保留现场，如果能保留快照（短时间内能完成），就保留快照后进行服务恢复，如果不能（比如JVM  dump heap 一般要很久），留一台线上机器，隔离流量（域名摘掉解析，nginx upstream 去掉，微服务得话将服务节点下线），其他机器重启恢复。</p><h4 id="2-对于无法从服务表象日志接口看出问题的情况就要深入服务运行环境进行分析排查"><a class="markdownIt-Anchor" href="#2-对于无法从服务表象日志接口看出问题的情况就要深入服务运行环境进行分析排查"></a> 2. 对于无法从服务表象（日志/接口）看出问题的情况，就要深入服务运行环境进行分析排查。</h4><ul><li><p>服务的表现：慢、挂、异常； 应用日志、上下游服务状态。</p><blockquote><p>Nginx 的 access log</p><p>一些trace 服务，如 spring cloud 的 Sleuth / Zipkin (dubbo 也可以)</p><p>Metric类的系统，直接定位到业务。</p></blockquote></li><li><p>硬件状态：CPU、内存、磁盘、网络是否有瓶颈。</p><blockquote><p>top 命令</p><p>free -h 看内存</p><p>df -h</p><p>iftop</p><p>nload</p><p>ping</p><p>lsof</p><p>netstat</p></blockquote></li><li><p>系统/容器/VM状态：系统日志，容器日志，VM GC日志等。</p><blockquote><p>jstat -gcutil  [pid] [period] 查看GC信息</p><p>jmap -heap [pid] 查看jvm堆的使用情况</p><p>唯品会开源的一些工具也挺好用的，<a href="https://github.com/vipshop/vjtools" target="_blank" rel="noopener">https://github.com/vipshop/vjtools</a></p></blockquote></li></ul><p>上面这些信息 可以通过一些监控系统，一般上规模的公司都有这些，可以快速获取到这些信息，没有的话，也可以自行上机器通过linux 命令查询到。</p>]]></content>
     
     <summary type="html">
     
@@ -304,9 +304,9 @@
       <category term="架构总结" scheme="http://liaojiacan.me/categories/%E6%9E%B6%E6%9E%84%E6%80%BB%E7%BB%93/"/>
     
     
-      <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
-    
       <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
+    
+      <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
     
   </entry>
   
@@ -360,9 +360,9 @@
       <category term="架构总结" scheme="http://liaojiacan.me/categories/%E6%9E%B6%E6%9E%84%E6%80%BB%E7%BB%93/"/>
     
     
-      <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
-    
       <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
+    
+      <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
     
   </entry>
   
@@ -387,9 +387,9 @@
       <category term="架构总结" scheme="http://liaojiacan.me/categories/%E6%9E%B6%E6%9E%84%E6%80%BB%E7%BB%93/"/>
     
     
-      <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
-    
       <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
+    
+      <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
     
   </entry>
   
@@ -534,9 +534,9 @@
     </summary>
     
     
-      <category term="rpc" scheme="http://liaojiacan.me/tags/rpc/"/>
-    
       <category term="Protobuf" scheme="http://liaojiacan.me/tags/Protobuf/"/>
+    
+      <category term="rpc" scheme="http://liaojiacan.me/tags/rpc/"/>
     
   </entry>
   
@@ -564,9 +564,9 @@
     </summary>
     
     
-      <category term="rpc" scheme="http://liaojiacan.me/tags/rpc/"/>
-    
       <category term="Protobuf" scheme="http://liaojiacan.me/tags/Protobuf/"/>
+    
+      <category term="rpc" scheme="http://liaojiacan.me/tags/rpc/"/>
     
   </entry>
   
