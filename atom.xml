@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://liaojiacan.me/"/>
-  <updated>2019-05-30T03:17:51.452Z</updated>
+  <updated>2019-06-01T12:03:18.068Z</updated>
   <id>http://liaojiacan.me/</id>
   
   <author>
@@ -15,6 +15,38 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>生产环境MQ消息堆积的一般处理办法</title>
+    <link href="http://liaojiacan.me/2019/05/30/%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83MQ%E6%B6%88%E6%81%AF%E5%A0%86%E7%A7%AF%E7%9A%84%E4%B8%80%E8%88%AC%E5%A4%84%E7%90%86%E5%8A%9E%E6%B3%95/"/>
+    <id>http://liaojiacan.me/2019/05/30/生产环境MQ消息堆积的一般处理办法/</id>
+    <published>2019-05-30T09:45:44.000Z</published>
+    <updated>2019-06-01T12:03:18.068Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2><p>MQ，消息队列经常会用来解耦系统，由于前期的量预估不足，可能在某些时候导致MQ的消息堆积，导致业务异常，对于生产环境的业务，我们应该尽可能做到用户无感知地恢复服务。</p><h2 id="正文"><a class="markdownIt-Anchor" href="#正文"></a> 正文</h2><p>当我们的生产速率大于我们的消费速率的时候，就会表现出消息对接，不同系统对消息堆积（处理延时）的容忍程度不同。</p><h3 id="案例"><a class="markdownIt-Anchor" href="#案例"></a> 案例</h3><p>假如现在有一个在线的业务，突然量大了起来，消费端或者说下游系统突然处理不过来了，MQ出现了大量的消息堆积，业务写入MQ异常，有什么办法可以相对平缓得解决呢？</p><h3 id="解决思路"><a class="markdownIt-Anchor" href="#解决思路"></a> 解决思路</h3><ol><li><p>从生产者端解决</p><p>一般我们的系统容量或者处理能力都是规划好的，出现消息堆积的情况，大部分是由于流量暴增引起，这个时候可以考虑控制生产者的速率，对前端机器流量进行限速限流。</p></li><li><p>从消费者端解决。</p><p>消费者端解决的思路有两种</p><ul><li>假如消费者数还有增加的空间，那么我们加消费者解决。</li><li>假如没有拓展的可能，但吞吐量还没达到MQ的上限，只是消费者消费能力不足，比如消费者总体消费能力已经到达上线（数据库写入能力等），或者类似Kafka的消费者数量与partition数有关，如果前期设计没有做好水平拓展的设计，这个时候多少个partition就只能对应多少个消费者。<strong>这个时候我们可以先把一部分消息先打到另外一个MQ中或者先落到日志文件中，再拓展消费者进行消费，优先恢复上游业务</strong>。</li></ul></li><li><p>从整理系统上进行解决。</p><p>第2点有提到就是有些MQ的设计限制，导致的消费者数是没法动态拓展的，这个时候可以考虑将原先队列进行拆分，比如新建一个topic 分担一部分消息，这个方式需要对系统的上下游都要进行调整，在实际操作难度可能比较高，处理起来可能也比较耗时，如果在事前有做好这个设计那事发后就能很好进行调整。</p></li></ol><h3 id="补充"><a class="markdownIt-Anchor" href="#补充"></a> 补充</h3><ol><li><p>如果采用先将消息消费到日志文件的方式，怎么保证时序性？</p><p>一般消息队列都有时序问题，我们需要根据业务，对消息进行分区路由，比如根据用户纬度，只保证同一个用户的消息时序就行了，比如我把id为1～10000的用户写在一个文件中，10001～20000的写在一个文件中。后面按这个文件单独消费就能保证消息的时序。</p></li><li><p>不同MQ的消息堆积能力</p><p>其实主要是看是采用内存堆积还是磁盘堆积了，一般像kafka磁盘堆积的，堆积能力都是很强的不会出现容量不足的写入异常，而像RabbitMQ这种内存堆积的，如果消费者跟不上，很容易就把内存堆满了。</p></li></ol><h3 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h3><p>其实上面一对废话，最终总结下来就是，出现堆积后防止业务出现写入异常，需要把消息队列清出一份容量出来，也就是保证消息时序的情况下先将消息快速消费到一些速度更快的存储上，事后再写程序处理。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;前言&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#前言&quot;&gt;&lt;/a&gt; 前言&lt;/h2&gt;
+&lt;p&gt;MQ，消息队列经常会用来解耦系统，由于前期的量预估不足，可能在某些时候导致MQ的消息堆积，导致业务异常，对于生产环境的业务，我们应该尽可能做到用
+      
+    
+    </summary>
+    
+      <category term="运维技巧" scheme="http://liaojiacan.me/categories/%E8%BF%90%E7%BB%B4%E6%8A%80%E5%B7%A7/"/>
+    
+    
+      <category term="运维技巧" scheme="http://liaojiacan.me/tags/%E8%BF%90%E7%BB%B4%E6%8A%80%E5%B7%A7/"/>
+    
+      <category term="故障处理" scheme="http://liaojiacan.me/tags/%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86/"/>
+    
+      <category term="生产环境" scheme="http://liaojiacan.me/tags/%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83/"/>
+    
+      <category term="MQ" scheme="http://liaojiacan.me/tags/MQ/"/>
+    
+  </entry>
   
   <entry>
     <title>生产环境故障处理的一般办法总结</title>
@@ -304,9 +336,9 @@
       <category term="架构总结" scheme="http://liaojiacan.me/categories/%E6%9E%B6%E6%9E%84%E6%80%BB%E7%BB%93/"/>
     
     
-      <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
-    
       <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
+    
+      <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
     
   </entry>
   
@@ -360,9 +392,9 @@
       <category term="架构总结" scheme="http://liaojiacan.me/categories/%E6%9E%B6%E6%9E%84%E6%80%BB%E7%BB%93/"/>
     
     
-      <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
-    
       <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
+    
+      <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
     
   </entry>
   
@@ -387,9 +419,9 @@
       <category term="架构总结" scheme="http://liaojiacan.me/categories/%E6%9E%B6%E6%9E%84%E6%80%BB%E7%BB%93/"/>
     
     
-      <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
-    
       <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
+    
+      <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
     
   </entry>
   
@@ -567,37 +599,6 @@
       <category term="Protobuf" scheme="http://liaojiacan.me/tags/Protobuf/"/>
     
       <category term="rpc" scheme="http://liaojiacan.me/tags/rpc/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>javaagent 的使用</title>
-    <link href="http://liaojiacan.me/2017/10/10/javaagent-%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
-    <id>http://liaojiacan.me/2017/10/10/javaagent-的使用/</id>
-    <published>2017-10-10T03:40:00.000Z</published>
-    <updated>2019-05-22T05:43:18.859Z</updated>
-    
-    <content type="html"><![CDATA[<blockquote><p>javaagent 是类似一个JVM的插件，利用JVM提供的Instrumentation API实现获取或者修改加载到JVM中的类字节码。</p></blockquote><p>编写一个javagent的jar的方式如下：</p><p>1.实现一个ClassFileTransformer</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public class SimpleTransformer implements ClassFileTransformer &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public byte[] transform(ClassLoader loader, String className, Class&lt;?&gt; classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException &#123;</span><br><span class="line">System.out.println(className);</span><br><span class="line">System.out.println(protectionDomain.toString());</span><br><span class="line">return new byte[0];</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>2.实现一个Premain-Class</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class Main &#123;</span><br><span class="line">public static void premain(String agentOps, Instrumentation inst) &#123;</span><br><span class="line">inst.addTransformer(new SimpleTransformer());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">System.out.println(&quot;This is a javaagent!&quot;);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>3.MANIFEST.MF配置</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Manifest-Version: 1.0</span><br><span class="line">Premain-Class: com.github.liaojiacan.Main</span><br><span class="line">Can-Redefine-Classes: true</span><br><span class="line">Can-Retransform-Classes: true</span><br><span class="line">Can-Set-Native-Method-Prefix: true</span><br></pre></td></tr></table></figure><p>4.运行命令</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -javaagent:agent.jar -jar app.jar</span><br></pre></td></tr></table></figure><p>代码和assembly的打包配置可以参考，<a href="https://github.com/liaojiacan/code-snippets/tree/master/javaagent" target="_blank" rel="noopener">github</a></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;blockquote&gt;
-&lt;p&gt;javaagent 是类似一个JVM的插件，利用JVM提供的Instrumentation API实现获取或者修改加载到JVM中的类字节码。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;编写一个javagent的jar的方式如下：&lt;/p&gt;
-&lt;p&gt;1.
-      
-    
-    </summary>
-    
-      <category term="逆向" scheme="http://liaojiacan.me/categories/%E9%80%86%E5%90%91/"/>
-    
-    
-      <category term="java逆向" scheme="http://liaojiacan.me/tags/java%E9%80%86%E5%90%91/"/>
-    
-      <category term="java" scheme="http://liaojiacan.me/tags/java/"/>
     
   </entry>
   

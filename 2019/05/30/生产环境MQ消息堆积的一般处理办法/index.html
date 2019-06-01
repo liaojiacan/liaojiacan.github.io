@@ -17,21 +17,21 @@
   <meta http-equiv="window-target" content="_top">
   
   
-  <title>抽奖业务设计 | Jiacan&#39;s Blog</title>
-  <meta name="description" content="抽奖是一个比较常见的业务，关于抽奖的算法也有很多种实现，下面介绍一种比较容易实现的方式。  1.根据中奖概率的精确度，取一个权重的基线作为（概率-&amp;gt;概率区间）的放大因子。比如，概率的精确度是到万分位，则基线取10000，保证转换后的区间&amp;gt;=1 2.将奖品按对应的中奖概率*基线 转换成权重区间，并记录权重的上限值。 3.在权重上限值的范围内产生一个随机数，利用迭代查找或者二分查找算法找">
-<meta name="keywords" content="业务开发">
+  <title>生产环境MQ消息堆积的一般处理办法 | Jiacan&#39;s Blog</title>
+  <meta name="description" content="前言 MQ，消息队列经常会用来解耦系统，由于前期的量预估不足，可能在某些时候导致MQ的消息堆积，导致业务异常，对于生产环境的业务，我们应该尽可能做到用户无感知地恢复服务。  正文 当我们的生产速率大于我们的消费速率的时候，就会表现出消息对接，不同系统对消息堆积（处理延时）的容忍程度不同。  案例 假如现在有一个在线的业务，突然量大了起来，消费端或者说下游系统突然处理不过来了，MQ出现了大量的消息">
+<meta name="keywords" content="运维技巧,故障处理,生产环境,MQ">
 <meta property="og:type" content="article">
-<meta property="og:title" content="抽奖业务设计">
-<meta property="og:url" content="http://liaojiacan.me/2017/12/16/抽奖业务设计/index.html">
+<meta property="og:title" content="生产环境MQ消息堆积的一般处理办法">
+<meta property="og:url" content="http://liaojiacan.me/2019/05/30/生产环境MQ消息堆积的一般处理办法/index.html">
 <meta property="og:site_name" content="Jiacan‘s Blog">
-<meta property="og:description" content="抽奖是一个比较常见的业务，关于抽奖的算法也有很多种实现，下面介绍一种比较容易实现的方式。  1.根据中奖概率的精确度，取一个权重的基线作为（概率-&amp;gt;概率区间）的放大因子。比如，概率的精确度是到万分位，则基线取10000，保证转换后的区间&amp;gt;=1 2.将奖品按对应的中奖概率*基线 转换成权重区间，并记录权重的上限值。 3.在权重上限值的范围内产生一个随机数，利用迭代查找或者二分查找算法找">
+<meta property="og:description" content="前言 MQ，消息队列经常会用来解耦系统，由于前期的量预估不足，可能在某些时候导致MQ的消息堆积，导致业务异常，对于生产环境的业务，我们应该尽可能做到用户无感知地恢复服务。  正文 当我们的生产速率大于我们的消费速率的时候，就会表现出消息对接，不同系统对消息堆积（处理延时）的容忍程度不同。  案例 假如现在有一个在线的业务，突然量大了起来，消费端或者说下游系统突然处理不过来了，MQ出现了大量的消息">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-05-22T05:43:18.861Z">
+<meta property="og:updated_time" content="2019-06-01T12:03:18.068Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="抽奖业务设计">
-<meta name="twitter:description" content="抽奖是一个比较常见的业务，关于抽奖的算法也有很多种实现，下面介绍一种比较容易实现的方式。  1.根据中奖概率的精确度，取一个权重的基线作为（概率-&amp;gt;概率区间）的放大因子。比如，概率的精确度是到万分位，则基线取10000，保证转换后的区间&amp;gt;=1 2.将奖品按对应的中奖概率*基线 转换成权重区间，并记录权重的上限值。 3.在权重上限值的范围内产生一个随机数，利用迭代查找或者二分查找算法找">
+<meta name="twitter:title" content="生产环境MQ消息堆积的一般处理办法">
+<meta name="twitter:description" content="前言 MQ，消息队列经常会用来解耦系统，由于前期的量预估不足，可能在某些时候导致MQ的消息堆积，导致业务异常，对于生产环境的业务，我们应该尽可能做到用户无感知地恢复服务。  正文 当我们的生产速率大于我们的消费速率的时候，就会表现出消息对接，不同系统对消息堆积（处理延时）的容忍程度不同。  案例 假如现在有一个在线的业务，突然量大了起来，消费端或者说下游系统突然处理不过来了，MQ出现了大量的消息">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://liaojiacan.me/2017/12/16/抽奖业务设计/index.html">
+  <link rel="canonical" href="http://liaojiacan.me/2019/05/30/生产环境MQ消息堆积的一般处理办法/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Jiacan‘s Blog" type="application/atom+xml">
   
@@ -316,14 +316,14 @@
   
 <main class="main" role="main">
   <div class="content">
-  <article id="post-抽奖业务设计" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <article id="post-生产环境MQ消息堆积的一般处理办法" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
       
         
   
     <h1 class="article-title" itemprop="name">
-      抽奖业务设计
+      生产环境MQ消息堆积的一般处理办法
     </h1>
   
 
@@ -331,20 +331,20 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/2017/12/16/抽奖业务设计/" class="article-date">
-	  <time datetime="2017-12-16T08:12:00.000Z" itemprop="datePublished">2017-12-16</time>
+	<a href="/2019/05/30/生产环境MQ消息堆积的一般处理办法/" class="article-date">
+	  <time datetime="2019-05-30T09:45:44.000Z" itemprop="datePublished">2019-05-30</time>
 	</a>
 </span>
         
   <span class="article-category">
     <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/java/">java</a>
+    <a class="article-category-link" href="/categories/运维技巧/">运维技巧</a>
   </span>
 
         
   <span class="article-tag">
     <i class="icon icon-tags"></i>
-	<a class="article-tag-link" href="/tags/业务开发/">业务开发</a>
+	<a class="article-tag-link" href="/tags/MQ/">MQ</a>, <a class="article-tag-link" href="/tags/故障处理/">故障处理</a>, <a class="article-tag-link" href="/tags/生产环境/">生产环境</a>, <a class="article-tag-link" href="/tags/运维技巧/">运维技巧</a>
   </span>
 
 
@@ -357,25 +357,50 @@
 	</span>
 
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2017/12/16/抽奖业务设计/#comments" class="article-comment-link">评论</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/05/30/生产环境MQ消息堆积的一般处理办法/#comments" class="article-comment-link">评论</a></span>
         
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <blockquote>
-<p>抽奖是一个比较常见的业务，关于抽奖的算法也有很多种实现，下面介绍一种比较容易实现的方式。</p>
-</blockquote>
-<p>1.根据中奖概率的精确度，取一个权重的基线作为（概率-&gt;概率区间）的放大因子。比如，概率的精确度是到万分位，则基线取10000，保证转换后的区间&gt;=1</p>
-<p>2.将奖品按对应的中奖概率*基线 转换成权重区间，并记录权重的上限值。</p>
-<p>3.在权重上限值的范围内产生一个随机数，利用迭代查找或者二分查找算法找到对应的权重区间，即可获取到对应的奖品。</p>
-<p>假设奖品的配置如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&quot;一等奖&quot;:0.01</span><br><span class="line">&quot;二等奖&quot;:0.1</span><br><span class="line">&quot;三等奖&quot;:0.15</span><br><span class="line">&quot;四等奖&quot;:0.2</span><br><span class="line">&quot;五等奖&quot;:0.25</span><br><span class="line">&quot;六等奖&quot;:0.29</span><br></pre></td></tr></table></figure>
-<p>概率转换到权重区间（放大10000倍）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">一等奖:[0.000000,100.000000)</span><br><span class="line">二等奖:[100.000000,1100.000000)</span><br><span class="line">三等奖:[1100.000000,2600.000000)</span><br><span class="line">四等奖:[2600.000000,4100.000000)</span><br><span class="line">五等奖:[4100.000000,6100.000000)</span><br><span class="line">六等奖:[6100.000000,8600.000000)</span><br></pre></td></tr></table></figure>
-<p>算法实现：<a href="https://github.com/liaojiacan/code-snippets/tree/master/function-design/src/main/java/com/github/liaojiacan/lottery" target="_blank" rel="noopener">Github</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">public class LotteryPrize &#123;</span><br><span class="line">	private String id;</span><br><span class="line">	private String name;</span><br><span class="line">	private double possibility;</span><br><span class="line"></span><br><span class="line">	public LotteryPrize() &#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	public LotteryPrize(String id, String name, double possibility) &#123;</span><br><span class="line">		this.id = id;</span><br><span class="line">		this.name = name;</span><br><span class="line">		this.possibility = possibility;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getId() &#123;</span><br><span class="line">		return id;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setId(String id) &#123;</span><br><span class="line">		this.id = id;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getName() &#123;</span><br><span class="line">		return name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setName(String name) &#123;</span><br><span class="line">		this.name = name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public double getPossibility() &#123;</span><br><span class="line">		return possibility;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setPossibility(double possibility) &#123;</span><br><span class="line">		this.possibility = possibility;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class LotteryMachine &#123;</span><br><span class="line"></span><br><span class="line">	private PossibilityArea[] table;</span><br><span class="line">	private int bound = 1;</span><br><span class="line">	private Random random = new Random();</span><br><span class="line"></span><br><span class="line">	private static final int BASE_WEIGHT = 10000;</span><br><span class="line"></span><br><span class="line">	class PossibilityArea&#123;</span><br><span class="line">		private LotteryPrize prize;</span><br><span class="line">		private double start;</span><br><span class="line">		private double end;</span><br><span class="line">		public PossibilityArea(LotteryPrize prize, double start, double end) &#123;</span><br><span class="line">			this.prize = prize;</span><br><span class="line">			this.start = start;</span><br><span class="line">			this.end = end;</span><br><span class="line">			System.out.printf(&quot;%s:[%f,%f)\n&quot;,prize.getName(),start,end);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public LotteryMachine(List&lt;LotteryPrize&gt; prizes) &#123;</span><br><span class="line">		table = new PossibilityArea[prizes.size()];</span><br><span class="line">		double start = 0;</span><br><span class="line">		for(int i=0;i&lt;prizes.size();i++)&#123;</span><br><span class="line">			LotteryPrize prize = prizes.get(i);</span><br><span class="line">			double weight = prize.getPossibility() * BASE_WEIGHT;</span><br><span class="line">			Double end = start + weight;</span><br><span class="line">			PossibilityArea area = new PossibilityArea(prize,start,end);</span><br><span class="line">			table[i]= area;</span><br><span class="line">			bound = end.intValue();</span><br><span class="line">			start=end;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	private LotteryPrize binarySearch(int rnd)&#123;</span><br><span class="line">		int low = 0;</span><br><span class="line">		int hight = table.length;</span><br><span class="line">		while (low&lt;hight)&#123;</span><br><span class="line">			int mid = (low + hight) / 2;</span><br><span class="line">			PossibilityArea area = table[mid];</span><br><span class="line">			if(area.start&lt;=rnd &amp;&amp; area.end&gt;rnd)&#123;</span><br><span class="line">				return  area.prize;</span><br><span class="line">			&#125;</span><br><span class="line">			if(area.end&lt;=rnd)&#123;</span><br><span class="line">				low=mid+1;</span><br><span class="line">			&#125;</span><br><span class="line">			if(area.start&gt;rnd)&#123;</span><br><span class="line">				hight=mid;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		return null;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public LotteryPrize go()&#123;</span><br><span class="line">		int rnd = random.nextInt(bound);</span><br><span class="line">		return binarySearch(rnd);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p>MQ，消息队列经常会用来解耦系统，由于前期的量预估不足，可能在某些时候导致MQ的消息堆积，导致业务异常，对于生产环境的业务，我们应该尽可能做到用户无感知地恢复服务。</p>
+<h2 id="正文"><a class="markdownIt-Anchor" href="#正文"></a> 正文</h2>
+<p>当我们的生产速率大于我们的消费速率的时候，就会表现出消息对接，不同系统对消息堆积（处理延时）的容忍程度不同。</p>
+<h3 id="案例"><a class="markdownIt-Anchor" href="#案例"></a> 案例</h3>
+<p>假如现在有一个在线的业务，突然量大了起来，消费端或者说下游系统突然处理不过来了，MQ出现了大量的消息堆积，业务写入MQ异常，有什么办法可以相对平缓得解决呢？</p>
+<h3 id="解决思路"><a class="markdownIt-Anchor" href="#解决思路"></a> 解决思路</h3>
+<ol>
+<li>
+<p>从生产者端解决</p>
+<p>一般我们的系统容量或者处理能力都是规划好的，出现消息堆积的情况，大部分是由于流量暴增引起，这个时候可以考虑控制生产者的速率，对前端机器流量进行限速限流。</p>
+</li>
+<li>
+<p>从消费者端解决。</p>
+<p>消费者端解决的思路有两种</p>
+<ul>
+<li>假如消费者数还有增加的空间，那么我们加消费者解决。</li>
+<li>假如没有拓展的可能，但吞吐量还没达到MQ的上限，只是消费者消费能力不足，比如消费者总体消费能力已经到达上线（数据库写入能力等），或者类似Kafka的消费者数量与partition数有关，如果前期设计没有做好水平拓展的设计，这个时候多少个partition就只能对应多少个消费者。<strong>这个时候我们可以先把一部分消息先打到另外一个MQ中或者先落到日志文件中，再拓展消费者进行消费，优先恢复上游业务</strong>。</li>
+</ul>
+</li>
+<li>
+<p>从整理系统上进行解决。</p>
+<p>第2点有提到就是有些MQ的设计限制，导致的消费者数是没法动态拓展的，这个时候可以考虑将原先队列进行拆分，比如新建一个topic 分担一部分消息，这个方式需要对系统的上下游都要进行调整，在实际操作难度可能比较高，处理起来可能也比较耗时，如果在事前有做好这个设计那事发后就能很好进行调整。</p>
+</li>
+</ol>
+<h3 id="补充"><a class="markdownIt-Anchor" href="#补充"></a> 补充</h3>
+<ol>
+<li>
+<p>如果采用先将消息消费到日志文件的方式，怎么保证时序性？</p>
+<p>一般消息队列都有时序问题，我们需要根据业务，对消息进行分区路由，比如根据用户纬度，只保证同一个用户的消息时序就行了，比如我把id为1～10000的用户写在一个文件中，10001～20000的写在一个文件中。后面按这个文件单独消费就能保证消息的时序。</p>
+</li>
+<li>
+<p>不同MQ的消息堆积能力</p>
+<p>其实主要是看是采用内存堆积还是磁盘堆积了，一般像kafka磁盘堆积的，堆积能力都是很强的不会出现容量不足的写入异常，而像RabbitMQ这种内存堆积的，如果消费者跟不上，很容易就把内存堆满了。</p>
+</li>
+</ol>
+<h3 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h3>
+<p>其实上面一对废话，最终总结下来就是，出现堆积后防止业务出现写入异常，需要把消息队列清出一份容量出来，也就是保证消息时序的情况下先将消息快速消费到一些速度更快的存储上，事后再写程序处理。</p>
 
       
     </div>
@@ -385,7 +410,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="http://liaojiacan.me/2017/12/16/抽奖业务设计/" title="抽奖业务设计" target="_blank" rel="external">http://liaojiacan.me/2017/12/16/抽奖业务设计/</a>
+      <a href="http://liaojiacan.me/2019/05/30/生产环境MQ消息堆积的一般处理办法/" title="生产环境MQ消息堆积的一般处理办法" target="_blank" rel="external">http://liaojiacan.me/2019/05/30/生产环境MQ消息堆积的一般处理办法/</a>
     </li>
     
     <li class="post-copyright-license">
@@ -433,13 +458,9 @@
   
   <ul class="pager pull-left">
     
-    <li class="prev">
-      <a href="/2018/02/07/Source-Tree-配置支持gerrit-review/" title="Source Tree 配置支持gerrit review"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
-    </li>
-    
     
     <li class="next">
-      <a href="/2017/10/16/Java根据指定的country和lang格式化时间/" title="Java根据指定的country和lang格式化时间"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+      <a href="/2019/05/29/生产环境故障处理的一般办法总结/" title="生产环境故障处理的一般办法总结"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
     
