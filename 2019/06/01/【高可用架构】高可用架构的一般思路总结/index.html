@@ -17,16 +17,21 @@
   <meta http-equiv="window-target" content="_top">
   
   
-  <title>标签: Idea | Jiacan&#39;s Blog</title>
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Jiacan‘s Blog">
-<meta property="og:url" content="http://liaojiacan.me/tags/Idea/index.html">
+  <title>【高可用架构】高可用架构的一般思路总结 | Jiacan&#39;s Blog</title>
+  <meta name="description" content="前言 “高可用”，“高并发”，&amp;quot;一致性&amp;quot;都是老生常谈的问题了，他们的定义在百科都可以查到，本文不谈具体的架构，只是谈谈一般思路，总结一些概念切入点。想一想几个问题:  高可用解决的痛点是什么？ 高可用架构设计难点在哪里？ 有没有必要把所有的系统都按高可用设计？   正文 一般我们说的系统主要由处理程序和存储构成，我们的一个个服务的本质就是将数据按一定的逻辑处理输入输出，怎么让">
+<meta name="keywords" content="系统设计,架构设计,分布式,高可用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【高可用架构】高可用架构的一般思路总结">
+<meta property="og:url" content="http://liaojiacan.me/2019/06/01/【高可用架构】高可用架构的一般思路总结/index.html">
 <meta property="og:site_name" content="Jiacan‘s Blog">
+<meta property="og:description" content="前言 “高可用”，“高并发”，&amp;quot;一致性&amp;quot;都是老生常谈的问题了，他们的定义在百科都可以查到，本文不谈具体的架构，只是谈谈一般思路，总结一些概念切入点。想一想几个问题:  高可用解决的痛点是什么？ 高可用架构设计难点在哪里？ 有没有必要把所有的系统都按高可用设计？   正文 一般我们说的系统主要由处理程序和存储构成，我们的一个个服务的本质就是将数据按一定的逻辑处理输入输出，怎么让">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-02T09:51:34.906Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Jiacan‘s Blog">
+<meta name="twitter:title" content="【高可用架构】高可用架构的一般思路总结">
+<meta name="twitter:description" content="前言 “高可用”，“高并发”，&amp;quot;一致性&amp;quot;都是老生常谈的问题了，他们的定义在百科都可以查到，本文不谈具体的架构，只是谈谈一般思路，总结一些概念切入点。想一想几个问题:  高可用解决的痛点是什么？ 高可用架构设计难点在哪里？ 有没有必要把所有的系统都按高可用设计？   正文 一般我们说的系统主要由处理程序和存储构成，我们的一个个服务的本质就是将数据按一定的逻辑处理输入输出，怎么让">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://liaojiacan.me/tags/Idea/index.html">
+  <link rel="canonical" href="http://liaojiacan.me/2019/06/01/【高可用架构】高可用架构的一般思路总结/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Jiacan‘s Blog" type="application/atom+xml">
   
@@ -308,118 +313,244 @@
 </aside>
 
   
-  <main class="main" role="main">
-  <article class="content article article-tags post-type-list" itemscope>
-    <header class="article-header">
-      <h1 itemprop="name" class="hidden-xs">标签: Idea</h1>
-      <p class="text-muted hidden-xs">共 1 篇文章</p>
-      <nav role="navigation" id="nav-main" class="okayNav">
-        <ul>
-          <li><a href="/tags">All</a></li>
-          
-          <li><a href="/tags/Idea/">Idea</a></li>
-          
-          <li><a href="/tags/archetypeCatalog/">archetypeCatalog</a></li>
-          
-          <li><a href="/tags/Innodb/">Innodb</a></li>
-          
-          <li><a href="/tags/java逆向/">java逆向</a></li>
-          
-          <li><a href="/tags/java/">java</a></li>
-          
-          <li><a href="/tags/业务开发/">业务开发</a></li>
-          
-          <li><a href="/tags/MySQL/">MySQL</a></li>
-          
-          <li><a href="/tags/innodb/">innodb</a></li>
-          
-          <li><a href="/tags/多线程/">多线程</a></li>
-          
-          <li><a href="/tags/synchronized/">synchronized</a></li>
-          
-          <li><a href="/tags/AQS/">AQS</a></li>
-          
-          <li><a href="/tags/linux/">linux</a></li>
-          
-          <li><a href="/tags/shell/">shell</a></li>
-          
-          <li><a href="/tags/rpc/">rpc</a></li>
-          
-          <li><a href="/tags/Protobuf/">Protobuf</a></li>
-          
-          <li><a href="/tags/系统设计/">系统设计</a></li>
-          
-          <li><a href="/tags/架构设计/">架构设计</a></li>
-          
-          <li><a href="/tags/分布式/">分布式</a></li>
-          
-          <li><a href="/tags/高可用/">高可用</a></li>
-          
-          <li><a href="/tags/多语言/">多语言</a></li>
-          
-          <li><a href="/tags/i18n/">i18n</a></li>
-          
-          <li><a href="/tags/ClassLoader/">ClassLoader</a></li>
-          
-          <li><a href="/tags/热加载/">热加载</a></li>
-          
-          <li><a href="/tags/开发规范/">开发规范</a></li>
-          
-          <li><a href="/tags/代码管理/">代码管理</a></li>
-          
-          <li><a href="/tags/GIT/">GIT</a></li>
-          
-          <li><a href="/tags/J-U-C/">J.U.C</a></li>
-          
-          <li><a href="/tags/ConcurrentHashMap/">ConcurrentHashMap</a></li>
-          
-          <li><a href="/tags/运维技巧/">运维技巧</a></li>
-          
-          <li><a href="/tags/故障处理/">故障处理</a></li>
-          
-          <li><a href="/tags/生产环境/">生产环境</a></li>
-          
-          <li><a href="/tags/MQ/">MQ</a></li>
-          
-          <li><a href="/tags/存储/">存储</a></li>
-          
-        </ul>
-      </nav>
-    </header>
-    <!-- /header -->
-    <div class="article-body">
-      <div class="row">
-        
-<div class="col-md-6">
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-【高可用架构】高可用架构的一般思路总结" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
-<article class="panel panel-default hover-shadow hover-grow" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="panel-body">
-     <div class="article-meta">
-       <time datetime="2018-03-09T11:01:00.000Z" itemprop="datePublished">2018-03-09</time>
-     </div>
-     <h3 class="article-title" itemprop="name">
-       <a class="article-link" href="/2018/03/09/Idea使用骨架生成项目卡住的解决办法/index.html">Idea使用骨架生成项目卡住的解决办法</a>
-     </h3>
-   </div>
-   
-   <div class="panel-footer">
-     
-      <a href="/tags/Idea/" class="label label-default mb">Idea</a>
-     
-      <a href="/tags/archetypeCatalog/" class="label label-default mb">archetypeCatalog</a>
-     
-     
-   </div>
-   
-</article>
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      【高可用架构】高可用架构的一般思路总结
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2019/06/01/【高可用架构】高可用架构的一般思路总结/" class="article-date">
+	  <time datetime="2019-06-01T08:41:14.000Z" itemprop="datePublished">2019-06-01</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/高可用架构/">高可用架构</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link" href="/tags/分布式/">分布式</a>, <a class="article-tag-link" href="/tags/架构设计/">架构设计</a>, <a class="article-tag-link" href="/tags/系统设计/">系统设计</a>, <a class="article-tag-link" href="/tags/高可用/">高可用</a>
+  </span>
 
 
-</div>
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
 
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/06/01/【高可用架构】高可用架构的一般思路总结/#comments" class="article-comment-link">评论</a></span>
+        
       </div>
     </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p>“高可用”，“高并发”，&quot;一致性&quot;都是老生常谈的问题了，他们的定义在百科都可以查到，本文不谈具体的架构，只是谈谈一般思路，总结一些概念切入点。想一想几个问题:</p>
+<ol>
+<li>高可用解决的痛点是什么？</li>
+<li>高可用架构设计难点在哪里？</li>
+<li>有没有必要把所有的系统都按高可用设计？</li>
+</ol>
+<h2 id="正文"><a class="markdownIt-Anchor" href="#正文"></a> 正文</h2>
+<p>一般我们说的系统主要由处理程序和存储构成，我们的一个个服务的本质就是将数据按一定的逻辑处理输入输出，怎么让我们的输入输出能在可接受的时间内无人工介入地正常运行，就是我们做高可用要做的工作。</p>
+<h3 id="高可用解决的痛点是什么"><a class="markdownIt-Anchor" href="#高可用解决的痛点是什么"></a> 高可用解决的痛点是什么？</h3>
+<p>评估一个系统的高可用一般会用可用性去表示，可用性=平均故障间隔/(平均故障间隔+平均修复时间)，也就是我们常说的多少个9，99.9%，99.99% 。 我们技术人员经常在写kpi的时候也会有一个服务的稳定性的指标和故障处理能力指标，如平均故障处理时间，平均故障反馈时间等。</p>
+<ul>
+<li>做好高可用，减少了运营期间，研发人员的介入，提高了用户体验，毕竟自动化的程序比手工操作来的快。</li>
+<li>提高了数据的安全性，没有100%可靠的程序，我们能做的就是把损失降到最低，通俗讲就是鸡蛋不能都放一个篮子里面。</li>
+</ul>
+<h3 id="有没有必要把所有的系统都按高可用设计"><a class="markdownIt-Anchor" href="#有没有必要把所有的系统都按高可用设计"></a> 有没有必要把所有的系统都按高可用设计？</h3>
+<p>很多小成本或者说一个创新产品（随时都可能下掉）的系统很少会考虑高可用，其实很容易理解，毕竟技术是为业务服务的吗，成本也是一个值得考量的因素。</p>
+<ul>
+<li>小公司，没有完善的基础建设，为一个不确定的产品考虑太多，一是影响开发进度，二是增加了早期投入的运营成本而且同机房的单点故障其实概率很低（前提是选择了靠谱的IDC托管，靠谱的云厂商），大部分程序可能运行个几年也就偶然几次小故障。<strong>可以在业务进入另一个里程碑的时候，结合预算进行架构演进，预算多了后，无论从用户角度还是从研发成本角度考虑都是有比较高的投入回报的</strong>，。</li>
+<li>大公司，基础设施完善，任何一个模块都有比较成熟稳定的高可用解决方案，早期的投入并不会很高，而且大部分都是资源共享的，不用白不用嘛，这个时候就可以一开始就将这部分考虑到系统架构设计中。</li>
+</ul>
+<h4 id="处理程序的高可用"><a class="markdownIt-Anchor" href="#处理程序的高可用"></a> 处理程序的高可用</h4>
+<p>处理程序一般都是无状态的，我们多增加处理程序来防止单点故障，对于有状态的，比如我们的Web服务，一般都会部署多台，然后通过负载均衡来让多个服务同时提供处理。</p>
+<ul>
+<li>就好比飞机有2个发动机，坏了一个还能继续飞。</li>
+<li>把一个域名DNS解析到2个Nginx，每个Nginx又负载均衡到N个节点上。</li>
+<li>多个Master，通过分布式锁，或者选主（利用zookeeper），让一个时刻只有一个点进行处理，一但故障出现时可以自动切换。</li>
+<li>多个Master，通过keepalived，然后通过vip进行提供服务。</li>
+</ul>
+<h4 id="存储的高可用"><a class="markdownIt-Anchor" href="#存储的高可用"></a> 存储的高可用</h4>
+<p>说到存储或者说数据库高可用，业界有个理论，<strong>CAP理论</strong>，说的是对一个系统来说，一致性(Consistency)、可用性(Availability)、分区容错性（Partition tolerance），只能同时满足其中的两项。网上也有其论证的文章，感兴趣的可以去查一下，我这里用一个比较直观的例子来描述我的理解。</p>
+<ol>
+<li>假如我们现在有个单体的应用比如是http+web+mysql 的这种架构，对于web部分，我们可以参考上面说的处理程序的高可用进行设计。对于数据库Mysql来说，单点故障怎么解决？</li>
+<li>俗话说鸡蛋不能放同一个篮子里面，同样我们的数据如果存在一个节点上，随时可能出现数据丢失或者说长时间无法恢复服务，为了降低风险，我们就必须冗余处理，如果一个点的故障率是1%，那么2个点同时故障的概率就降低到0.01%，这样我们的可用性(A) 就基本满足了。</li>
+<li>但是当我们把数据进行多副本存储的时候，就必须面临的网络分区的问题，也就是P一般是要作为前提条件考虑的。</li>
+<li>当出现网络分区了我们又面临了一个问题，我到底该往哪个节点写数据，该读哪个节点的数据，一个数据在不同节点可能存在不同的状态，这就是我们要考虑的一致性（C）的问题。</li>
+</ol>
+<p>就如CAP理论所说，我们似乎陷入了一个死循环，但是人嘛总有些取舍，我们又不是机器即1非0，总有一种情况是可以被大家接受的。我们说的可用性，不会说是100%，通常是99.9%，99.99% , 99.999%。 似乎我们看到了一个跳出循环的办法，我们考虑C和P，同时把A的提升到一个我们能接受的范围不就可以了吗，这也是大部分热门的分布式数据库的做法。</p>
+<blockquote>
+<p>三副本、四副本、五副本，两地三中心、两地四中心。</p>
+</blockquote>
+<p>好了，到了这里我们已经明确了我们的方向，我们选择C和P，可用性上我们采用副本的方式来提高可用性。那么这里又有个问题了，既然选择了C那么多个副本的一致性怎么保证？</p>
+<p><strong>以MySQL的复制机制举例，有半同步复制，还有全同步复制，也有异步的复制。</strong></p>
+<ul>
+<li>semisync 插件实现半同步复制，这种机制下，可以保证binlog 至少同步到一个副本的relaylog后才提交事务，能保证数据不丢失。</li>
+<li>全同步机制，顾名思义就是要等到所有的副本全部写log成功后才提交事务，所以性能会受很大影响。</li>
+<li>异步复制是传统的Master -Slaver模式，副本都是异步同步的，只能做到最总一致性，但是性能是最高的。</li>
+</ul>
+<p><strong>到了这里，显然这个半同步复制更符合我们的要求，但是只要求写一个从成功能保证一致性吗？</strong></p>
+<p>Quorum机制了解一下？N个节点，只要保证W(写)+R(读)&gt;N 即可保证数据的一致性，也就是常说的写半数以上节点。</p>
+<p>当发送故障时需要在R个副本（最新写成功的节点）中选出一个节点作为主节点。</p>
+<p>怎么选这个主节点出来，就要涉及到一些分布式的共识算法如Paxos，和Raft中。Leader election等</p>
+<h4 id="总结"><a class="markdownIt-Anchor" href="#总结"></a> 总结</h4>
+<p>在系统设计中，如果要实现高可用，必然需要采用多副本的模式，多副本下的写机制一般采用写半数以上节点的同步写机制，在这种分布式系统中，没有固定的Master，同一时刻只有一个节点作为Master提供服务，当这个节点出现问题时，通过选举算法在写成功的那些节点中选出一个新的Master提供服务。</p>
+<blockquote>
+<p>上面对CAP的一些理解可能不是正在意义上的CAP，理解CAP理论也不是说为了让我们的系统就要按这个来设计一个AP或者CP的系统，个人觉得CAP理论更应该是作为一个&quot;尺&quot;，可以作为我们在设计系统的时候对 业务和成本等因素的一个权衡标准，也不一定要其中的2个，我们也可以选90%C，90%A，100%P，不是吗？。</p>
+</blockquote>
+<h3 id="进阶学习"><a class="markdownIt-Anchor" href="#进阶学习"></a> 进阶学习</h3>
+<ul>
+<li>Paxos 、Multi-paxos、Raft</li>
+<li>Redis sentinel的 领头选举</li>
+<li>Zookeeper的选举，ZAB协议</li>
+</ul>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://liaojiacan.me/2019/06/01/【高可用架构】高可用架构的一般思路总结/" title="【高可用架构】高可用架构的一般思路总结" target="_blank" rel="external">http://liaojiacan.me/2019/06/01/【高可用架构】高可用架构的一般思路总结/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/liaojiacan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt>
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/liaojiacan" target="_blank"><span class="text-dark">Jiacan Liao</span><small class="ml-1x">Java Developer</small></a></h3>
+        <div>主要从事Java后端开发，并擅长Web相关技术，对网络安全和应用逆向也很感兴趣。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
   </article>
-   
+  
+    
+  <section id="comments">
+  	
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTExMi83NjYx">
+        <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>    
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2019/05/30/生产环境MQ消息堆积的一般处理办法/" title="生产环境MQ消息堆积的一般处理办法"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫">
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/weipayimg.png" alt="扫码支持" title="扫一扫">
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class>
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 </main>
 
   <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
@@ -473,6 +604,30 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
 
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+<script defer type="text/javascript">
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+
+    if (typeof LivereTower === 'function') { return; }
+
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
 
 
 
