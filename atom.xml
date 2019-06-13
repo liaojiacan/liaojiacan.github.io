@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://liaojiacan.me/"/>
-  <updated>2019-06-02T15:07:01.474Z</updated>
+  <updated>2019-06-13T16:45:03.103Z</updated>
   <id>http://liaojiacan.me/</id>
   
   <author>
@@ -15,6 +15,36 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>谈谈对分布式一致性算法Paxos的理解</title>
+    <link href="http://liaojiacan.me/2019/06/06/%E8%B0%88%E8%B0%88%E5%AF%B9%E5%88%86%E5%B8%83%E5%BC%8F%E4%B8%80%E8%87%B4%E6%80%A7%E7%AE%97%E6%B3%95Paxos%E7%9A%84%E7%90%86%E8%A7%A3/"/>
+    <id>http://liaojiacan.me/2019/06/06/谈谈对分布式一致性算法Paxos的理解/</id>
+    <published>2019-06-06T09:45:44.000Z</published>
+    <updated>2019-06-13T16:45:03.103Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2><p>最开始知道这个Paxos协议，是在研究MySQL的高可用的时候接触到的，从MySQL的复制机制了解到有基于semi-sync 的半同步复制，还有组复制MySQL Group Replication (MGR), 后来了解到这个MGR就是基于Paxos来实现的。 除了MGR，还有蚂蚁金服的OceanBase，Google的 Spanner 、chubby 都是基于Paxos协议（Multi-Paxos）的实现(<a href="%5Bhttps://zh.wikipedia.org/wiki/%E7%8A%B6%E6%80%81%E6%9C%BA%E5%A4%8D%E5%88%B6%5D(https://zh.wikipedia.org/wiki/%E7%8A%B6%E6%80%81%E6%9C%BA%E5%A4%8D%E5%88%B6)">复制状态机</a>)。对于他们是怎么落地实现的，我还没有深入去研究，只是看过蚂蚁金服的中间件团队写的一本书有介绍到，所以这篇文章不是讲Paxos怎么应用（How），也不是讲Paxos的证明（Why），只是总结一下Paxos是什么（What）。</p><h2 id="正文"><a class="markdownIt-Anchor" href="#正文"></a> 正文</h2><p>Paxos算法是Lamport提出的一种基于消息传递的一致性算法,<a href="https://www.microsoft.com/en-us/research/publication/paxos-made-simple/?from=http%3A%2F%2Fresearch.microsoft.com%2Fen-us%2Fum%2Fpeople%2Flamport%2Fpubs%2Fpaxos-simple.pdf" target="_blank" rel="noopener">《Paxos Made Simple》</a>，Paxos算法解决的是在分布式系统中对<strong>某个值</strong>达成一致的问题（就像CAS是并发环境下保证原子操作的一种手段，Paxos的这种保证也是分布式系统一致性的理论基础）。下面说的Paxos都是指Basic Paxos，除此之外还有一个优化的Multi-Paxos。</p><blockquote><p>这里的分布式系统模型是非拜占庭将军模型，也就是消息或者命令可能丢失，但是不会有恶意消息/命令的情况。</p></blockquote><h3 id="paxos-的特点"><a class="markdownIt-Anchor" href="#paxos-的特点"></a> Paxos 的特点</h3><ul><li>只能确定一个值或者说单个事件的一致性，达成一致后无法修改</li><li>任何节点都可以发起提案</li><li>可容忍消息丢失、延时、乱序和重复。</li><li>利用多数派Majority机制保障2F+1的容错能力，也就是说只要保证集群半数以上节点存活，集群能正常服务。</li></ul><blockquote><p>把Paxos当作一个理论来看，可能比较好理解，在看这部分的时候，我总想往实际场景套，发现很难套上去，Paxos算法只是解决了单个值的共识问题，实际场景上落地需要实现连续的复制状态机，总之有点难理解，等我看下OceanBase团队的博客系统文章后再来回顾一下，《Paxos Made Simple》这篇论文后面有提到一个状态机的实现。</p></blockquote><h3 id="paxos算法中的角色"><a class="markdownIt-Anchor" href="#paxos算法中的角色"></a> Paxos算法中的角色</h3><ul><li>提议者（Proposer）：发起提案的节点</li><li>接受者（Acceptor）：参与决策，对提案进行承诺和接受的节点</li><li>学习者（Learner）: 不参与决策，对已经确定共识的提案进行学习记录的节点</li></ul><h3 id="paxos算法流程"><a class="markdownIt-Anchor" href="#paxos算法流程"></a> Paxos算法流程</h3><p><img src="https://raw.githubusercontent.com/liaojiacan/assets/master/img/paxos_%E4%BC%AA%E4%BB%A3%E7%A0%81.jpg" alt></p><ol><li><p>Prepare阶段：</p><ul><li><p>Proposer 准备一个提案（Proposal），只需要确定一个提案号N ，这个N是单调递增的 。</p></li><li><p>Proposer 将这个preapre消息 【Proposal Number （N）】 广播到所有的Acceptor节点，直到得到多数派的响应。</p></li><li><p>Acceptor 收到prepare消息后对N进行判断，然后作出响应。</p><blockquote><p>1.承诺不再响应编号小于N的提案</p><p>2.如果存在已经通过的提案，则在响应内容中体现。</p></blockquote></li></ul></li><li><p>Accept阶段：</p><ul><li><p>如果Proposer收到半数以上的Acceptor对它的编号为N的prepare请求的响应集合{(n,Vi)};那么，Proposer将在这个集合中挑选一个最大提案的value（如果不存在，也就是prepare阶段Acceptors的响应不包含提案，则这个值由当前Proposer决定）和 当前编号N 构造一个accept请求发给acceptors。</p><blockquote><p><strong>如果发现有已经被accept的提案，当前的Proposer需要将自己的value修改为这个最大值，这很关键，因为accept 阶段可能只有部分acceptor成功了，但是acceptors中能在下一次prepare阶段反馈给Proposer完成一个&quot;妥协&quot;</strong></p></blockquote></li><li><p>Acceptor收到accept请求后，只要它还未对编号大于N的Prepare请求作出响应，则它就可以通过这个提案。</p></li></ul></li><li><p>Learn阶段：</p><p>一个值被accept后，acceptor就要通知learner，哪个值被选定了。</p></li></ol><p><img src="https://raw.githubusercontent.com/liaojiacan/assets/master/img/Basic%20Paxos.png" alt></p><center>图1. Paxos 提案表决时序图</center><h3 id="paxos-的一些缺点"><a class="markdownIt-Anchor" href="#paxos-的一些缺点"></a> Paxos 的一些缺点</h3><ol><li><p>实现难度大</p></li><li><p>效率低，需要2次RPC调用。</p></li><li><p>存在活锁问题（多个Proposer在Prepare阶段存在交替请求promise的情况，导致大家都冲突了）。</p><blockquote><p>可以使用随机休眠时间来缓解这个问题，当发生冲突的时候，各自休眠一段时间2～5s。</p><p>或者使用一个主Proposer来发起提案，主Proposer的选举还是利用一次Paxos算法来决定。</p></blockquote></li></ol><h3 id="multi-paxos"><a class="markdownIt-Anchor" href="#multi-paxos"></a> Multi-Paxos</h3><p>Multi-Paxos 针对Basic Paxos的一些缺点进行优化，主要改进如下</p><ol><li>将2次RPC减少到1次（最开始还是需要2次），通过选出一个主Proposer来发起提案。</li><li>简化角色，集群中所有的节点既可以是Proposer也可以是acceptor。</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;前言&quot;&gt;&lt;a class=&quot;markdownIt-Anchor&quot; href=&quot;#前言&quot;&gt;&lt;/a&gt; 前言&lt;/h2&gt;
+&lt;p&gt;最开始知道这个Paxos协议，是在研究MySQL的高可用的时候接触到的，从MySQL的复制机制了解到有基于semi-sync 的半同步复制，还有
+      
+    
+    </summary>
+    
+      <category term="分布式" scheme="http://liaojiacan.me/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+    
+      <category term="分布式" scheme="http://liaojiacan.me/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+      <category term="一致性算法" scheme="http://liaojiacan.me/tags/%E4%B8%80%E8%87%B4%E6%80%A7%E7%AE%97%E6%B3%95/"/>
+    
+      <category term="Paxos" scheme="http://liaojiacan.me/tags/Paxos/"/>
+    
+  </entry>
   
   <entry>
     <title>【高可用架构】高可用架构的一般思路总结</title>
@@ -368,9 +398,9 @@
       <category term="架构总结" scheme="http://liaojiacan.me/categories/%E6%9E%B6%E6%9E%84%E6%80%BB%E7%BB%93/"/>
     
     
-      <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
-    
       <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
+    
+      <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
     
   </entry>
   
@@ -424,9 +454,9 @@
       <category term="架构总结" scheme="http://liaojiacan.me/categories/%E6%9E%B6%E6%9E%84%E6%80%BB%E7%BB%93/"/>
     
     
-      <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
-    
       <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
+    
+      <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
     
   </entry>
   
@@ -451,9 +481,9 @@
       <category term="架构总结" scheme="http://liaojiacan.me/categories/%E6%9E%B6%E6%9E%84%E6%80%BB%E7%BB%93/"/>
     
     
-      <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
-    
       <category term="i18n" scheme="http://liaojiacan.me/tags/i18n/"/>
+    
+      <category term="多语言" scheme="http://liaojiacan.me/tags/%E5%A4%9A%E8%AF%AD%E8%A8%80/"/>
     
   </entry>
   
@@ -563,44 +593,6 @@
     
     
       <category term="java逆向" scheme="http://liaojiacan.me/tags/java%E9%80%86%E5%90%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>proto变量类型与java类型对照表</title>
-    <link href="http://liaojiacan.me/2017/10/11/proto%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B%E4%B8%8Ejava%E7%B1%BB%E5%9E%8B%E5%AF%B9%E7%85%A7%E8%A1%A8/"/>
-    <id>http://liaojiacan.me/2017/10/11/proto变量类型与java类型对照表/</id>
-    <published>2017-10-11T02:53:00.000Z</published>
-    <updated>2019-05-22T05:43:18.860Z</updated>
-    
-    <content type="html"><![CDATA[<table><thead><tr><th>proto type</th><th>java type</th></tr></thead><tbody><tr><td>double</td><td>double</td></tr><tr><td>float</td><td>float</td></tr><tr><td>int32</td><td>int</td></tr><tr><td>int64</td><td>long</td></tr><tr><td>uint32</td><td>int</td></tr><tr><td>uint64</td><td>long</td></tr><tr><td>sint32</td><td>int</td></tr><tr><td>sint64</td><td>long</td></tr><tr><td>fixed32</td><td>int</td></tr><tr><td>fixed64</td><td>long</td></tr><tr><td>sfixed32</td><td>int</td></tr><tr><td>sfixed32</td><td>long</td></tr><tr><td>bool</td><td>boolean</td></tr><tr><td>string</td><td>string</td></tr><tr><td>bytes</td><td>ByteString</td></tr></tbody></table>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;proto type&lt;/th&gt;
-&lt;th&gt;java type&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;double&lt;/td&gt;
-&lt;td&gt;double&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;float
-      
-    
-    </summary>
-    
-    
-      <category term="Protobuf" scheme="http://liaojiacan.me/tags/Protobuf/"/>
-    
-      <category term="rpc" scheme="http://liaojiacan.me/tags/rpc/"/>
     
   </entry>
   
