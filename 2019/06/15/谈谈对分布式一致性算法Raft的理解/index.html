@@ -17,23 +17,23 @@
   <meta http-equiv="window-target" content="_top">
   
   
-  <title>谈谈多语言设计（二）之Spring多语言 | Jiacan&#39;s Blog</title>
-  <meta name="description" content="现在大部分成熟的web框架默认就支持多语言，如果业务比较简单，使用框架自身的多语言支持就可以了。本文将以SpringMvc为例介绍一下JavaWeb的多语言中的一些关键类。  关键字  i18n Locale LocaleContext MessageSource   I18N    i18n(其来源是英文单词 internationalization的首末字符i和n，18为中间的字符数),除">
-<meta name="keywords" content="多语言,i18n">
+  <title>谈谈对分布式一致性算法Raft的理解 | Jiacan&#39;s Blog</title>
+  <meta name="description" content="前言 说到分布式一致性算法，鼻祖就是Paxos，但是Paxos算法复杂难理解。而Raft则简化了算法，更容易理解，在教学和工程落地上更加贴地气。工程上应用Raft的也有很多，如TiDB，Redis Sentinel，etcd 等，作为一名工程师如果想深入了解这些底层实现，就很有必要先了解一下Raft算法。  先说下我现在对Raft的一个整体的理解，对于分布式系统副本的一致性问题，都是通过复制状态">
+<meta name="keywords" content="分布式,一致性算法,Raft">
 <meta property="og:type" content="article">
-<meta property="og:title" content="谈谈多语言设计（二）之Spring多语言">
-<meta property="og:url" content="http://liaojiacan.me/2018/03/08/谈谈多语言设计（二）之Spring多语言/index.html">
+<meta property="og:title" content="谈谈对分布式一致性算法Raft的理解">
+<meta property="og:url" content="http://liaojiacan.me/2019/06/15/谈谈对分布式一致性算法Raft的理解/index.html">
 <meta property="og:site_name" content="Jiacan‘s Blog">
-<meta property="og:description" content="现在大部分成熟的web框架默认就支持多语言，如果业务比较简单，使用框架自身的多语言支持就可以了。本文将以SpringMvc为例介绍一下JavaWeb的多语言中的一些关键类。  关键字  i18n Locale LocaleContext MessageSource   I18N    i18n(其来源是英文单词 internationalization的首末字符i和n，18为中间的字符数),除">
+<meta property="og:description" content="前言 说到分布式一致性算法，鼻祖就是Paxos，但是Paxos算法复杂难理解。而Raft则简化了算法，更容易理解，在教学和工程落地上更加贴地气。工程上应用Raft的也有很多，如TiDB，Redis Sentinel，etcd 等，作为一名工程师如果想深入了解这些底层实现，就很有必要先了解一下Raft算法。  先说下我现在对Raft的一个整体的理解，对于分布式系统副本的一致性问题，都是通过复制状态">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://liaojiacan.me/images/pasted-1.png">
-<meta property="og:updated_time" content="2019-05-22T05:43:18.862Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/liaojiacan/assets/master/img/raft-%E5%9B%BE1.png">
+<meta property="og:updated_time" content="2019-06-17T09:40:57.955Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="谈谈多语言设计（二）之Spring多语言">
-<meta name="twitter:description" content="现在大部分成熟的web框架默认就支持多语言，如果业务比较简单，使用框架自身的多语言支持就可以了。本文将以SpringMvc为例介绍一下JavaWeb的多语言中的一些关键类。  关键字  i18n Locale LocaleContext MessageSource   I18N    i18n(其来源是英文单词 internationalization的首末字符i和n，18为中间的字符数),除">
-<meta name="twitter:image" content="http://liaojiacan.me/images/pasted-1.png">
+<meta name="twitter:title" content="谈谈对分布式一致性算法Raft的理解">
+<meta name="twitter:description" content="前言 说到分布式一致性算法，鼻祖就是Paxos，但是Paxos算法复杂难理解。而Raft则简化了算法，更容易理解，在教学和工程落地上更加贴地气。工程上应用Raft的也有很多，如TiDB，Redis Sentinel，etcd 等，作为一名工程师如果想深入了解这些底层实现，就很有必要先了解一下Raft算法。  先说下我现在对Raft的一个整体的理解，对于分布式系统副本的一致性问题，都是通过复制状态">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/liaojiacan/assets/master/img/raft-%E5%9B%BE1.png">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://liaojiacan.me/2018/03/08/谈谈多语言设计（二）之Spring多语言/index.html">
+  <link rel="canonical" href="http://liaojiacan.me/2019/06/15/谈谈对分布式一致性算法Raft的理解/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Jiacan‘s Blog" type="application/atom+xml">
   
@@ -318,14 +318,14 @@
   
 <main class="main" role="main">
   <div class="content">
-  <article id="post-谈谈多语言设计（二）之Spring多语言" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <article id="post-谈谈对分布式一致性算法Raft的理解" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
       
         
   
     <h1 class="article-title" itemprop="name">
-      谈谈多语言设计（二）之Spring多语言
+      谈谈对分布式一致性算法Raft的理解
     </h1>
   
 
@@ -333,20 +333,20 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/2018/03/08/谈谈多语言设计（二）之Spring多语言/" class="article-date">
-	  <time datetime="2018-03-08T11:07:00.000Z" itemprop="datePublished">2018-03-08</time>
+	<a href="/2019/06/15/谈谈对分布式一致性算法Raft的理解/" class="article-date">
+	  <time datetime="2019-06-15T09:45:44.000Z" itemprop="datePublished">2019-06-15</time>
 	</a>
 </span>
         
   <span class="article-category">
     <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/架构总结/">架构总结</a>
+    <a class="article-category-link" href="/categories/分布式/">分布式</a>
   </span>
 
         
   <span class="article-tag">
     <i class="icon icon-tags"></i>
-	<a class="article-tag-link" href="/tags/i18n/">i18n</a>, <a class="article-tag-link" href="/tags/多语言/">多语言</a>
+	<a class="article-tag-link" href="/tags/Raft/">Raft</a>, <a class="article-tag-link" href="/tags/一致性算法/">一致性算法</a>, <a class="article-tag-link" href="/tags/分布式/">分布式</a>
   </span>
 
 
@@ -359,39 +359,121 @@
 	</span>
 
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2018/03/08/谈谈多语言设计（二）之Spring多语言/#comments" class="article-comment-link">评论</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2019/06/15/谈谈对分布式一致性算法Raft的理解/#comments" class="article-comment-link">评论</a></span>
         
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <p>  现在大部分成熟的web框架默认就支持多语言，如果业务比较简单，使用框架自身的多语言支持就可以了。本文将以SpringMvc为例介绍一下JavaWeb的多语言中的一些关键类。</p>
-<h2 id="关键字"><a class="markdownIt-Anchor" href="#关键字"></a> 关键字</h2>
+        <h2 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h2>
+<p>说到分布式一致性算法，鼻祖就是Paxos，但是Paxos算法复杂难理解。而Raft则简化了算法，更容易理解，在教学和工程落地上更加贴地气。工程上应用Raft的也有很多，如TiDB，Redis Sentinel，etcd 等，作为一名工程师如果想深入了解这些底层实现，就很有必要先了解一下Raft算法。</p>
+<blockquote>
+<p>先说下我现在对Raft的一个整体的理解，对于分布式系统副本的一致性问题，都是通过复制状态机来实现的，也就是同步的不是一个状态值，而是命令本身，我们需要一种机制让分布式系统的这些命令日志能够安全的按顺序复制并应用到本地的状态机中，Raft 通过 Leader election的机制，选出一个能购保证安全性的主节点来控制或者说处理命令，也就是发送日志到其他节点（半数以上）和应用状态机。怎么保证日志条目能够按顺序被应用且应用后不可修改就是Raft或者其他一致性算法主要解决的问题。</p>
+</blockquote>
+<h2 id="正文"><a class="markdownIt-Anchor" href="#正文"></a> 正文</h2>
+<h3 id="一-核心概念概括"><a class="markdownIt-Anchor" href="#一-核心概念概括"></a> 一、核心概念概括：</h3>
+<h5 id="系统中的角色"><a class="markdownIt-Anchor" href="#系统中的角色"></a> 系统中的角色：</h5>
 <ul>
-<li>i18n</li>
-<li>Locale</li>
-<li>LocaleContext</li>
-<li>MessageSource</li>
+<li>
+<p>Leader ： 领导人，负责发起日志复制，以及处理客户端请求。</p>
+</li>
+<li>
+<p>Follower：跟随者，负责投票，以及处理Leader发过来的复制请求。</p>
+</li>
+<li>
+<p>Candidate：候选人，Follower到Leader的中间状态，只有当Leader的心跳超时后，Follower才转化为候选人进行选举。</p>
+</li>
 </ul>
-<h2 id="i18n"><a class="markdownIt-Anchor" href="#i18n"></a> I18N</h2>
-<p>   i18n(其来源是英文单词 internationalization的首末字符i和n，18为中间的字符数),除了i18n还有L10n、g11n、m17n。</p>
-<h2 id="locale"><a class="markdownIt-Anchor" href="#locale"></a> Locale</h2>
-<p>  Locale是区域信息，通常locale信息包含应该语言信息和区域标识符，如zh_CN:zh为中文,CN为中国的国家代码。常见的Locale代码可以上网获取。<a href="https://www.science.co.il/language/Locale-codes.php" target="_blank" rel="noopener"> Locale Codes</a>。java中的Locale.java 也定义了常见的区域信息。我们应该尽量使用Locale类型来表达地域信息变量，不应该使用String类型</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">static public final Locale ENGLISH = createConstant(&quot;en&quot;, &quot;&quot;);</span><br><span class="line"></span><br><span class="line">   /** Useful constant for language.</span><br><span class="line">    */</span><br><span class="line">   static public final Locale FRENCH = createConstant(&quot;fr&quot;, &quot;&quot;);</span><br><span class="line"></span><br><span class="line">   /** Useful constant for language.</span><br><span class="line">    */</span><br><span class="line">   static public final Locale GERMAN = createConstant(&quot;de&quot;, &quot;&quot;);</span><br><span class="line"></span><br><span class="line">   /** Useful constant for language.</span><br><span class="line">    */</span><br><span class="line">   static public final Locale ITALIAN = createConstant(&quot;it&quot;, &quot;&quot;);</span><br><span class="line"></span><br><span class="line">   /** Useful constant for language.</span><br><span class="line">    */</span><br><span class="line">   static public final Locale JAPANESE = createConstant(&quot;ja&quot;, &quot;&quot;);</span><br><span class="line"></span><br><span class="line">   /** Useful constant for language.</span><br><span class="line">    */</span><br><span class="line">   static public final Locale KOREAN = createConstant(&quot;ko&quot;, &quot;&quot;);</span><br><span class="line"></span><br><span class="line">   /** Useful constant for language.</span><br><span class="line">    */</span><br><span class="line">   static public final Locale CHINESE = createConstant(&quot;zh&quot;, &quot;&quot;);</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> //从Locale的构造方法中，也看出Locale中可包含语言（language）,国家(country),变体（variant）</span><br><span class="line"> public Locale(String language, String country, String variant) &#123;</span><br><span class="line">        if (language== null || country == null || variant == null) &#123;</span><br><span class="line">            throw new NullPointerException();</span><br><span class="line">        &#125;</span><br><span class="line">        baseLocale = BaseLocale.getInstance(convertOldISOCodes(language), &quot;&quot;, country, variant);</span><br><span class="line">        localeExtensions = getCompatibilityExtensions(language, &quot;&quot;, country, variant);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="localecontext"><a class="markdownIt-Anchor" href="#localecontext"></a> LocaleContext</h2>
-<p>   Spring中存储用户地域信息的上下文，LocaleContext中采用的是ThreadLocal变量来存储信息，线程隔离，这样就可以让locale参数从各层的方法参数中移除。我们在写业务代码时也尽量不要将Locale参数通过方法参数中传入，利用LocaleContext可以让代码显得更优雅点。此外Spring也提供一些LocaleChangeInterceptor 的实现，并不需要我们自己维护这些信息。</p>
+<h5 id="解决的问题"><a class="markdownIt-Anchor" href="#解决的问题"></a> 解决的问题：</h5>
+<ol>
+<li>Leader election ： 主节点选举</li>
+<li>Log replication：日志复制，也是复制状态机的核心</li>
+<li>Safety：安全性问题，怎么保证一些事情不会发生和保证某些事情一定会发生。</li>
+</ol>
+<h5 id="复制状态机"><a class="markdownIt-Anchor" href="#复制状态机"></a> 复制状态机：</h5>
+<p>分布式的一致性，是在不同的节点各自维护一个状态机来实现的，状态机的机制保证只要是相同的命令顺序输入（将命令日志按顺序Append到各个节点的Log中），那么输出状态和结果肯定是一样的。</p>
+<p><img src="https://raw.githubusercontent.com/liaojiacan/assets/master/img/raft-%E5%9B%BE1.png" alt></p>
+<h5 id="特点"><a class="markdownIt-Anchor" href="#特点"></a> 特点：</h5>
+<ol>
+<li>
+<p>强Leader机制，日志都是由Leader同步到其他节点，对复制状态机的实现更加简单。</p>
+</li>
+<li>
+<p>Leader选举：采用随机计时器来发起投票，解决冲突的方式简单快捷。</p>
+</li>
+</ol>
+<h5 id="主要的两种rpc通信"><a class="markdownIt-Anchor" href="#主要的两种rpc通信"></a> 主要的两种RPC通信：</h5>
+<ol>
+<li>
+<p>RequestVote Rpc：  候选人发起的选举请求</p>
+</li>
+<li>
+<p>AppendEntries  Rpc： Leader发起的日志复制请求和心跳机制。</p>
+</li>
+</ol>
+<h3 id="二-核心问题"><a class="markdownIt-Anchor" href="#二-核心问题"></a> 二、核心问题</h3>
+<h4 id="1领导人选举leader-election"><a class="markdownIt-Anchor" href="#1领导人选举leader-election"></a> （1）领导人选举（Leader election ）</h4>
+<ol>
+<li>
+<p>最开始所有的节点都是Follower。Follower只要能从Leader 或者 Candidate收到心跳，则永远保持Follower身份。</p>
+</li>
+<li>
+<p>如果在一段时间没有收到心跳，也就是Leader超时了，那么就发起选举。</p>
+</li>
+<li>
+<p>发起选举的Follower 需要将term+1 并且将自己的角色转换为Candidate，然后向集群中其他节点发起RequestVote 的RPC。</p>
+</li>
+</ol>
+<p><strong>选举过程中可能存在的情况：</strong></p>
 <ul>
-<li>AcceptHeaderLocaleResolver  通过Accept-Language加载locale信息</li>
-<li>CookieLocaleResolver 通过Cookie加载locale信息</li>
-<li>FixedLocaleResolver  全局静态的，返回一个默认的Locale</li>
-<li>SessionLocaleResolver 通过SessionLocaleResolver加载locale信息</li>
+<li>
+<p>顺利的情况下：Candidate 发启的RequestVote得到了多数派的响应，这个时候Candidate将自己转换为Leader并里面向其他服务器发起心跳来确立自己Leader的位置和组织其他Leader的产生。</p>
+</li>
+<li>
+<p>在投票期间，收到了AppendEntries的日志复制请求（可能是自己的Leader突然活了，也可能是新的Leader产生了），如果收到的AppendEnrties RPC 的Term 大于或等于自己的term 则承认领导人并自己转换为Follower。如果term小于自己的term则拒绝这次RPC 并且保持Candidate状态，直到Leader选出。</p>
+</li>
+<li>
+<p>在投票期间，有多个Candidate 或得的票数相同，无法决出胜负，那么每个Candidate会继续增加任期（term+1） 然后进行发起RequestVote RPC 直到选出为止（选举超时的时间是随机的，所以他们发起的时间是错开的，这种冲突很快就会被解决）</p>
+</li>
 </ul>
-<h2 id="messagesource"><a class="markdownIt-Anchor" href="#messagesource"></a> MessageSource</h2>
-<p>   对于多语言的翻译，无非就是先定义一些key，然后根据给这些key配置各种locale对应的文本。而Spring中的MessageSource就是维护这些配置信息的组件，Spring中有ResourceBundleMessageSource 和 ReloadableResourceBundleMessageSource的实现，可以将多语言的配置在<span class="katex-error" title="ParseError: KaTeX parse error: Expected group after &#039;_&#039; at position 11: {basename}_̲">{basename}_</span>{locale}.properties文件中。ResourceBundleMessageSource 每次修改配置需要重启服务才能生效，而ReloadableResourceBundleMessageSource可以热更新。</p>
-<p>   当然我们也可以自己实现一个MessageSource从DB或者从其他存储源加载配置，后面我将单独写一篇文章介绍如何自定义MessageSource进行拓展的。</p>
-<h2 id="多语言的处理流程"><a class="markdownIt-Anchor" href="#多语言的处理流程"></a> 多语言的处理流程</h2>
-<p><img src="/images/pasted-1.png" alt="upload successful"></p>
+<h4 id="2日志复制log-replication"><a class="markdownIt-Anchor" href="#2日志复制log-replication"></a> （2）日志复制（Log Replication）：</h4>
+<p>只有Leader才能处理客户端的请求，如果是非Leader的节点收到请求后要求转发到Leader处理，客户端的每个请求包含一条待执行的复制状态机命令，Leader将这条命令作为新的日志条目附加到自己的日志中去，然后发起AppendEntries RPC 请求到其他节点，让其他节点复制当前的这条日志，如果这条日志被安全复制（半数以上节点复制成功），Leader就将这条日志应用到自己的状态机中，并响应客户端，如果有些节点没有复制成功，Leader在接下来的时间会继续尝试发起AppendEnties RPC请求复制，尽管已经回复了客户端了。</p>
+<blockquote>
+<p>怎么判断当前的附加请求是否合法？</p>
+</blockquote>
+<p>* 每个AppendEntries RPC请求 中会带上待复制的日志条目的上一条日志的term和Index，Follower 会检查本地的日志条目是否有相同的index和term的日志条目（好比乐观锁），如果匹配则附加到本地日志条目中，不匹配则拒绝请求。</p>
+<p>* 集群中的节点的日志可能存在很多种可能，有可能少，也有可能存在Leader没有的日志，但是可以保证被应用到状态机中的日志肯定是Leader中有的。</p>
+<h4 id="3安全性safety"><a class="markdownIt-Anchor" href="#3安全性safety"></a> （3）安全性（Safety）：</h4>
+<p>说到安全性，指得是在系统要保证有些事情是不能发生，还有保证一些事情是肯定要发生的。对于Raft来说，他要保证的就是:</p>
+<blockquote>
+<p>如果有任意节点将一个确定的日志条目应用到它的状态机中，那么其他节点不能在同一位置应用一个不同的命令。</p>
+</blockquote>
+<p>在上面Leader election 和 Log replication的流程中，还暂时无法保证Leader的日志是最新的，所以要引入一些手段来保证。</p>
+<p>在Leader election 中 加入一个投票成功的条件，Candidate在发起RequestVote RPC 的时候会带上以下信息</p>
+<ul>
+<li>lastLogIndex	候选人的最后日志条目的索引值</li>
+</ul>
+<ul>
+<li>lastLogTerm	候选人最后日志条目的任期号</li>
+</ul>
+<p>其他服务器收到后跟自己的日志条目进行比较，判断是否Candidate的日志是否包含自己的日志，如果包含则投票给他。这样只有Candidate是拥有最新的日志，他才可能通过半数以上的投票成为Leader。</p>
+<h3 id="三-其他"><a class="markdownIt-Anchor" href="#三-其他"></a> 三、其他</h3>
+<h4 id="rpc-重试机制和幂等"><a class="markdownIt-Anchor" href="#rpc-重试机制和幂等"></a> Rpc 重试机制和幂等：</h4>
+<p>在上面的流程中AppendEntries Rpc 请求是一个并发的请求，如果中途Follower 挂了，那么Leader会不断的重试Leader会记录这台机器最后的复制的Index），而Follower处理请求的时候需要解决幂等问题。</p>
+<h4 id="读一致性问题"><a class="markdownIt-Anchor" href="#读一致性问题"></a> 读一致性问题：</h4>
+<ul>
+<li>
+<p>在Raft一致性读写都是通过Leader，一般情况下读请求不需要写日志，但是可能会出现脏读（Leader挂了后重新选出的Leader还不知道哪些日志被提交了，他只是有最新复制的日志。），Raft解决的办法是，Leader在选举出来后通过发送一个空的AppendEntries Rpc 到集群中来确定已经被提交的日志。这样就能保证Leader一定能读到最新状态的数据。</p>
+</li>
+<li>
+<p>还有一种情况就是客户端当时认为的集群的Leader 可能已经不是Leader了，所以还是可能存在脏读，Raft 的实现，在处理读请求前先跟大多数节点来次心跳的同步（Zookeeper也有类似的情况，所以zookeeper要实现强一致，每次在读的时候要调用一次sync来同步一下数据）。</p>
+</li>
+</ul>
+<h3 id="参考阅读"><a class="markdownIt-Anchor" href="#参考阅读"></a> 参考阅读</h3>
+<ol>
+<li>Raft 论文翻译： <a href="https://github.com/maemual/raft-zh_cn/blob/master/raft-zh_cn.md" target="_blank" rel="noopener">https://github.com/maemual/raft-zh_cn/blob/master/raft-zh_cn.md</a></li>
+<li>Raft 在线演示：<a href="http://thesecretlivesofdata.com/raft/" target="_blank" rel="noopener">http://thesecretlivesofdata.com/raft/</a></li>
+</ol>
 
       
     </div>
@@ -401,7 +483,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="http://liaojiacan.me/2018/03/08/谈谈多语言设计（二）之Spring多语言/" title="谈谈多语言设计（二）之Spring多语言" target="_blank" rel="external">http://liaojiacan.me/2018/03/08/谈谈多语言设计（二）之Spring多语言/</a>
+      <a href="http://liaojiacan.me/2019/06/15/谈谈对分布式一致性算法Raft的理解/" title="谈谈对分布式一致性算法Raft的理解" target="_blank" rel="external">http://liaojiacan.me/2019/06/15/谈谈对分布式一致性算法Raft的理解/</a>
     </li>
     
     <li class="post-copyright-license">
@@ -449,13 +531,9 @@
   
   <ul class="pager pull-left">
     
-    <li class="prev">
-      <a href="/2018/03/09/Idea使用骨架生成项目卡住的解决办法/" title="Idea使用骨架生成项目卡住的解决办法"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
-    </li>
-    
     
     <li class="next">
-      <a href="/2018/03/07/谈谈多语言设计（一）之-客户端多语言与服务端多语言/" title="谈谈多语言设计（一）之客户端多语言与服务端多语言"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+      <a href="/2019/06/06/谈谈对分布式一致性算法Paxos的理解/" title="谈谈对分布式一致性算法Paxos的理解"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
     
