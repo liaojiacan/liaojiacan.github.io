@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000">
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top">
+  
+  
+  <title>【游戏】网络游戏开发中的帧同步 | Jiacan&#39;s Blog</title>
+  <meta name="description" content="两种同步模式  帧同步：顾名思义，多个客户端的数据以帧的形式安严格的顺序进行同步。 状态同步：每个运动物体在各个端维护当前的状态和运动的向量数据，以事件驱动的机制，同步当前物体最新的状态数据和运动向量。（状态数据指类似位置，血量等非行为数据，目的是用于状态纠错）      帧同步 状态同步     游戏类型 MOBA/RTS… RPG/FPS…   C/S 复杂度 客户端实现复杂 服务端实现复杂">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【游戏】网络游戏开发中的帧同步">
+<meta property="og:url" content="http://liaojiacan.me/2020/10/03/【游戏】网络游戏开发中的帧同步和状态同步/index.html">
+<meta property="og:site_name" content="Jiacan‘s Blog">
+<meta property="og:description" content="两种同步模式  帧同步：顾名思义，多个客户端的数据以帧的形式安严格的顺序进行同步。 状态同步：每个运动物体在各个端维护当前的状态和运动的向量数据，以事件驱动的机制，同步当前物体最新的状态数据和运动向量。（状态数据指类似位置，血量等非行为数据，目的是用于状态纠错）      帧同步 状态同步     游戏类型 MOBA/RTS… RPG/FPS…   C/S 复杂度 客户端实现复杂 服务端实现复杂">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-10-04T11:46:51.195Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【游戏】网络游戏开发中的帧同步">
+<meta name="twitter:description" content="两种同步模式  帧同步：顾名思义，多个客户端的数据以帧的形式安严格的顺序进行同步。 状态同步：每个运动物体在各个端维护当前的状态和运动的向量数据，以事件驱动的机制，同步当前物体最新的状态数据和运动向量。（状态数据指类似位置，血量等非行为数据，目的是用于状态纠错）      帧同步 状态同步     游戏类型 MOBA/RTS… RPG/FPS…   C/S 复杂度 客户端实现复杂 服务端实现复杂">
+  <!-- Canonical links -->
+  <link rel="canonical" href="http://liaojiacan.me/2020/10/03/【游戏】网络游戏开发中的帧同步和状态同步/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="Jiacan‘s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png" type="image/x-icon">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+  
+  
+  
+</head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/liaojiacan" target="_blank">
+          <img class="img-circle img-rotate" src="/images/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">Jiacan Liao</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">Java Developer</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> GuangZhou, China</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索">
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech>
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav ">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-repository">
+          <a href="/repository">
+            
+            <i class="icon icon-project"></i>
+            
+            <span class="menu-title">项目</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/liaojiacan" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/liaojican" target="_blank" title="Weibo" data-toggle="tooltip" data-placement="top"><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/liaojiacan" target="_blank" title="Twitter" data-toggle="tooltip" data-placement="top"><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle="tooltip" data-placement="top"><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JDK/">JDK</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/jdk/">jdk</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/分布式/">分布式</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/开发规范/">开发规范</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/架构总结/">架构总结</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/死锁/">死锁</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/游戏/">游戏</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/源码解读/">源码解读</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/源码解读/JDK/">JDK</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统与架构设计/">系统与架构设计</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维技巧/">运维技巧</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/逆向/">逆向</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/高可用架构/">高可用架构</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AQS/">AQS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ClassLoader/">ClassLoader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ConcurrentHashMap/">ConcurrentHashMap</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GIT/">GIT</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Idea/">Idea</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Innodb/">Innodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/J-U-C/">J.U.C</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/">MySQL</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Paxos/">Paxos</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Protobuf/">Protobuf</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Raft/">Raft</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/archetypeCatalog/">archetypeCatalog</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/i18n/">i18n</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/innodb/">innodb</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java逆向/">java逆向</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/">linux</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/rpc/">rpc</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/synchronized/">synchronized</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/一致性算法/">一致性算法</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/业务开发/">业务开发</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/代码管理/">代码管理</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分布式/">分布式</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多线程/">多线程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多语言/">多语言</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/存储/">存储</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发规范/">开发规范</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/故障处理/">故障处理</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/架构设计/">架构设计</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/热加载/">热加载</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/生产环境/">生产环境</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/系统设计/">系统设计</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/运维技巧/">运维技巧</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/高可用/">高可用</a><span class="tag-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/AQS/" style="font-size: 13px;">AQS</a> <a href="/tags/ClassLoader/" style="font-size: 13px;">ClassLoader</a> <a href="/tags/ConcurrentHashMap/" style="font-size: 13px;">ConcurrentHashMap</a> <a href="/tags/GIT/" style="font-size: 13px;">GIT</a> <a href="/tags/Idea/" style="font-size: 13px;">Idea</a> <a href="/tags/Innodb/" style="font-size: 13px;">Innodb</a> <a href="/tags/J-U-C/" style="font-size: 13px;">J.U.C</a> <a href="/tags/MQ/" style="font-size: 13px;">MQ</a> <a href="/tags/MySQL/" style="font-size: 13px;">MySQL</a> <a href="/tags/Paxos/" style="font-size: 13px;">Paxos</a> <a href="/tags/Protobuf/" style="font-size: 13.33px;">Protobuf</a> <a href="/tags/Raft/" style="font-size: 13px;">Raft</a> <a href="/tags/archetypeCatalog/" style="font-size: 13px;">archetypeCatalog</a> <a href="/tags/i18n/" style="font-size: 13.67px;">i18n</a> <a href="/tags/innodb/" style="font-size: 13px;">innodb</a> <a href="/tags/java/" style="font-size: 13.33px;">java</a> <a href="/tags/java逆向/" style="font-size: 13.33px;">java逆向</a> <a href="/tags/linux/" style="font-size: 13px;">linux</a> <a href="/tags/rpc/" style="font-size: 13.33px;">rpc</a> <a href="/tags/shell/" style="font-size: 13px;">shell</a> <a href="/tags/synchronized/" style="font-size: 13px;">synchronized</a> <a href="/tags/一致性算法/" style="font-size: 13.33px;">一致性算法</a> <a href="/tags/业务开发/" style="font-size: 13.33px;">业务开发</a> <a href="/tags/代码管理/" style="font-size: 13px;">代码管理</a> <a href="/tags/分布式/" style="font-size: 14px;">分布式</a> <a href="/tags/多线程/" style="font-size: 13px;">多线程</a> <a href="/tags/多语言/" style="font-size: 13.67px;">多语言</a> <a href="/tags/存储/" style="font-size: 13px;">存储</a> <a href="/tags/开发规范/" style="font-size: 13px;">开发规范</a> <a href="/tags/故障处理/" style="font-size: 13.33px;">故障处理</a> <a href="/tags/架构设计/" style="font-size: 13.67px;">架构设计</a> <a href="/tags/热加载/" style="font-size: 13px;">热加载</a> <a href="/tags/生产环境/" style="font-size: 13.33px;">生产环境</a> <a href="/tags/系统设计/" style="font-size: 13.67px;">系统设计</a> <a href="/tags/运维技巧/" style="font-size: 13.33px;">运维技巧</a> <a href="/tags/高可用/" style="font-size: 13.33px;">高可用</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">四月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a><span class="archive-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/游戏/">游戏</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/10/03/【游戏】网络游戏开发中的帧同步和状态同步/" class="title">【游戏】网络游戏开发中的帧同步</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-10-03T12:03:00.000Z" itemprop="datePublished">2020-10-03</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/分布式/">分布式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/06/15/谈谈对分布式一致性算法Raft的理解/" class="title">谈谈对分布式一致性算法Raft的理解</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-06-15T09:45:44.000Z" itemprop="datePublished">2019-06-15</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/分布式/">分布式</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/06/06/谈谈对分布式一致性算法Paxos的理解/" class="title">谈谈对分布式一致性算法Paxos的理解</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-06-06T09:45:44.000Z" itemprop="datePublished">2019-06-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/高可用架构/">高可用架构</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/06/01/【高可用架构】高可用架构的一般思路总结/" class="title">【高可用架构】高可用架构的一般思路总结</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-06-01T08:41:14.000Z" itemprop="datePublished">2019-06-01</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/运维技巧/">运维技巧</a>
+              </p>
+              <p class="item-title">
+                <a href="/2019/05/30/生产环境MQ消息堆积的一般处理办法/" class="title">生产环境MQ消息堆积的一般处理办法</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2019-05-30T09:45:44.000Z" itemprop="datePublished">2019-05-30</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-【游戏】网络游戏开发中的帧同步和状态同步" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      【游戏】网络游戏开发中的帧同步
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/10/03/【游戏】网络游戏开发中的帧同步和状态同步/" class="article-date">
+	  <time datetime="2020-10-03T12:03:00.000Z" itemprop="datePublished">2020-10-03</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/游戏/">游戏</a>
+  </span>
+
+        
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/10/03/【游戏】网络游戏开发中的帧同步和状态同步/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <h4 id="两种同步模式"><a class="markdownIt-Anchor" href="#两种同步模式"></a> 两种同步模式</h4>
+<ul>
+<li>帧同步：顾名思义，多个客户端的数据以帧的形式安严格的顺序进行同步。</li>
+<li>状态同步：每个运动物体在各个端维护当前的状态和运动的向量数据，以事件驱动的机制，同步当前物体最新的状态数据和运动向量。（状态数据指类似位置，血量等非行为数据，目的是用于状态纠错）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>帧同步</th>
+<th>状态同步</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>游戏类型</td>
+<td>MOBA/RTS…</td>
+<td>RPG/FPS…</td>
+</tr>
+<tr>
+<td>C/S 复杂度</td>
+<td>客户端实现复杂</td>
+<td>服务端实现复杂</td>
+</tr>
+<tr>
+<td>防作弊难度</td>
+<td>客户端存在全图的数据，难以防止全图挂，视野挂等</td>
+<td>状态和事件由服务端控制下发，容易校验玩家的状态</td>
+</tr>
+<tr>
+<td>风险</td>
+<td>容易出现一致性问题，随机数。浮点数的实现都得考虑跨平台。</td>
+<td>服务端需要跑1:1的游戏逻辑，服务器的资源要求高，      同时在线多的游戏还得考虑状态同步量大导致的网络瓶颈</td>
+</tr>
+</tbody>
+</table>
+<h4 id="帧同步"><a class="markdownIt-Anchor" href="#帧同步"></a> 帧同步</h4>
+<p>帧同步的是英文LockStepSync的翻译，严格的讲应该叫步调一致（协调）的同步，其中主要有两种实现针对不同的场景，局域网模式，也就是P2P网络的游戏采用的是严格的锁定帧同步，比如DOTA。还有一种是有中心服务器的，C（client）S（Server）模式的游戏，比如LOL，王者荣誉等，采用的则是非锁定的帧同步。</p>
+<ul>
+<li>锁定帧同步：客户端的每一帧的推进，都需要得到同一局的所有玩家确认，所以一个玩家掉线游戏就会暂停。但是因为是局域网所以这种情况比较少，是可以接受的。</li>
+<li>非锁定帧同步：每个客户端和服务端以一定的帧率进行帧数据的同步，服务端只管当帧时间抵达时，将数据整理成一个帧数据包广播给所有的客户端。客户端收到帧数据包后对帧号进行比对，判断是否需要进行追帧，和执行逻辑。这种模式下，客户端的网络只会影响自己的游戏体验，其它网络正常的玩家是可以正常游戏的。</li>
+</ul>
+<blockquote>
+<p>P2P网络做非锁定帧同步是不太合适的，因为如果作为主机的客户端，离线或者出现数据丢失，其它客户端是没办法恢复一致的状态的。而有中心服务器的模式，游戏的帧数据会先保存起来再广播出去，即便客户端重启，也是可以获取到帧数据队列进行追帧重放。</p>
+</blockquote>
+<h4 id="帧同步的原理"><a class="markdownIt-Anchor" href="#帧同步的原理"></a> 帧同步的原理</h4>
+<p>帧同步的实现，可以将整个游戏理解为一个状态机。 游戏开始时下发的玩家数据，游戏中每个角色，玩家信息等状态是一致的。我们将这个起始状态下所有的游戏状态集合当做S0，序列帧为F0，当游戏进行到序列帧F100，状态集合为S100，期间，客户端安严格帧顺序的控制指令集合（状态转移指令），每个客户端从F0到F100期间，应用这些状态转移指令，同样的执行指令，同样的执行逻辑，最终的状态也肯定是一致。</p>
+<h4 id="网络部分的伪代码"><a class="markdownIt-Anchor" href="#网络部分的伪代码"></a> 网络部分的伪代码</h4>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">message Command1&#123;</span><br><span class="line">    int64 uid;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message Command2&#123;</span><br><span class="line">     int64 uid;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message Command3&#123;</span><br><span class="line">    int64 uid;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message Frame&#123;</span><br><span class="line">    int64 frameId;</span><br><span class="line">    repeated Command1 command1;</span><br><span class="line">    repeated Command2 command2;</span><br><span class="line">    repeated Command3 command3;</span><br><span class="line">    ....</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class GameRoom&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    Queue&lt;Object&gt; commandQueue = new ConcurrentLinkedList();</span><br><span class="line">    /**300ms 一帧关键帧**/</span><br><span class="line">    public finnal static int TICK_INTERVAL = 300;</span><br><span class="line">    /**任务调度器**/</span><br><span class="line">    TaskScheduler taskScheduler = ...;</span><br><span class="line">    /**不会并发执行，只需要保证可见性**/</span><br><span class="line">    public volatile int frameId = 0;</span><br><span class="line"></span><br><span class="line">    public void onGameStart()&#123;</span><br><span class="line">        long now =  System.currentTimeMillis()</span><br><span class="line">        // 更新 游戏状态等.....</span><br><span class="line">        pushGameStart();</span><br><span class="line">        // 主要的帧推送代码</span><br><span class="line">        taskScheduler.scheduler(()-&gt;nextTick(), Instant.now().plusMillis(TICK_INTERVAL))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void nextTick()&#123;</span><br><span class="line">        long start =  System.currentTimeMillis()</span><br><span class="line">        frameId ++;</span><br><span class="line">        while(!commandQueue.isEmpty())&#123;</span><br><span class="line">            Frame frame = ....</span><br><span class="line">            ...</span><br><span class="line">            push2RoomUser(frame);</span><br><span class="line">        &#125;</span><br><span class="line">        // 构造结构体和推送消息的耗时</span><br><span class="line">        long timeUse = System.currentTimeMillis() - start;</span><br><span class="line"></span><br><span class="line">        // 计算下一帧的剩余时间</span><br><span class="line">        long nextTickTimeLeft = TICK_INTERVAL - timeUse;</span><br><span class="line">        // 加入调度队列</span><br><span class="line">         taskScheduler.scheduler(()-&gt;nextTick(), Instant.now().plusMillis(nextTickTimeLeft &lt; 0 ? 0 : nextTickTimeLeft))</span><br><span class="line">    &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void onReciveUserCommand1(Command1 command1)&#123;</span><br><span class="line">        //预处理逻辑</span><br><span class="line">        commandQueue.offer(command1)</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 其它处理如断线重连，帧数据落地等......</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://liaojiacan.me/2020/10/03/【游戏】网络游戏开发中的帧同步和状态同步/" title="【游戏】网络游戏开发中的帧同步" target="_blank" rel="external">http://liaojiacan.me/2020/10/03/【游戏】网络游戏开发中的帧同步和状态同步/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/liaojiacan" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt>
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/liaojiacan" target="_blank"><span class="text-dark">Jiacan Liao</span><small class="ml-1x">Java Developer</small></a></h3>
+        <div>主要从事Java后端开发，并擅长Web相关技术，对网络安全和应用逆向也很感兴趣。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8zMTExMi83NjYx">
+        <noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+      </div>    
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2019/06/15/谈谈对分布式一致性算法Raft的理解/" title="谈谈对分布式一致性算法Raft的理解"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫">
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/weipayimg.png" alt="扫码支持" title="扫一扫">
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class>
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/liaojiacan" target="_blank" title="Github" data-toggle="tooltip" data-placement="top"><i class="icon icon-github"></i></a></li>
+        
+        <li><a href="http://weibo.com/liaojican" target="_blank" title="Weibo" data-toggle="tooltip" data-placement="top"><i class="icon icon-weibo"></i></a></li>
+        
+        <li><a href="https://twitter.com/liaojiacan" target="_blank" title="Twitter" data-toggle="tooltip" data-placement="top"><i class="icon icon-twitter"></i></a></li>
+        
+        <li><a href="https://www.behance.net/cofess" target="_blank" title="Behance" data-toggle="tooltip" data-placement="top"><i class="icon icon-behance"></i></a></li>
+        
+        <li><a href="/atom.xml" target="_blank" title="Rss" data-toggle="tooltip" data-placement="top"><i class="icon icon-rss"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script src="/js/plugin.min.js"></script>
+<script src="/js/application.js"></script>
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+<script defer type="text/javascript">
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+
+    if (typeof LivereTower === 'function') { return; }
+
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+
+
+
+
+
+
+</body>
+</html>
